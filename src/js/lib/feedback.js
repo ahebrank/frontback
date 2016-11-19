@@ -9,8 +9,9 @@
 
 	var settings = $.extend({
 			ajaxURL: 				'',
+			repoID:                 null,
 			postBrowserInfo: 		true,
-			postHTML:				true,
+			postHTML:				false,
 			postURL:				true,
 			proxy:					undefined,
 			letterRendering:		false,
@@ -29,7 +30,7 @@
 			tpl: {
 				description:	'<div class="ftbk-feedback" id="feedback-welcome"><div class="feedback-logo">Feedback</div><p>Feedback lets you send us suggestions about our products. We welcome problem reports, feature ideas and general comments.</p><p>Start by writing a brief description:</p><textarea id="feedback-note-tmp"></textarea><p>Next we\'ll let you identify areas of the page related to your description.</p><button id="feedback-welcome-next" class="feedback-next-btn feedback-btn-gray">Next</button><div id="feedback-welcome-error">Please enter a description.</div><div class="feedback-wizard-close"></div></div>',
 				highlighter:	'<div class="ftbk-feedback" id="feedback-highlighter"><div class="feedback-logo">Feedback</div><p>Click and drag on the page to help us better understand your feedback. You can move this dialog if it\'s in the way.</p><div class="feedback-buttons"><button id="feedback-highlighter-next" class="feedback-next-btn feedback-btn-gray">Next</button><button id="feedback-highlighter-back" class="feedback-back-btn feedback-btn-gray">Back</button></div><div class="feedback-wizard-close"></div></div>',
-				overview:		'<div class="ftbk-feedback" id="feedback-overview"><div class="feedback-logo">Feedback</div><div id="feedback-overview-description"><div id="feedback-email-text"><h3>Email / Username</h3><input type="email" name="feedback-email" id="feedback-email"></div><div id="feedback-overview-title-text"><h3>Issue title</h3><input type="text" name="feedback-overview-title" id="feedback-overview-title"></div><div id="feedback-overview-description-text"><h3>Description</h3><h3 class="feedback-additional">Additional info</h3><div id="feedback-additional-none"><span>None</span></div><div id="feedback-browser-info"><span>Browser Info</span></div><div id="feedback-page-info"><span>URL</span></div><div id="feedback-page-structure"><span>Markup</span></div></div></div><div id="feedback-overview-screenshot"><h3>Screenshot</h3></div><div class="feedback-buttons"><button id="feedback-submit" class="feedback-submit-btn feedback-btn-blue">Submit</button><button id="feedback-overview-back" class="feedback-back-btn feedback-btn-gray">Back</button></div><div id="feedback-overview-error">Please enter an email and a title/description.</div><div class="feedback-wizard-close"></div></div>',
+				overview:		'<div class="ftbk-feedback" id="feedback-overview"><div class="feedback-logo">Feedback</div><div id="feedback-overview-description"><div id="feedback-email-text"><h3>Username / Email</h3><input type="email" name="feedback-email" id="feedback-email"></div><div id="feedback-overview-title-text"><h3>Issue title</h3><input type="text" name="feedback-overview-title" id="feedback-overview-title"></div><div id="feedback-overview-description-text"><h3>Description</h3><h3 class="feedback-additional">Additional info</h3><div id="feedback-additional-none"><span>None</span></div><div id="feedback-browser-info"><span>Browser Info</span></div><div id="feedback-page-info"><span>URL</span></div><div id="feedback-page-structure"><span>Markup</span></div></div></div><div id="feedback-overview-screenshot"><h3>Screenshot</h3></div><div class="feedback-buttons"><button id="feedback-submit" class="feedback-submit-btn feedback-btn-blue">Submit</button><button id="feedback-overview-back" class="feedback-back-btn feedback-btn-gray">Back</button></div><div id="feedback-overview-error">Please enter an email and a title/description.</div><div class="feedback-wizard-close"></div></div>',
 				submitSuccess:	'<div class="ftbk-feedback" id="feedback-submit-success"><div class="feedback-logo">Feedback</div><p>Thank you for your feedback. We value every piece of feedback we receive.</p><p>We cannot respond individually to every one, but we will use your comments as we strive to improve your experience.</p><button class="feedback-close-btn feedback-btn-blue">OK</button><div class="feedback-wizard-close"></div></div>',
 				submitError:	'<div class="ftbk-feedback" id="feedback-submit-error"><div class="feedback-logo">Feedback</div><p>An error occured while sending your feedback. Please try again.</p><button class="feedback-close-btn feedback-btn-blue">OK</button><div class="feedback-wizard-close"></div></div>'
 			},
@@ -132,6 +133,8 @@
 				drag 		= false;
 				highlight 	= 1,
 				post		= {};
+
+				post.repoID = settings.repoID;
 
 				if (settings.postBrowserInfo) {
 					post.browser 				= {};
@@ -511,12 +514,11 @@
 						overviewEmail($('#feedback-email').val());
 						post.title = $('#feedback-overview-title').val();
 						post.note = $('#feedback-note').val();
-						var data = {feedback: JSON.stringify(post)};
 						$.ajax({
 							url: settings.ajaxURL,
 							dataType: 'json',
 							type: 'POST',
-							data: data,
+							data: JSON.stringify(post),
 							success: function() {
 								$('#feedback-module').append(settings.tpl.submitSuccess);
 							},

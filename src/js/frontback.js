@@ -9,7 +9,7 @@ function addstylesheet(url) {
 }
 
 if (!frontbackID) {
-	console.log('Need frontbackID set with project ID');
+	console.log('Frontback: need frontbackID set with repository identifier.');
 }
 else {
 	postURL = frontbackDev? 'http://localhost:9000': 'https://magicyeti.us/feedback';
@@ -17,6 +17,7 @@ else {
 	addstylesheet(css);
 
 	jQuery.feedback({
+		repoID: frontbackID,
 	    ajaxURL: postURL,
 	});
 }

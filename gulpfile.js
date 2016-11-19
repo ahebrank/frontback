@@ -28,6 +28,10 @@ var paths = {
 	dist: {
 		css: 'dist/css',
 		js: 'dist/js'
+	},
+	watch: {
+		css: 'src/**/*.css',
+		js: 'src/**/*.js'
 	}
 };
 
@@ -82,13 +86,13 @@ gulp.task('watcher', ['build-all'], function() {
 	//var watcherOptions = { debounce:300,watchman:true };
 	var watcherOptions = { debounce:300 };
 
-	sanewatch(paths.src.css, watcherOptions,
+	sanewatch(paths.watch.css, watcherOptions,
 		function() {
 			gulp.start('css');
 		}
 	);
 
-	sanewatch(paths.src.js, watcherOptions,
+	sanewatch(paths.watch.js, watcherOptions,
 		function() {
 			gulp.start('js');
 		}

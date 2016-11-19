@@ -11,11 +11,11 @@
   height: auto;
   min-height: 90px;
   outline: none;
-  font-family: Arial,sans-serif;
   padding: 4px;
 }
 #feedback-note-tmp:focus,
-#feedback-overview-note:focus {  border: 1px solid #64b7cc }
+#feedback-overview-note:focus,
+#feedback-overview-title:focus {  border: 1px solid #64b7cc }
 #feedback-canvas {
   position: absolute;
   top: 0;
@@ -29,7 +29,6 @@
   position: fixed;
 }
 .feedback-logo {
-  background: url(icons.png) -0px -0px no-repeat;
   width: 34px;
   margin-bottom: 16px;
   font-size: 16px;
@@ -79,7 +78,6 @@
 #feedback-close {
   cursor: pointer;
   position: absolute;
-  background: url(icons.png) -0px -64px;
   width: 30px;
   height: 30px;
 }
@@ -88,7 +86,6 @@
   position: absolute;
   top: 2px;
   right: 2px;
-  background: url(icons.png) -0px -34px;
   width: 30px;
   height: 30px;
   opacity: 0.65;
@@ -110,7 +107,7 @@
   right: 100px;
   position: fixed;
   width: 540px;
-  height: 275px;
+  height: 195px;
 }
 #feedback-overview {
   display: none;
@@ -141,7 +138,6 @@
 .feedback-btn-gray {
   text-align: center;
   cursor: pointer;
-  font-family: 'Open sans';
   border: 1px solid rgba(0,0,0,0.1);
   color: #444;
   border-radius: 2px;
@@ -155,7 +151,6 @@
 .feedback-btn-blue {
   text-align: center;
   cursor: pointer;
-  font-family: 'Open sans';
   border-radius: 2px;
   background-image: linear-gradient(to bottom,#4d90fe,#357ae8);
   border: 1px solid #2f5bb7;
@@ -168,7 +163,6 @@
 #feedback-overview,
 #feedback-submit-success,
 #feedback-submit-error {
-  font-family: Arial,sans-serif;
   z-index: 40000;
   background: #fff;
   border: 1px solid rgba(0,0,0,.333);
@@ -208,14 +202,12 @@
   clear: both;
 }
 .feedback-sethighlight div {
-  background: url(icons.png) 0px -94px;
   width: 16px;
   height: 16px;
   margin-top: 7px;
   float: left;
 }
 .feedback-setblackout div {
-  background: url(icons.png) -16px -94px;
   width: 16px;
   height: 16px;
   margin-top: 7px;
@@ -259,7 +251,12 @@
   padding: 4px;
   height: 90px;
   outline: none;
-  font-family: Arial,sans-serif;
+  border: 1px solid gray;
+}
+#feedback-overview-title {
+  outline: none;
+  border: 1px solid gray;
+  width: 314px;
 }
 #feedback-overview-screenshot {  float: right }
 .feedback-screenshot {
@@ -272,7 +269,6 @@
   margin: 8px 0;
   color: #666;
   padding-left: 10px;
-  background: url(icons.png) -30px -34px no-repeat;
   margin-left: 26px;
 }
 #feedback-browser-info,
@@ -281,4 +277,8 @@
 #feedback-additional-none {
   margin-top: 16px;
   display: none;
+}
+
+.ftbk-feedback {
+  font-family: Arial, sans-serif;
 }

@@ -15,7 +15,8 @@
 }
 #feedback-note-tmp:focus,
 #feedback-overview-note:focus,
-#feedback-overview-title:focus {  border: 1px solid #64b7cc }
+#feedback-overview-title:focus,
+#feedback-email:focus {  border: 1px solid #64b7cc }
 #feedback-canvas {
   position: absolute;
   top: 0;
@@ -34,7 +35,6 @@
   font-size: 16px;
   font-weight: normal;
   line-height: 32px;
-  padding-left: 40px;
   height: 32px;
 }
 .feedback-next-btn {
@@ -253,7 +253,8 @@
   outline: none;
   border: 1px solid gray;
 }
-#feedback-overview-title {
+#feedback-overview-title,
+#feedback-email {
   outline: none;
   border: 1px solid gray;
   width: 314px;

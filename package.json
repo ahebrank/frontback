@@ -1,0 +1,26 @@
+{
+  "name": "frontback",
+  "version": "0.0.1",
+  "author": "",
+  "devDependencies": {
+    "browser-sync": "latest",
+    "browserify": "^13.0.1",
+    "colors": "^1.1.2",
+    "del": "^2.2.0",
+    "gulp": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-browserify": "^0.5.1",
+    "gulp-clean-css": "^2.0.6",
+    "gulp-concat": "latest",
+    "gulp-count": "^0.2.0",
+    "gulp-filter": "^4.0.0",
+    "gulp-if": "^2.0.0",
+    "gulp-plumber": "latest",
+    "gulp-sane-watch": "^1.1.2",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "yargs": "^4.4.0"
+  }
+}

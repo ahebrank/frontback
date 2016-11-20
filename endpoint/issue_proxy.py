@@ -6,7 +6,7 @@ import sys
 import json
 import subprocess
 import requests
-from flask import Flask, request, abort, Response
+from flask import Flask, request, abort, Response, jsonify
 import argparse
 from gitlab_api import GitlabApi
 
@@ -14,11 +14,11 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    resp = Response('OK')
+    resp = jsonify(status="OK")
     resp.headers['Access-Control-Allow-Origin'] = '*'
 
     if request.method == "GET":
-        return 'OK'
+        return resp
     elif request.method == "POST":
         # Store the IP address of the requester
         payload = request.get_json(force = True)
@@ -29,14 +29,10 @@ def index():
         if repoConfig:
             private_token = repoConfig.get('private_token')
             assignee_id = repoConfig.get('assignee_id')
-            project_id = repoConfig.get('project_id')
 
             if private_token:
                 gl = GitlabApi(repoID, private_token)
-
-                if not project_id:
-                    # TODO
-                    project_id = gl.lookup_project_id(repoID)
+                project_id = gl.lookup_project_id()
 
                 title = payload.get('title')
                 body = payload.get('note')
@@ -47,10 +43,11 @@ def index():
                 # attach the image
                 img = payload.get('img')
                 if img:
-                    file = gl.upload_file(project_id, img)
-                    file_md = file.get('markdown')
-                    if file_md:
-                        body += gl.append_body(file_md)
+                    file = gl.upload_image(project_id, img)
+                    if file:
+                        file_md = file.get('markdown')
+                        if file_md:
+                            body += gl.append_body(file_md)
 
                 # browser info
                 url = payload.get('url')
@@ -62,9 +59,15 @@ def index():
 
                 body += gl.append_body('Submitted by ' + payload.get('email'))
 
-                gl.create_issue(project_id, title, body, assignee_id)
+                success = gl.create_issue(project_id, title, body, assignee_id)
+                iid = success.get('iid')
+                if iid:
+                    resp = jsonify(**success)
+                    resp.headers['Access-Control-Allow-Origin'] = '*'
+                    return resp
 
-                return resp
+                # issue couldn't be created
+                abort(404)
 
         # no private token
         abort(403)

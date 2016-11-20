@@ -520,7 +520,8 @@
 							type: 'POST',
 							data: JSON.stringify(post),
 							success: function() {
-								$('#feedback-module').append(settings.tpl.submitSuccess);
+								//$('#feedback-module').append(settings.tpl.submitSuccess);
+								close();
 							},
 							error: function(){
 								$('#feedback-module').append(settings.tpl.submitError);

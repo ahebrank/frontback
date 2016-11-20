@@ -3,9 +3,9 @@
 var gulp = require('gulp'),
 	argv = require('yargs').argv,
 	autoprefixer = require('gulp-autoprefixer'),
-	browserify = require('gulp-browserify'),
-	buffer = require('vinyl-buffer'),
+	browserify = require('browserify'),
 	source = require('vinyl-source-stream'),
+	buffer = require('vinyl-buffer'),
 	browserSync = require('browser-sync'),
 	cleanCSS = require('gulp-clean-css'),
 	concat = require('gulp-concat'),
@@ -17,6 +17,7 @@ var gulp = require('gulp'),
 	gulpif = require('gulp-if'),
 	sass = require('gulp-sass'),
 	gutil = require('gulp-util'),
+	jstify = require('jstify'),
 	uglify = require('gulp-uglify');
 
 // bower_path is used as a prefix in other paths
@@ -25,7 +26,7 @@ var bower_path = 'src/bower_components';
 var paths = {
 	src: {
 		scss: 'src/scss/*.scss',
-		js: 'src/js/*.js'
+		js: 'src/js/frontback.js'
 	},
 	dist: {
 		css: 'endpoint/assets/css',
@@ -33,7 +34,7 @@ var paths = {
 	},
 	watch: {
 		scss: 'src/**/*.scss',
-		js: 'src/**/*.js'
+		js: ['src/**/*.js', 'src/**/*.tpl']
 	}
 };
 
@@ -56,12 +57,16 @@ gulp.task('scss', function() {
 });
 
 gulp.task('js', function() {
-	return gulp.src( paths.src.js )
-		.pipe( plumber({ errorHandler: plumber_error }) )
-
-		.pipe( browserify(
-			{ debug: false }
-		) )
+	var b = browserify({
+		entries: [paths.src.js]
+	});
+		
+	b.transform(jstify);
+	
+	return b.bundle()
+		.on( 'error', plumber_error )
+		.pipe( source( 'frontback.js' ) )
+		.pipe( buffer() )
  		.pipe( gulpif( argv.jsmin, uglify({ mangle: false })) )
 		.pipe( gulp.dest( paths.dist.js ));
 });

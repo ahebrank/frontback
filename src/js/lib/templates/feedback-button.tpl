@@ -1,0 +1,1 @@
+<button class="ftbk-feedback-btn ftbk-feedback-btn-gray"><%= text %></button>

@@ -28,11 +28,11 @@
 			isDraggable: 			true,
 			onScreenshotTaken: 		function(){},
 			tpl: {
-				description:	'<div class="ftbk-feedback" id="ftbk-feedback-welcome"><div class="ftbk-feedback-logo">Feedback</div><p>Feedback lets you send us suggestions about our products. We welcome problem reports, feature ideas and general comments.</p><p>Start by writing a brief description:</p><textarea id="ftbk-feedback-note-tmp"></textarea><p>Next we\'ll let you identify areas of the page related to your description.</p><button id="ftbk-feedback-welcome-next" class="ftbk-feedback-next-btn feedback-btn-gray">Next</button><div id="ftbk-feedback-welcome-error">Please enter a description.</div><div class="ftbk-feedback-wizard-close"></div></div>',
-				highlighter:	'<div class="ftbk-feedback" id="ftbk-feedback-highlighter"><div class="ftbk-feedback-logo">Feedback</div><p>Click and drag on the page to help us better understand your feedback. You can move this dialog if it\'s in the way.</p><div class="ftbk-feedback-buttons"><button id="ftbk-feedback-highlighter-next" class="ftbk-feedback-next-btn feedback-btn-gray">Next</button><button id="ftbk-feedback-highlighter-back" class="ftbk-feedback-back-btn ftbk-feedback-btn-gray">Back</button></div><div class="ftbk-feedback-wizard-close"></div></div>',
-				overview:		'<div class="ftbk-feedback" id="ftbk-feedback-overview"><div class="ftbk-feedback-logo">Feedback</div><div id="ftbk-feedback-overview-description"><div id="ftbk-feedback-email-text"><h3>Username / Email</h3><input type="text" name="feedback-email" id="ftbk-feedback-email"></div><div id="ftbk-feedback-overview-title-text"><h3>Issue title</h3><input type="text" name="feedback-overview-title" id="ftbk-feedback-overview-title"></div><div id="ftbk-feedback-overview-description-text"><h3>Description</h3><h3 class="ftbk-feedback-additional">Additional info</h3><div id="ftbk-feedback-additional-none"><span>None</span></div><div id="ftbk-feedback-browser-info"><span>Browser Info</span></div><div id="ftbk-feedback-page-info"><span>URL</span></div><div id="ftbk-feedback-page-structure"><span>Markup</span></div></div></div><div id="ftbk-feedback-overview-screenshot"><h3>Screenshot</h3></div><div class="ftbk-feedback-buttons"><button id="ftbk-feedback-submit" class="ftbk-feedback-submit-btn feedback-btn-blue">Submit</button><button id="ftbk-feedback-overview-back" class="ftbk-feedback-back-btn feedback-btn-gray">Back</button></div><div id="ftbk-feedback-overview-error">Please enter an email and a title/description.</div><div class="ftbk-feedback-wizard-close"></div></div>',
-				submitSuccess:	'<div class="ftbk-feedback" id="ftbk-feedback-submit-success"><div class="ftbk-feedback-logo">Feedback</div><p>Thank you for your feedback. We value every piece of feedback we receive.</p><p>We cannot respond individually to every one, but we will use your comments as we strive to improve your experience.</p><button class="ftbk-feedback-close-btn feedback-btn-blue">OK</button><div class="ftbk-feedback-wizard-close"></div></div>',
-				submitError:	'<div class="ftbk-feedback" id="ftbk-feedback-submit-error"><div class="ftbk-feedback-logo">Feedback</div><p>An error occured while sending your feedback. Please try again.</p><button class="ftbk-feedback-close-btn ftbk-feedback-btn-blue">OK</button><div class="ftbk-feedback-wizard-close"></div></div>'
+				description:	require('./templates/description.tpl')(),
+				highlighter:	require('./templates/highlighter.tpl')(),
+				overview:		require('./templates/overview.tpl')(),
+				submitSuccess:	require('./templates/success.tpl')(),
+				submitError:	require('./templates/error.tpl')()
 			},
 			onClose: 				function() {},
 			screenshotStroke:		true,
@@ -43,7 +43,8 @@
 		var isFeedbackButtonNative = settings.feedbackButton == '.ftbk-feedback-btn';
 		if (supportedBrowser) {
 			if(isFeedbackButtonNative) {
-				$('body').append('<button class="ftbk-feedback-btn ftbk-feedback-btn-gray">' + settings.initButtonText + '</button>');
+				var button = require('./templates/feedback-button.tpl')
+				$('body').append(button({'text': settings.initButtonText}));
 			}
 			$(document).on('click', settings.feedbackButton, function(){
 				if(isFeedbackButtonNative) {
@@ -60,7 +61,8 @@
 					tpl += settings.tpl.description;
 				}
 
-				tpl += settings.tpl.highlighter + settings.tpl.overview + '<canvas id="ftbk-feedback-canvas"></canvas><div id="ftbk-feedback-helpers"></div><input id="ftbk-feedback-note" name="feedback-note" type="hidden"></div>';
+				var canvas = require('./templates/canvas.tpl');
+				tpl += settings.tpl.highlighter + settings.tpl.overview + canvas() + '</div>';
 
 				$('body').append(tpl);
 

@@ -11,97 +11,106 @@ import argparse
 from gitlab_api import GitlabApi
 from email.utils import parseaddr
 
-app = Flask(__name__)
+repos = {}
 
-@app.route("/", methods=['GET', 'POST'])
-def index():
-    resp = jsonify(status="OK")
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+def create_app(config):
+    app = Flask(__name__)
+    try:
+        repos = json.loads(io.open(config, 'r').read())
+    except:
+        print "Error opening repos file %s -- check file exists and is valid json" % config
+        raise
+    return app
 
-    if request.method == "GET":
-        return resp
-    elif request.method == "POST":
-        # Store the IP address of the requester
-        payload = request.get_json(force = True)
+    @app.route("/", methods=['GET', 'POST'])
+    def index():
+        resp = jsonify(status="OK")
+        resp.headers['Access-Control-Allow-Origin'] = '*'
 
-        # common for events
-        repoID = payload.get('repoID')
-        repoConfig = repos.get(repoID)
-        if repoConfig:
-            private_token = repoConfig.get('private_token')
-            assignee_id = repoConfig.get('assignee_id')
+        if request.method == "GET":
+            return resp
+        elif request.method == "POST":
+            # Store the IP address of the requester
+            payload = request.get_json(force = True)
 
-            if private_token:
-                gl = GitlabApi(repoID, private_token)
-                project_id = gl.lookup_project_id()
+            # common for events
+            repoID = payload.get('repoID')
+            repoConfig = repos.get(repoID)
+            if repoConfig:
+                private_token = repoConfig.get('private_token')
+                assignee_id = repoConfig.get('assignee_id')
 
-                # try to lookup a username
-                if not assignee_id.isdigit():
-                    assignee_id = gl.lookup_user_id(assignee_id)
+                if private_token:
+                    gl = GitlabApi(repoID, private_token)
+                    project_id = gl.lookup_project_id()
 
-                title = payload.get('title')
-                body = payload.get('note')
+                    # try to lookup a username
+                    if not assignee_id.isdigit():
+                        assignee_id = gl.lookup_user_id(assignee_id)
 
-                if not title:
-                    title = body
+                    title = payload.get('title')
+                    body = payload.get('note')
 
-                # attach the image
-                img = payload.get('img')
-                if img:
-                    file = gl.upload_image(project_id, img)
-                    if file:
-                        file_md = file.get('markdown')
-                        if file_md:
-                            body += gl.append_body(file_md)
+                    if not title:
+                        title = body
 
-                # browser info
-                url = payload.get('url')
-                body += gl.append_body('URL: ' + url)
-                browser = payload.get('browser')
-                if browser:
-                    body += gl.append_body('Useragent: ' + browser.get('userAgent'))
+                    # attach the image
+                    img = payload.get('img')
+                    if img:
+                        file = gl.upload_image(project_id, img)
+                        if file:
+                            file_md = file.get('markdown')
+                            if file_md:
+                                body += gl.append_body(file_md)
 
-                email = payload.get('email')
-                if (email):
-                    parsed_email = parseaddr(email)
-                    if email.startswith('@'):
-                        username = email
-                    elif parsed_email[1]:
-                        if "@" in parsed_email[1]:
-                            username = "@" + gl.lookup_username(parsed_email[1])
+                    # browser info
+                    url = payload.get('url')
+                    body += gl.append_body('URL: ' + url)
+                    browser = payload.get('browser')
+                    if browser:
+                        body += gl.append_body('Useragent: ' + browser.get('userAgent'))
+
+                    email = payload.get('email')
+                    if (email):
+                        parsed_email = parseaddr(email)
+                        if email.startswith('@'):
+                            username = email
+                        elif parsed_email[1]:
+                            if "@" in parsed_email[1]:
+                                username = "@" + gl.lookup_username(parsed_email[1])
+                            else:
+                                username = "@" + email
                         else:
-                            username = "@" + email
-                    else:
-                        username = False
+                            username = False
 
-                    if username:
-                        body += gl.append_body('Submitted by ' + username)
+                        if username:
+                            body += gl.append_body('Submitted by ' + username)
 
-                success = gl.create_issue(project_id, title, body, assignee_id)
-                iid = success.get('iid')
-                if iid:
-                    resp = jsonify(**success)
-                    resp.headers['Access-Control-Allow-Origin'] = '*'
-                    return resp
+                    success = gl.create_issue(project_id, title, body, assignee_id)
+                    iid = success.get('iid')
+                    if iid:
+                        resp = jsonify(**success)
+                        resp.headers['Access-Control-Allow-Origin'] = '*'
+                        return resp
 
-                # issue couldn't be created
-                abort(404)
+                    # issue couldn't be created
+                    abort(404)
 
-        # no private token
-        abort(403)
+            # no private token
+            abort(403)
 
-# static assets
-@app.route('/assets/<path:path>')
-def send_assets(path):
-    return send_from_directory('assets', path)
+    # static assets
+    @app.route('/assets/<path:path>')
+    def send_assets(path):
+        return send_from_directory('assets', path)
 
-@app.errorhandler(404)
-def error404(e):
-    return fail({'status': 'page not found'}, 404)
+    @app.errorhandler(404)
+    def error404(e):
+        return fail({'status': 'page not found'}, 404)
 
-@app.errorhandler(403)
-def error403(e):
-    return fail({'status': 'no authorization'}, 403)  
+    @app.errorhandler(403)
+    def error403(e):
+        return fail({'status': 'no authorization'}, 403)  
 
 def fail(msg, status):
     resp = jsonify(msg)
@@ -119,13 +128,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     port_number = int(args.port)
-
-    REPOS_JSON_PATH = args.config
-    try:
-        repos = json.loads(io.open(REPOS_JSON_PATH, 'r').read())
-    except:
-        print "Error opening repos file %s -- check file exists and is valid json" % REPOS_JSON_PATH
-        raise
+    app = create_app(args.config)
 
     if args.debug:
         app.debug = True

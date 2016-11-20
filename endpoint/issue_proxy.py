@@ -9,6 +9,7 @@ import requests
 from flask import Flask, request, abort, Response, jsonify
 import argparse
 from gitlab_api import GitlabApi
+from email.utils import parseaddr
 
 app = Flask(__name__)
 
@@ -34,6 +35,10 @@ def index():
                 gl = GitlabApi(repoID, private_token)
                 project_id = gl.lookup_project_id()
 
+                # try to lookup a username
+                if not assignee_id.isdigit():
+                    assignee_id = gl.lookup_user_id(assignee_id)
+
                 title = payload.get('title')
                 body = payload.get('note')
 
@@ -55,9 +60,22 @@ def index():
                 browser = payload.get('browser')
                 if browser:
                     body += gl.append_body('Useragent: ' + browser.get('userAgent'))
-                    body += gl.append_body('Platform: ' + browser.get('platform'))
 
-                body += gl.append_body('Submitted by ' + payload.get('email'))
+                email = payload.get('email')
+                if (email):
+                    parsed_email = parseaddr(email)
+                    if email.startswith('@'):
+                        username = email
+                    elif parsed_email[1]:
+                        if "@" in parsed_email[1]:
+                            username = "@" + gl.lookup_username(parsed_email[1])
+                        else:
+                            username = "@" + email
+                    else:
+                        username = False
+
+                    if username:
+                        body += gl.append_body('Submitted by ' + username)
 
                 success = gl.create_issue(project_id, title, body, assignee_id)
                 iid = success.get('iid')

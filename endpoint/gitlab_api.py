@@ -28,7 +28,6 @@ class GitlabApi:
             r = requests.post(self.get_url(endpoint), files={'file': ('screenshot.png', file, 'image/png')})
         else:
             r = requests.post(self.get_url(endpoint), data=data)
-        print r.text
         return json.loads(r.text)
 
     def get(self, endpoint):
@@ -40,6 +39,14 @@ class GitlabApi:
         if len(users) == 1:
             return users[0]['username']
         return False;
+
+    def lookup_user_id(self, username):
+        if username.startswith("@"):
+            username = username[1:]
+        users = self.get("/users?username=" + username)
+        if len(users) == 1:
+            return users[0]['id']
+        return False
 
     def get_project(self):
         o = urlparse(self.homepage)

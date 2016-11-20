@@ -1,0 +1,6 @@
+{
+    "https://gitlab.com/newcity/test": {
+        "private_token": "GITLAB_PRIVATE_TOKEN",
+        "assignee_id": "@ahebrank"
+    }
+}

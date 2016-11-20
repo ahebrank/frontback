@@ -13,7 +13,7 @@ from email.utils import parseaddr
 
 repos = {}
 
-def create_app(config):
+def create_app(config, root = '/'):
     app = Flask(__name__)
     try:
         repos = json.loads(io.open(config, 'r').read())
@@ -22,7 +22,7 @@ def create_app(config):
         raise
     return app
 
-    @app.route("/", methods=['GET', 'POST'])
+    @app.route(root, methods=['GET', 'POST'])
     def index():
         resp = jsonify(status="OK")
         resp.headers['Access-Control-Allow-Origin'] = '*'

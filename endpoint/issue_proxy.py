@@ -13,16 +13,15 @@ from email.utils import parseaddr
 
 repos = {}
 
-def create_app(config, root = '/'):
+def create_app(config):
     app = Flask(__name__)
     try:
         repos = json.loads(io.open(config, 'r').read())
     except:
         print "Error opening repos file %s -- check file exists and is valid json" % config
         raise
-    return app
 
-    @app.route(root, methods=['GET', 'POST'])
+    @app.route('/', methods=['GET', 'POST'])
     def index():
         resp = jsonify(status="OK")
         resp.headers['Access-Control-Allow-Origin'] = '*'
@@ -111,6 +110,8 @@ def create_app(config, root = '/'):
     @app.errorhandler(403)
     def error403(e):
         return fail({'status': 'no authorization'}, 403)  
+
+    return app
 
 def fail(msg, status):
     resp = jsonify(msg)

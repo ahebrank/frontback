@@ -12,11 +12,6 @@
 		</div>
 		<div id="ftbk-feedback-overview-description-text">
 			<h3>Description</h3>
-			<h3 class="ftbk-feedback-additional">Additional info</h3>
-			<div id="ftbk-feedback-additional-none"><span>None</span></div>
-			<div id="ftbk-feedback-browser-info"><span>Browser Info</span></div>
-			<div id="ftbk-feedback-page-info"><span>URL</span></div>
-			<div id="ftbk-feedback-page-structure"><span>Markup</span></div>
 		</div>
 	</div>
 

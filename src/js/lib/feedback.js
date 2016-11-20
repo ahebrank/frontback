@@ -154,21 +154,15 @@
 					$.each(navigator.plugins, function(i) {
 						post.browser.plugins.push(navigator.plugins[i].name);
 					});
-					$('#ftbk-feedback-browser-info').show();
 				}
 
 				if (settings.postURL) {
 					post.url = document.URL;
-					$('#ftbk-feedback-page-info').show();
 				}
 
 				if (settings.postHTML) {
 					post.html = $('html').html();
-					$('#ftbk-feedback-page-structure').show();
 				}
-
-				if (!settings.postBrowserInfo && !settings.postURL && !settings.postHTML)
-					$('#ftbk-feedback-additional-none').show();
 
 				$(document).on('mousedown', '#ftbk-feedback-canvas', function(e) {
 					if (canDraw) {

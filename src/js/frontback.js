@@ -11,13 +11,15 @@ function addstylesheet(url) {
 if (!frontbackID) {
 	console.log('Frontback: need frontbackID set with repository identifier.');
 }
-else {
-	postURL = frontbackDev? 'http://localhost:9000': 'https://magicyeti.us/feedback';
-	css = frontbackDev? 'http://localhost:3000/css/styles.css': 'https://magicyeti.us/feedback/css/styles.css';
+if (!frontbackPostURL) {
+	console.log('Frontback: need frontbackPostURL set with endpoint.');
+}
+if (frontbackID && frontbackPostURL) {
+	css = frontbackPostURL + '/assets/css/styles.css';
 	addstylesheet(css);
 
 	jQuery.feedback({
 		repoID: frontbackID,
-	    ajaxURL: postURL,
+	    ajaxURL: frontbackPostURL,
 	});
 }

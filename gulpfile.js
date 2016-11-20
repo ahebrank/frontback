@@ -15,6 +15,8 @@ var gulp = require('gulp'),
 	filter = require('gulp-filter'),
 	count = require('gulp-count'),
 	gulpif = require('gulp-if'),
+	sass = require('gulp-sass'),
+	gutil = require('gulp-util'),
 	uglify = require('gulp-uglify');
 
 // bower_path is used as a prefix in other paths
@@ -22,15 +24,15 @@ var bower_path = 'src/bower_components';
 
 var paths = {
 	src: {
-		css: 'src/css/*.css',
+		scss: 'src/scss/*.scss',
 		js: 'src/js/*.js'
 	},
 	dist: {
-		css: 'dist/css',
-		js: 'dist/js'
+		css: 'endpoint/assets/css',
+		js: 'endpoint/assets/js'
 	},
 	watch: {
-		css: 'src/**/*.css',
+		scss: 'src/**/*.scss',
 		js: 'src/**/*.js'
 	}
 };
@@ -42,10 +44,11 @@ var plumber_error = function (err) {
 };
 
 // application and third-party SASS -> CSS
-gulp.task('css', function() {
-	return gulp.src( paths.src.css )
+gulp.task('scss', function() {
+	return gulp.src( paths.src.scss )
 		.pipe( plumber({ errorHandler: plumber_error }) )
 
+		.pipe( sass({ outputStyle: 'nested'}) )
 		.pipe( autoprefixer( [ 'last 2 versions', '> 1%' ] ) )
 		// Minify css only if --cssmin flag is used
 		.pipe( gulpif( argv.cssmin, cleanCSS() ) )
@@ -54,6 +57,8 @@ gulp.task('css', function() {
 
 gulp.task('js', function() {
 	return gulp.src( paths.src.js )
+		.pipe( plumber({ errorHandler: plumber_error }) )
+
 		.pipe( browserify(
 			{ debug: false }
 		) )
@@ -62,7 +67,7 @@ gulp.task('js', function() {
 });
 
 // build-all builds everything in one go.
-gulp.task('build-all', ['css', 'js']);
+gulp.task('build-all', ['scss', 'js']);
 
 gulp.task('reload', function() {
 	browserSync.reload();
@@ -86,9 +91,9 @@ gulp.task('watcher', ['build-all'], function() {
 	//var watcherOptions = { debounce:300,watchman:true };
 	var watcherOptions = { debounce:300 };
 
-	sanewatch(paths.watch.css, watcherOptions,
+	sanewatch(paths.watch.scss, watcherOptions,
 		function() {
-			gulp.start('css');
+			gulp.start('scss');
 		}
 	);
 
@@ -105,7 +110,7 @@ gulp.task('watcher', ['build-all'], function() {
 
 	browserSync.init({
 		server: {
-			baseDir: "./dist"
+			baseDir: "./test"
 		}
 	});
 });

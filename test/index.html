@@ -11,8 +11,10 @@
 
 		<script>
 			var frontbackID = 'https://gitlab.com/newcity/test';
-			var frontbackDev = true;
+			var frontbackPostURL = 'http://localhost:9000';
+			var script = document.createElement('script');
+			script.src = frontbackPostURL + '/assets/js/frontback.js';
+			document.body.appendChild(script);
 		</script>
-		<script src="js/frontback.js"></script>
 	</body>
 </html>

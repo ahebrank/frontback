@@ -1,0 +1,322 @@
+//colors
+$color_fountain_blue_approx: #64b7cc;
+$color_blue_ribbon_10_approx: rgba(0,68,255,0.1);
+$color_coral_red_approx: #f13e3e;
+$black_20: rgba(0,0,0,.2);
+$black_10: rgba(0,0,0,0.1);
+$color_tundora_approx: #444;
+$color_wild_sand_approx: #f5f5f5;
+$seashell: #f1f1f1;
+$color_mine_shaft_approx: #333;
+$color_pumice_approx: #c6c6c6;
+$color_desert_storm_approx: #f8f8f8;
+$color_cornflower_blue_approx: #4d90fe;
+$color_royal_blue_approx: #357ae8;
+$color_cerulean_blue_approx: #2f5bb7;
+$white: #fff;
+$black_33_3: rgba(0,0,0,.333);
+$color_gallery_approx: #eee;
+$color_bon_jour_approx: #e0e0e0;
+$color_celeste_approx: #ccc;
+$gray:  gray;
+$color_silver_chalice_approx: #adadad;
+$color_storm_dust_approx: #666;
+
+//fonts
+$font: Arial, sans-serif;
+
+$prefix: "ftbk-";
+
+//@extend-elements
+%error {
+	display: none;
+	color: $color_coral_red_approx;
+	float: right;
+	margin-right: 30px;
+	font-size: 13px;
+	line-height: 29px;
+}
+
+%submit_button {
+	top: 30%;
+	left: 50%;
+	margin-left: -300px;
+	display: block;
+	position: fixed;
+	width: 600px;
+	height: auto;
+}
+
+%modal {
+	z-index: 40000;
+	background: $white;
+	border: 1px solid $black_33_3;
+	padding: 30px 42px;
+	width: 540px;
+	border: 1px solid $black_33_3;
+	outline: 0;
+	//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+	box-shadow: 0 4px 16px $black_20;
+	background: $white;
+	//Instead of the line below you could use @include background-clip($clip)
+	background-clip: padding-box;
+	//Instead of the line below you could use @include box-sizing($bs)
+	box-sizing: border-box;
+}
+
+%input {
+	outline: none;
+	border: 1px solid $gray;
+	width: 314px;
+}
+
+
+.#{$prefix}feedback-btn {
+	font-size: 14px;
+	position: fixed;
+	bottom: -3px;
+	right: 60px;
+	width: auto;
+	padding: 10px;
+	outline: 0;
+	//Instead of the line below you could use @include background-clip($clip)
+	background-clip: padding-box;
+	//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+	box-shadow: 0 4px 16px $black_20;
+	z-index: 40000;
+}
+##{$prefix}feedback-module {
+	p {
+		font-size: 13px;
+	}
+	h3 {
+		font-weight: bold;
+		font-size: 15px;
+		margin: 8px 0;
+	}
+}
+##{$prefix}feedback-note-tmp {
+	width: 444px;
+	height: auto;
+	min-height: 90px;
+	outline: none;
+	padding: 4px;
+	resize: none;
+	&:focus {
+		border: 1px solid $color_fountain_blue_approx;
+	}
+}
+##{$prefix}feedback-overview-note {
+	resize: none;
+	width: 314px;
+	padding: 4px;
+	height: 90px;
+	outline: none;
+	border: 1px solid $gray;
+	&:focus {
+		border: 1px solid $color_fountain_blue_approx;
+	}
+}
+##{$prefix}feedback-overview-title {
+	@extend %input;
+	&:focus {
+		border: 1px solid $color_fountain_blue_approx;
+	}
+}
+##{$prefix}feedback-email {
+	@extend %input;
+	&:focus {
+		border: 1px solid $color_fountain_blue_approx;
+	}
+}
+##{$prefix}feedback-canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+##{$prefix}feedback-welcome {
+	top: 30%;
+	left: 50%;
+	margin-left: -270px;
+	display: block;
+	position: fixed;
+	@extend %modal;
+}
+.#{$prefix}feedback-logo {
+	width: 34px;
+	margin-bottom: 16px;
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 32px;
+	height: 32px;
+}
+.#{$prefix}feedback-next-btn {
+	width: 72px;
+	height: 29px;
+	line-height: 27px;
+	float: right;
+	font-size: 13px;
+	padding: 0 8px;
+}
+.#{$prefix}feedback-back-btn {
+	width: 72px;
+	height: 29px;
+	line-height: 27px;
+	float: right;
+	font-size: 13px;
+	padding: 0 8px;
+	margin-right: 20px;
+}
+.#{$prefix}feedback-submit-btn {
+	width: 72px;
+	height: 29px;
+	line-height: 27px;
+	float: right;
+	font-size: 13px;
+	padding: 0 8px;
+}
+.#{$prefix}feedback-close-btn {
+	width: 72px;
+	height: 29px;
+	line-height: 27px;
+	float: right;
+	font-size: 13px;
+	padding: 0 8px;
+}
+.#{$prefix}feedback-helper {
+	background: rgba(0,0,0,0);
+	cursor: default;
+}
+##{$prefix}feedback-close {
+	cursor: pointer;
+	position: absolute;
+	width: 30px;
+	height: 30px;
+}
+.#{$prefix}feedback-wizard-close {
+	cursor: pointer;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	width: 30px;
+	height: 30px;
+	opacity: 0.65;
+	&:hover {
+		opacity: 1;
+	}
+}
+##{$prefix}feedback-welcome-error {
+	@extend %error;
+}
+##{$prefix}feedback-overview-error {
+	@extend %error;
+	margin-top: 20px;
+}
+##{$prefix}feedback-highlighter {
+	display: none;
+	bottom: 100px;
+	right: 100px;
+	position: fixed;
+	width: 540px;
+	height: 195px;
+	@extend %modal;
+	label {
+		float: left;
+		margin: 0 0 0 10px;
+		line-height: 30px;
+		font-size: 13px;
+		font-weight: normal;
+		&.lower {
+			margin-top: 10px;
+		}
+	}
+}
+##{$prefix}feedback-overview {
+	display: none;
+	top: 10%;
+	left: 50%;
+	margin-left: -420px;
+	position: fixed;
+	width: 840px!important;
+	height: auto;
+	@extend %modal;
+}
+##{$prefix}feedback-submit-error {
+	@extend %submit_button;
+	@extend %modal;
+}
+##{$prefix}feedback-submit-success {
+	@extend %submit_button;
+	@extend %modal;
+}
+.#{$prefix}feedback-btn-gray {
+	text-align: center;
+	cursor: pointer;
+	border: 1px solid $black_10;
+	color: $color_tundora_approx;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 2px;
+	background-image: linear-gradient(to bottom,$color_wild_sand_approx,$seashell);
+	&:hover {
+		color: $color_mine_shaft_approx;
+		border: 1px solid $color_pumice_approx;
+		background-image: linear-gradient(to bottom,$color_desert_storm_approx,$seashell);
+	}
+}
+.#{$prefix}feedback-btn-blue {
+	text-align: center;
+	cursor: pointer;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 2px;
+	background-image: linear-gradient(to bottom,$color_cornflower_blue_approx,$color_royal_blue_approx);
+	border: 1px solid $color_cerulean_blue_approx;
+	color: $white;
+}
+.#{$prefix}feedback-buttons {
+	float: right;
+	margin-top: 20px;
+	clear: both;
+}
+.#{$prefix}feedback-additional {
+	margin-bottom: 20px!important;
+}
+##{$prefix}feedback-overview-description {
+	float: left;
+}
+##{$prefix}feedback-overview-screenshot {
+	float: right;
+}
+.#{$prefix}feedback-screenshot {
+	max-width: 396px;
+	padding: 1px;
+	border: 1px solid $color_silver_chalice_approx;
+}
+##{$prefix}feedback-browser-info {
+	margin-top: 16px;
+	display: none;
+}
+##{$prefix}feedback-page-info {
+	margin-top: 16px;
+	display: none;
+}
+##{$prefix}feedback-page-structure {
+	margin-top: 16px;
+	display: none;
+}
+##{$prefix}feedback-additional-none {
+	margin-top: 16px;
+	display: none;
+}
+.#{$prefix}feedback {
+	font-family: $font;
+}
+.#{$prefix}feedback-helper[data-type="highlight"] > .#{$prefix}feedback-helper-inner {
+	background: $color_blue_ribbon_10_approx;
+}
+##{$prefix}feedback-overview-description-text span {
+	font-size: 14px;
+	margin: 8px 0;
+	color: $color_storm_dust_approx;
+	padding-left: 10px;
+	margin-left: 26px;
+}

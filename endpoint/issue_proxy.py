@@ -6,7 +6,7 @@ import sys
 import json
 import subprocess
 import requests
-from flask import Flask, request, abort, Response, jsonify
+from flask import Flask, request, abort, Response, jsonify, send_from_directory
 import argparse
 from gitlab_api import GitlabApi
 from email.utils import parseaddr
@@ -90,6 +90,23 @@ def index():
         # no private token
         abort(403)
 
+# static assets
+@app.route('/assets/<path:path>')
+def send_assets(path):
+    return send_from_directory('assets', path)
+
+@app.errorhandler(404)
+def error404(e):
+    return fail({'status': 'page not found'}, 404)
+
+@app.errorhandler(403)
+def error403(e):
+    return fail({'status': 'no authorization'}, 403)  
+
+def fail(msg, status):
+    resp = jsonify(msg)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp, status
 
 if __name__ == "__main__":
 

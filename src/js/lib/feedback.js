@@ -39,7 +39,7 @@
 			onClose: 				function() {},
 			screenshotStroke:		true,
 			highlightElement:		true,
-			initialBox:				false
+			initialBox:				false,
 	}, options);
 		var supportedBrowser = !!window.HTMLCanvasElement;
 		var isFeedbackButtonNative = settings.feedbackButton == '.ftbk-feedback-btn';
@@ -64,7 +64,13 @@
 				}
 
 				var canvas = require('./templates/canvas.tpl');
-				tpl += settings.tpl.highlighter + settings.tpl.overview + canvas() + '</div>';
+
+				var fullScreen = ($(window).width() > 640);
+
+				if (fullScreen) {
+					tpl += settings.tpl.highlighter;
+				}
+				tpl += settings.tpl.overview + canvas() + '</div>';
 
 				$('body').append(tpl);
 
@@ -90,42 +96,44 @@
 					$('#ftbk-feedback-highlighter').show();
 				}
 
-				if(settings.isDraggable) {
-					$('#ftbk-feedback-highlighter').on('mousedown', function(e) {
-						var $d = $(this).addClass('ftbk-feedback-draggable'),
-							drag_h 	= $d.outerHeight(),
-							drag_w 	= $d.outerWidth(),
-							pos_y 	= $d.offset().top + drag_h - e.pageY,
-							pos_x 	= $d.offset().left + drag_w - e.pageX;
-						$d.css('z-index', 40000).parents().on('mousemove', function(e) {
-							_top 	= e.pageY + pos_y - drag_h;
-							_left 	= e.pageX + pos_x - drag_w;
-							_bottom = drag_h - e.pageY;
-							_right 	= drag_w - e.pageX;
+				if (fullScreen) {
+					if(settings.isDraggable) {
+						$('#ftbk-feedback-highlighter').on('mousedown', function(e) {
+							var $d = $(this).addClass('ftbk-feedback-draggable'),
+								drag_h 	= $d.outerHeight(),
+								drag_w 	= $d.outerWidth(),
+								pos_y 	= $d.offset().top + drag_h - e.pageY,
+								pos_x 	= $d.offset().left + drag_w - e.pageX;
+							$d.css('z-index', 40000).parents().on('mousemove', function(e) {
+								_top 	= e.pageY + pos_y - drag_h;
+								_left 	= e.pageX + pos_x - drag_w;
+								_bottom = drag_h - e.pageY;
+								_right 	= drag_w - e.pageX;
 
-							if (_left < 0) _left = 0;
-							if (_top < 0) _top = 0;
-							if (_right > $(window).width())
-								_left = $(window).width() - drag_w;
-							if (_left > $(window).width() - drag_w)
-								_left = $(window).width() - drag_w;
-							if (_bottom > $(document).height())
-								_top = $(document).height() - drag_h;
-							if (_top > $(document).height() - drag_h)
-								_top = $(document).height() - drag_h;
+								if (_left < 0) _left = 0;
+								if (_top < 0) _top = 0;
+								if (_right > $(window).width())
+									_left = $(window).width() - drag_w;
+								if (_left > $(window).width() - drag_w)
+									_left = $(window).width() - drag_w;
+								if (_bottom > $(document).height())
+									_top = $(document).height() - drag_h;
+								if (_top > $(document).height() - drag_h)
+									_top = $(document).height() - drag_h;
 
-							$('.ftbk-feedback-draggable').offset({
-								top:	_top,
-								left:	_left
-							}).on("mouseup", function() {
-								$(this).removeClass('ftbk-feedback-draggable');
+								$('.ftbk-feedback-draggable').offset({
+									top:	_top,
+									left:	_left
+								}).on("mouseup", function() {
+									$(this).removeClass('ftbk-feedback-draggable');
+								});
 							});
+							e.preventDefault();
+						}).on('mouseup', function(){
+							$(this).removeClass('ftbk-feedback-draggable');
+							$(this).parents().off('mousemove mousedown');
 						});
-						e.preventDefault();
-					}).on('mouseup', function(){
-						$(this).removeClass('ftbk-feedback-draggable');
-						$(this).parents().off('mousemove mousedown');
-					});
+					}
 				}
 
 				var ctx = $('#ftbk-feedback-canvas')[0].getContext('2d');
@@ -164,194 +172,62 @@
 					post.html = $('html').html();
 				}
 
-				$(document).on('mousedown', '#ftbk-feedback-canvas', function(e) {
-					if (canDraw) {
-
-						rect.startX = e.pageX - $(this).offset().left;
-						rect.startY = e.pageY - $(this).offset().top;
-						rect.w = 0;
-						rect.h = 0;
-						drag = true;
-					}
-				});
-
-				$(document).on('mouseup', function(){
-					if (canDraw) {
-						drag = false;
-
-						var dtop	= rect.startY,
-							dleft	= rect.startX,
-							dwidth	= rect.w,
-							dheight	= rect.h;
-							dtype	= 'highlight';
-
-						if (dwidth == 0 || dheight == 0) return;
-
-						if (dwidth < 0) {
-							dleft 	+= dwidth;
-							dwidth 	*= -1;
-						}
-						if (dheight < 0) {
-							dtop 	+= dheight;
-							dheight *= -1;
-						}
-
-						if (dtop + dheight > $(document).height())
-							dheight = $(document).height() - dtop;
-						if (dleft + dwidth > $(document).width())
-							dwidth = $(document).width() - dleft;
-
-						if (highlight == 0)
-							dtype = 'blackout';
-
-						$('#ftbk-feedback-helpers').append('<div class="ftbk-feedback-helper" data-type="' + dtype + '" data-time="' + Date.now() + '" style="position:absolute;top:' + dtop + 'px;left:' + dleft + 'px;width:' + dwidth + 'px;height:' + dheight + 'px;z-index:30000;"></div>');
-
-						redraw(ctx);
-						rect.w = 0;
-					}
-
-				});
-
-				$(document).on('mousemove', function(e) {
-					if (canDraw && drag) {
-						$('#ftbk-feedback-highlighter').css('cursor', 'default');
-
-						rect.w = (e.pageX - $('#ftbk-feedback-canvas').offset().left) - rect.startX;
-						rect.h = (e.pageY - $('#ftbk-feedback-canvas').offset().top) - rect.startY;
-
-						ctx.clearRect(0, 0, $('#ftbk-feedback-canvas').width(), $('#ftbk-feedback-canvas').height());
-						ctx.fillStyle = 'rgba(102,102,102,0.5)';
-						ctx.fillRect(0, 0, $('#ftbk-feedback-canvas').width(), $('#ftbk-feedback-canvas').height());
-						$('.ftbk-feedback-helper').each(function() {
-							if ($(this).attr('data-type') == 'highlight')
-								drawlines(ctx, parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
-						});
-						if (highlight==1) {
-							drawlines(ctx, rect.startX, rect.startY, rect.w, rect.h);
-							ctx.clearRect(rect.startX, rect.startY, rect.w, rect.h);
-						}
-						$('.ftbk-feedback-helper').each(function() {
-							if ($(this).attr('data-type') == 'highlight')
-								ctx.clearRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
-						});
-						$('.ftbk-feedback-helper').each(function() {
-							if ($(this).attr('data-type') == 'blackout') {
-								ctx.fillStyle = 'rgba(0,0,0,1)';
-								ctx.fillRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height())
-							}
-						});
-						if (highlight == 0) {
-							ctx.fillStyle = 'rgba(0,0,0,0.5)';
-							ctx.fillRect(rect.startX, rect.startY, rect.w, rect.h);
-						}
-					}
-				});
-
-				if (settings.highlightElement) {
-					var highlighted = [],
-						tmpHighlighted = [],
-						hidx = 0;
-
-					$(document).on('mousemove click', '#ftbk-feedback-canvas',function(e) {
+				if (fullScreen) {
+					$(document).on('mousedown', '#ftbk-feedback-canvas', function(e) {
 						if (canDraw) {
-							redraw(ctx);
-							tmpHighlighted = [];
 
-							$('#ftbk-feedback-canvas').css('cursor', 'crosshair');
-
-							$('* :not(body,script,iframe,div,section,.ftbk-feedback-btn,#ftbk-feedback-module *)').each(function(){
-								if ($(this).attr('data-highlighted') === 'true')
-									return;
-
-								if (e.pageX > $(this).offset().left && e.pageX < $(this).offset().left + $(this).width() && e.pageY > $(this).offset().top + parseInt($(this).css('padding-top'), 10) && e.pageY < $(this).offset().top + $(this).height() + parseInt($(this).css('padding-top'), 10)) {
-										tmpHighlighted.push($(this));
-								}
-							});
-
-							var $toHighlight = tmpHighlighted[tmpHighlighted.length - 1];
-
-							if ($toHighlight && !drag) {
-								$('#ftbk-feedback-canvas').css('cursor', 'pointer');
-
-								var _x = $toHighlight.offset().left - 2,
-									_y = $toHighlight.offset().top - 2,
-									_w = $toHighlight.width() + parseInt($toHighlight.css('padding-left'), 10) + parseInt($toHighlight.css('padding-right'), 10) + 6,
-									_h = $toHighlight.height() + parseInt($toHighlight.css('padding-top'), 10) + parseInt($toHighlight.css('padding-bottom'), 10) + 6;
-
-								if (highlight == 1) {
-									drawlines(ctx, _x, _y, _w, _h);
-									ctx.clearRect(_x, _y, _w, _h);
-									dtype = 'highlight';
-								}
-
-								$('.ftbk-feedback-helper').each(function() {
-									if ($(this).attr('data-type') == 'highlight')
-										ctx.clearRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
-								});
-
-								if (highlight == 0) {
-									dtype = 'blackout';
-									ctx.fillStyle = 'rgba(0,0,0,0.5)';
-									ctx.fillRect(_x, _y, _w, _h);
-								}
-
-								$('.ftbk-feedback-helper').each(function() {
-									if ($(this).attr('data-type') == 'blackout') {
-										ctx.fillStyle = 'rgba(0,0,0,1)';
-										ctx.fillRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
-									}
-								});
-
-								if (e.type == 'click' && e.pageX == rect.startX && e.pageY == rect.startY) {
-									$('#ftbk-feedback-helpers').append('<div class="ftbk-feedback-helper" data-highlight-id="' + hidx + '" data-type="' + dtype + '" data-time="' + Date.now() + '" style="position:absolute;top:' + _y + 'px;left:' + _x + 'px;width:' + _w + 'px;height:' + _h + 'px;z-index:30000;"></div>');
-									highlighted.push(hidx);
-									++hidx;
-									redraw(ctx);
-								}
-							}
+							rect.startX = e.pageX - $(this).offset().left;
+							rect.startY = e.pageY - $(this).offset().top;
+							rect.w = 0;
+							rect.h = 0;
+							drag = true;
 						}
 					});
-				}
 
-				$(document).on('mouseleave', 'body,#ftbk-feedback-canvas', function() {
-					redraw(ctx);
-				});
+					$(document).on('mouseup', function(){
+						if (canDraw) {
+							drag = false;
 
-				$(document).on('mouseenter', '.ftbk-feedback-helper', function() {
-					redraw(ctx);
-				});
+							var dtop	= rect.startY,
+								dleft	= rect.startX,
+								dwidth	= rect.w,
+								dheight	= rect.h;
+								dtype	= 'highlight';
 
-				$(document).on('click', '#ftbk-feedback-welcome-next', function() {
-					if ($('#ftbk-feedback-note').val().length > 0) {
-						canDraw = true;
-						$('#ftbk-feedback-canvas').css('cursor', 'crosshair');
-						$('#ftbk-feedback-helpers').show();
-						$('#ftbk-feedback-welcome').hide();
-						$('#ftbk-feedback-highlighter').show();
-					}
-					else {
-						$('#ftbk-feedback-welcome-error').show();
-					}
-				});
+							if (dwidth == 0 || dheight == 0) return;
 
-				$(document).on('mouseenter mouseleave', '.ftbk-feedback-helper', function(e) {
-					if (drag)
-						return;
+							if (dwidth < 0) {
+								dleft 	+= dwidth;
+								dwidth 	*= -1;
+							}
+							if (dheight < 0) {
+								dtop 	+= dheight;
+								dheight *= -1;
+							}
 
-					rect.w = 0;
-					rect.h = 0;
+							if (dtop + dheight > $(document).height())
+								dheight = $(document).height() - dtop;
+							if (dleft + dwidth > $(document).width())
+								dwidth = $(document).width() - dleft;
 
-					if (e.type === 'mouseenter') {
-						$(this).css('z-index', '30001');
-						$(this).append('<div class="ftbk-feedback-helper-inner" style="width:' + ($(this).width() - 2) + 'px;height:' + ($(this).height() - 2) + 'px;position:absolute;margin:1px;"></div>');
-						$(this).append('<div id="ftbk-feedback-close"></div>');
-						$(this).find('#ftbk-feedback-close').css({
-							'top' 	: -1 * ($(this).find('#ftbk-feedback-close').height() / 2) + 'px',
-							'left' 	: $(this).width() - ($(this).find('#ftbk-feedback-close').width() / 2) + 'px'
-						});
+							if (highlight == 0)
+								dtype = 'blackout';
 
-						if ($(this).attr('data-type') == 'blackout') {
-							/* redraw white */
+							$('#ftbk-feedback-helpers').append('<div class="ftbk-feedback-helper" data-type="' + dtype + '" data-time="' + Date.now() + '" style="position:absolute;top:' + dtop + 'px;left:' + dleft + 'px;width:' + dwidth + 'px;height:' + dheight + 'px;z-index:30000;"></div>');
+
+							redraw(ctx);
+							rect.w = 0;
+						}
+
+					});
+
+					$(document).on('mousemove', function(e) {
+						if (canDraw && drag) {
+							$('#ftbk-feedback-highlighter').css('cursor', 'default');
+
+							rect.w = (e.pageX - $('#ftbk-feedback-canvas').offset().left) - rect.startX;
+							rect.h = (e.pageY - $('#ftbk-feedback-canvas').offset().top) - rect.startY;
+
 							ctx.clearRect(0, 0, $('#ftbk-feedback-canvas').width(), $('#ftbk-feedback-canvas').height());
 							ctx.fillStyle = 'rgba(102,102,102,0.5)';
 							ctx.fillRect(0, 0, $('#ftbk-feedback-canvas').width(), $('#ftbk-feedback-canvas').height());
@@ -359,36 +235,207 @@
 								if ($(this).attr('data-type') == 'highlight')
 									drawlines(ctx, parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
 							});
+							if (highlight==1) {
+								drawlines(ctx, rect.startX, rect.startY, rect.w, rect.h);
+								ctx.clearRect(rect.startX, rect.startY, rect.w, rect.h);
+							}
 							$('.ftbk-feedback-helper').each(function() {
 								if ($(this).attr('data-type') == 'highlight')
 									ctx.clearRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
 							});
-
-							ctx.clearRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height())
-							ctx.fillStyle = 'rgba(0,0,0,0.75)';
-							ctx.fillRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
-
-							ignore = $(this).attr('data-time');
-
-							/* redraw black */
 							$('.ftbk-feedback-helper').each(function() {
-								if ($(this).attr('data-time') == ignore)
-									return true;
 								if ($(this).attr('data-type') == 'blackout') {
 									ctx.fillStyle = 'rgba(0,0,0,1)';
 									ctx.fillRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height())
 								}
 							});
+							if (highlight == 0) {
+								ctx.fillStyle = 'rgba(0,0,0,0.5)';
+								ctx.fillRect(rect.startX, rect.startY, rect.w, rect.h);
+							}
 						}
+					});
+
+					if (settings.highlightElement) {
+						var highlighted = [],
+							tmpHighlighted = [],
+							hidx = 0;
+
+						$(document).on('mousemove click', '#ftbk-feedback-canvas',function(e) {
+							if (canDraw) {
+								redraw(ctx);
+								tmpHighlighted = [];
+
+								$('#ftbk-feedback-canvas').css('cursor', 'crosshair');
+
+								$('* :not(body,script,iframe,div,section,.ftbk-feedback-btn,#ftbk-feedback-module *)').each(function(){
+									if ($(this).attr('data-highlighted') === 'true')
+										return;
+
+									if (e.pageX > $(this).offset().left && e.pageX < $(this).offset().left + $(this).width() && e.pageY > $(this).offset().top + parseInt($(this).css('padding-top'), 10) && e.pageY < $(this).offset().top + $(this).height() + parseInt($(this).css('padding-top'), 10)) {
+											tmpHighlighted.push($(this));
+									}
+								});
+
+								var $toHighlight = tmpHighlighted[tmpHighlighted.length - 1];
+
+								if ($toHighlight && !drag) {
+									$('#ftbk-feedback-canvas').css('cursor', 'pointer');
+
+									var _x = $toHighlight.offset().left - 2,
+										_y = $toHighlight.offset().top - 2,
+										_w = $toHighlight.width() + parseInt($toHighlight.css('padding-left'), 10) + parseInt($toHighlight.css('padding-right'), 10) + 6,
+										_h = $toHighlight.height() + parseInt($toHighlight.css('padding-top'), 10) + parseInt($toHighlight.css('padding-bottom'), 10) + 6;
+
+									if (highlight == 1) {
+										drawlines(ctx, _x, _y, _w, _h);
+										ctx.clearRect(_x, _y, _w, _h);
+										dtype = 'highlight';
+									}
+
+									$('.ftbk-feedback-helper').each(function() {
+										if ($(this).attr('data-type') == 'highlight')
+											ctx.clearRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
+									});
+
+									if (highlight == 0) {
+										dtype = 'blackout';
+										ctx.fillStyle = 'rgba(0,0,0,0.5)';
+										ctx.fillRect(_x, _y, _w, _h);
+									}
+
+									$('.ftbk-feedback-helper').each(function() {
+										if ($(this).attr('data-type') == 'blackout') {
+											ctx.fillStyle = 'rgba(0,0,0,1)';
+											ctx.fillRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
+										}
+									});
+
+									if (e.type == 'click' && e.pageX == rect.startX && e.pageY == rect.startY) {
+										$('#ftbk-feedback-helpers').append('<div class="ftbk-feedback-helper" data-highlight-id="' + hidx + '" data-type="' + dtype + '" data-time="' + Date.now() + '" style="position:absolute;top:' + _y + 'px;left:' + _x + 'px;width:' + _w + 'px;height:' + _h + 'px;z-index:30000;"></div>');
+										highlighted.push(hidx);
+										++hidx;
+										redraw(ctx);
+									}
+								}
+							}
+						});
 					}
-					else {
-						$(this).css('z-index','30000');
-						$(this).children().remove();
-						if ($(this).attr('data-type') == 'blackout') {
-							redraw(ctx);
+
+					$(document).on('mouseleave', 'body,#ftbk-feedback-canvas', function() {
+						redraw(ctx);
+					});
+
+					$(document).on('mouseenter', '.ftbk-feedback-helper', function() {
+						redraw(ctx);
+					});
+
+
+					$(document).on('click', '#ftbk-feedback-welcome-next', function() {
+						if ($('#ftbk-feedback-note').val().length > 0) {
+							canDraw = true;
+							$('#ftbk-feedback-canvas').css('cursor', 'crosshair');
+							$('#ftbk-feedback-helpers').show();
+							$('#ftbk-feedback-welcome').hide();
+							$('#ftbk-feedback-highlighter').show();
 						}
-					}
-				});
+						else {
+							$('#ftbk-feedback-welcome-error').show();
+						}
+					});
+
+					$(document).on('mouseenter mouseleave', '.ftbk-feedback-helper', function(e) {
+						if (drag)
+							return;
+
+						rect.w = 0;
+						rect.h = 0;
+
+						if (e.type === 'mouseenter') {
+							$(this).css('z-index', '30001');
+							$(this).append('<div class="ftbk-feedback-helper-inner" style="width:' + ($(this).width() - 2) + 'px;height:' + ($(this).height() - 2) + 'px;position:absolute;margin:1px;"></div>');
+							$(this).append('<div id="ftbk-feedback-close"></div>');
+							$(this).find('#ftbk-feedback-close').css({
+								'top' 	: -1 * ($(this).find('#ftbk-feedback-close').height() / 2) + 'px',
+								'left' 	: $(this).width() - ($(this).find('#ftbk-feedback-close').width() / 2) + 'px'
+							});
+
+							if ($(this).attr('data-type') == 'blackout') {
+								/* redraw white */
+								ctx.clearRect(0, 0, $('#ftbk-feedback-canvas').width(), $('#ftbk-feedback-canvas').height());
+								ctx.fillStyle = 'rgba(102,102,102,0.5)';
+								ctx.fillRect(0, 0, $('#ftbk-feedback-canvas').width(), $('#ftbk-feedback-canvas').height());
+								$('.ftbk-feedback-helper').each(function() {
+									if ($(this).attr('data-type') == 'highlight')
+										drawlines(ctx, parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
+								});
+								$('.ftbk-feedback-helper').each(function() {
+									if ($(this).attr('data-type') == 'highlight')
+										ctx.clearRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
+								});
+
+								ctx.clearRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height())
+								ctx.fillStyle = 'rgba(0,0,0,0.75)';
+								ctx.fillRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height());
+
+								ignore = $(this).attr('data-time');
+
+								/* redraw black */
+								$('.ftbk-feedback-helper').each(function() {
+									if ($(this).attr('data-time') == ignore)
+										return true;
+									if ($(this).attr('data-type') == 'blackout') {
+										ctx.fillStyle = 'rgba(0,0,0,1)';
+										ctx.fillRect(parseInt($(this).css('left'), 10), parseInt($(this).css('top'), 10), $(this).width(), $(this).height())
+									}
+								});
+							}
+						}
+						else {
+							$(this).css('z-index','30000');
+							$(this).children().remove();
+							if ($(this).attr('data-type') == 'blackout') {
+								redraw(ctx);
+							}
+						}
+					});
+
+					$(document).on('selectstart dragstart', document, function(e) {
+						e.preventDefault();
+					});
+
+					$(document).on('click', '#ftbk-feedback-highlighter-back', function() {
+						canDraw = false;
+						$('#ftbk-feedback-canvas').css('cursor', 'default');
+						$('#ftbk-feedback-helpers').hide();
+						$('#ftbk-feedback-highlighter').hide();
+						$('#ftbk-feedback-welcome-error').hide();
+						$('#ftbk-feedback-welcome').show();
+					});
+
+					$(document).on('click', '#ftbk-feedback-highlighter-next', function() {
+						$('#ftbk-feedback-overview-back').text('Back');
+						screenshot(true);
+					});
+
+					$(document).on('click', '#ftbk-feedback-overview-back', function(e) {
+						canDraw = true;
+						$('#ftbk-feedback-canvas').css('cursor', 'crosshair');
+						$('#ftbk-feedback-overview').hide();
+						$('#ftbk-feedback-helpers').show();
+						$('#ftbk-feedback-highlighter').show();
+						$('#ftbk-feedback-overview-error').hide();
+					});
+				}
+				else {
+					// for mobile, go directly to overview
+					$('#ftbk-feedback-overview-back').text('Cancel');
+					screenshot(false);
+
+					$(document).on('click', '#ftbk-feedback-overview-back', function(e) {
+						close();
+					});
+				}
 
 				$(document).on('click', '#ftbk-feedback-close', function() {
 					if (settings.highlightElement && $(this).parent().attr('data-highlight-id'))
@@ -411,28 +458,20 @@
 						close();
 				});
 
-				$(document).on('selectstart dragstart', document, function(e) {
-					e.preventDefault();
-				});
-
-				$(document).on('click', '#ftbk-feedback-highlighter-back', function() {
+				function screenshot(shading) {
 					canDraw = false;
-					$('#ftbk-feedback-canvas').css('cursor', 'default');
-					$('#ftbk-feedback-helpers').hide();
-					$('#ftbk-feedback-highlighter').hide();
-					$('#ftbk-feedback-welcome-error').hide();
-					$('#ftbk-feedback-welcome').show();
-				});
 
-				$(document).on('click', '#ftbk-feedback-highlighter-next', function() {
-					canDraw = false;
 					$('#ftbk-feedback-canvas').css('cursor', 'default');
 					var sy = $(document).scrollTop(),
 						dh = $(window).height();
 					$('#ftbk-feedback-helpers').hide();
 					$('#ftbk-feedback-highlighter').hide();
 					if (!settings.screenshotStroke) {
-						redraw(ctx, false);
+						redraw(ctx, false, !shading);
+					} else {
+						if (!shading) {
+							redraw(ctx, true, true);
+						}
 					}
 					html2canvas($('body'), {
 						onrendered: function(canvas) {
@@ -465,16 +504,7 @@
 						proxy: settings.proxy,
 						letterRendering: settings.letterRendering
 					});
-				});
-
-				$(document).on('click', '#ftbk-feedback-overview-back', function(e) {
-					canDraw = true;
-					$('#ftbk-feedback-canvas').css('cursor', 'crosshair');
-					$('#ftbk-feedback-overview').hide();
-					$('#ftbk-feedback-helpers').show();
-					$('#ftbk-feedback-highlighter').show();
-					$('#ftbk-feedback-overview-error').hide();
-				});
+				}
 
 				$(document).on('keyup', '#ftbk-feedback-note-tmp,#ftbk-feedback-overview-note', function(e) {
 					var tx;
@@ -550,10 +580,15 @@
 			settings.onClose.call(this);
 		}
 
-		function redraw(ctx, border) {
+		function redraw(ctx, border, noshading) {
 			border = typeof border !== 'undefined' ? border : true;
+			noshading = typeof border !== 'undefined' ? noshading : false;
 			ctx.clearRect(0, 0, $('#ftbk-feedback-canvas').width(), $('#ftbk-feedback-canvas').height());
-			ctx.fillStyle = 'rgba(102,102,102,0.5)';
+			if (noshading) {
+				ctx.fillStyle = 'transparent';
+			} else {
+				ctx.fillStyle = 'rgba(102,102,102,0.5)';
+			}
 			ctx.fillRect(0, 0, $('#ftbk-feedback-canvas').width(), $('#ftbk-feedback-canvas').height());
 			$('.ftbk-feedback-helper').each(function() {
 				if ($(this).attr('data-type') == 'highlight')

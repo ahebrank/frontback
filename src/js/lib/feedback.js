@@ -90,7 +90,7 @@
 
 				if(settings.isDraggable) {
 					$('#ftbk-feedback-highlighter').on('mousedown', function(e) {
-						var $d = $(this).addClass('feedback-draggable'),
+						var $d = $(this).addClass('ftbk-feedback-draggable'),
 							drag_h 	= $d.outerHeight(),
 							drag_w 	= $d.outerWidth(),
 							pos_y 	= $d.offset().top + drag_h - e.pageY,
@@ -116,12 +116,12 @@
 								top:	_top,
 								left:	_left
 							}).on("mouseup", function() {
-								$(this).removeClass('feedback-draggable');
+								$(this).removeClass('ftbk-feedback-draggable');
 							});
 						});
 						e.preventDefault();
 					}).on('mouseup', function(){
-						$(this).removeClass('feedback-draggable');
+						$(this).removeClass('ftbk-feedback-draggable');
 						$(this).parents().off('mousemove mousedown');
 					});
 				}
@@ -263,7 +263,7 @@
 
 							$('#ftbk-feedback-canvas').css('cursor', 'crosshair');
 
-							$('* :not(body,script,iframe,div,section,.feedback-btn,#ftbk-feedback-module *)').each(function(){
+							$('* :not(body,script,iframe,div,section,.ftbk-feedback-btn,#ftbk-feedback-module *)').each(function(){
 								if ($(this).attr('data-highlighted') === 'true')
 									return;
 

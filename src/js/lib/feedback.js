@@ -41,6 +41,12 @@
 			highlightElement:		true,
 			initialBox:				false,
 	}, options);
+
+		// flask/wsgi routing is picky -- POST URL must have a trailing slash
+		if (settings.ajaxURL.slice(-1) != '/') {
+			settings.ajaxURL += '/';
+		}
+
 		var supportedBrowser = !!window.HTMLCanvasElement;
 		var isFeedbackButtonNative = settings.feedbackButton == '.ftbk-feedback-btn';
 		if (supportedBrowser) {

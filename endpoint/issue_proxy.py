@@ -21,13 +21,10 @@ def create_app(config):
         print "Error opening repos file %s -- check file exists and is valid json" % config
         raise
 
-    @app.route('/', methods=['GET', 'POST'])
+    @app.route("/", methods=['GET', 'POST'])
     def index():
-        resp = jsonify(status="OK")
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-
         if request.method == "GET":
-            return resp
+            return set_resp({'status': 'OK'})
         elif request.method == "POST":
             # Store the IP address of the requester
             payload = request.get_json(force = True)
@@ -88,9 +85,7 @@ def create_app(config):
                     success = gl.create_issue(project_id, title, body, assignee_id)
                     iid = success.get('iid')
                     if iid:
-                        resp = jsonify(**success)
-                        resp.headers['Access-Control-Allow-Origin'] = '*'
-                        return resp
+                        return set_resp(success)
 
                     # issue couldn't be created
                     abort(404)
@@ -105,16 +100,16 @@ def create_app(config):
 
     @app.errorhandler(404)
     def error404(e):
-        return fail({'status': 'page not found'}, 404)
+        return set_resp({'status': 'page not found'}, 404)
 
     @app.errorhandler(403)
     def error403(e):
-        return fail({'status': 'no authorization'}, 403)  
+        return set_resp({'status': 'no authorization'}, 403)  
 
     return app
 
-def fail(msg, status):
-    resp = jsonify(msg)
+def set_resp(msg, status = 200):
+    resp = jsonify(**msg)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp, status
 

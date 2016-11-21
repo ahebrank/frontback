@@ -14,7 +14,7 @@
 			var frontbackRepo = 'https://gitlab.com/newcity/test';
 			var frontbackPostURL = 'https://magicyeti.us/frontback';
 			var script = document.createElement('script');
-			script.src = frontbackPostURL + '/assets/js/frontback.js';
+			script.src = frontbackPostURL + '/assets/js/frontback.js?v=' + Math.floor(Math.random()*1e6);
 			document.body.appendChild(script);
 		</script>
 	</body>

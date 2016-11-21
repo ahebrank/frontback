@@ -43,3 +43,9 @@ The nginx/uwsgi/flash configuration is not trivial, but see config files in the 
 
 `gulp` builds styles and scripts and puts up a test page at `http://localhost:3000`.  See `test/index.html` to modify the plugin configuration.
 
+You can run the flask endpoint locally with:
+
+```bash
+cd endpoint
+python issue_proxy.py -c repos.json -p 9000
+```

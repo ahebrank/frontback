@@ -307,12 +307,14 @@ $prefix: "ftbk-";
 ##{$prefix}feedback-overview-screenshot {
 	display: none;
 	float: right;
+	max-width: 50%;
 	@media #{$fullscreen} {
 		display: block;
 	}
 }
 .#{$prefix}feedback-screenshot {
-	max-width: 396px;
+	width: 396px;
+	max-width: 100%;
 	padding: 1px;
 	border: 1px solid $color_silver_chalice_approx;
 }

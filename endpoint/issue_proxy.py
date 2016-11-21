@@ -13,8 +13,9 @@ from email.utils import parseaddr
 
 repos = {}
 
-def create_app(config):
+def create_app(config, debug=False):
     app = Flask(__name__)
+    app.debug = debug
     try:
         repos = json.loads(io.open(config, 'r').read())
     except:

@@ -25,7 +25,7 @@ def create_app(config, debug=False):
     @app.route("/", methods=['GET', 'POST'])
     def index():
         if request.method == "GET":
-            return set_resp({'status': 'OK'})
+            abort(404)
         elif request.method == "POST":
             # Store the IP address of the requester
             payload = request.get_json(force = True)
@@ -89,10 +89,13 @@ def create_app(config, debug=False):
                         return set_resp(success)
 
                     # issue couldn't be created
-                    abort(404)
+                    abort(500)
 
-            # no private token
-            abort(403)
+                # no private token
+                abort(403)
+
+            # no repo
+            abort(400)
 
     # static assets
     @app.route('/assets/<path:path>')
@@ -105,7 +108,16 @@ def create_app(config, debug=False):
 
     @app.errorhandler(403)
     def error403(e):
-        return set_resp({'status': 'no authorization'}, 403)  
+        return set_resp({'status': 'no authorization'}, 403)
+
+    @app.errorhandler(400)
+    def error400(e):
+        return set_resp({'status': 'bad request'}, 400)  
+
+    @app.errorhandler(500)
+    def error500(e):
+        return set_resp({'status': 'error while creating issue'}, 500)  
+
 
     return app
 

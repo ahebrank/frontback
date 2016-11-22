@@ -28,16 +28,7 @@ $font: Arial, sans-serif;
 // MQ
 $fullscreen: screen and (min-width: 641px);
 
-$prefix: "ftbk-";
-
 //@extend-elements
-%error {
-	display: none;
-	color: $color_coral_red_approx;
-	float: right;
-	margin-right: 30px;
-	font-size: 13px;
-}
 
 %submit_modal {
 	top: 50%;
@@ -56,7 +47,7 @@ $prefix: "ftbk-";
 	z-index: 40000;
 	background: $white;
 	border: 1px solid $black_33_3;
-	padding: 30px 42px;
+	padding: 15px 20px;
 	width: 100%;
 	border: 1px solid $black_33_3;
 	outline: 0;
@@ -72,17 +63,34 @@ $prefix: "ftbk-";
 	}
 }
 
+%text-reset {
+	font-family: Arial, sans-serif;
+	color: black;
+	font-size: 14px;
+}
+
+%error {
+	display: none;
+	color: $color_coral_red_approx;
+	margin-right: 30px;
+	font-size: 13px;
+	@media #{$fullscreen} {
+		float: right;
+	}
+}
+
 %input {
+	@extend %text-reset;
 	outline: none;
 	border: 1px solid $gray;
 	width: 100%;
+	padding: 5px;
 	@media #{$fullscreen} {
 		width: 314px;
 	}
 }
 
-
-.#{$prefix}feedback-btn {
+.ftbk-feedback-btn {
 	font-size: 14px;
 	position: fixed;
 	bottom: -3px;
@@ -100,34 +108,44 @@ $prefix: "ftbk-";
 		right: 60px;
 	}
 }
-##{$prefix}feedback-module {
+
+
+
+#ftbk-feedback-module {
 	p {
+		@extend %text-reset;
 		font-size: 13px;
 	}
 	h3 {
-		font-weight: bold;
+		@extend %text-reset;
+		font-weight: normal;
 		font-size: 15px;
 		margin: 8px 0;
 	}
 }
-##{$prefix}feedback-note-tmp {
+.ftbk-feedback-logo {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-size: 18px;
+}
+
+#ftbk-feedback-note-tmp {
+	resize: none;
 	width: 444px;
 	height: auto;
 	min-height: 90px;
 	outline: none;
 	padding: 4px;
-	resize: none;
 	&:focus {
 		border: 1px solid $color_fountain_blue_approx;
 	}
 }
-##{$prefix}feedback-overview-note {
+#ftbk-feedback-overview-note {
 	resize: none;
-	padding: 4px;
-	height: 90px;
+	height: 120px;
 	outline: none;
 	border: 1px solid $gray;
 	width: 100%;
+	padding: 5px;
 	&:focus {
 		border: 1px solid $color_fountain_blue_approx;
 	}
@@ -135,24 +153,19 @@ $prefix: "ftbk-";
 		width: 314px;
 	}
 }
-##{$prefix}feedback-overview-title {
+#ftbk-feedback-overview-title,
+#ftbk-feedback-email {
 	@extend %input;
 	&:focus {
 		border: 1px solid $color_fountain_blue_approx;
 	}
 }
-##{$prefix}feedback-email {
-	@extend %input;
-	&:focus {
-		border: 1px solid $color_fountain_blue_approx;
-	}
-}
-##{$prefix}feedback-canvas {
+#ftbk-feedback-canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
 }
-##{$prefix}feedback-welcome {
+#ftbk-feedback-welcome {
 	top: 30%;
 	left: 50%;
 	margin-left: -270px;
@@ -160,15 +173,10 @@ $prefix: "ftbk-";
 	position: fixed;
 	@extend %modal;
 }
-.#{$prefix}feedback-logo {
-	width: 34px;
-	margin-bottom: 16px;
-	font-size: 16px;
-	font-weight: normal;
-	line-height: 32px;
-	height: 32px;
-}
-.#{$prefix}feedback-next-btn {
+.ftbk-feedback-next-btn,
+.ftbk-feedback-back-btn,
+.ftbk-feedback-submit-btn,
+.ftbk-feedback-close-btn {
 	width: 72px;
 	height: 29px;
 	line-height: 27px;
@@ -176,42 +184,21 @@ $prefix: "ftbk-";
 	font-size: 13px;
 	padding: 0 8px;
 }
-.#{$prefix}feedback-back-btn {
-	width: 72px;
-	height: 29px;
-	line-height: 27px;
-	float: right;
-	font-size: 13px;
-	padding: 0 8px;
+.ftbk-feedback-back-btn {
 	margin-right: 20px;
 }
-.#{$prefix}feedback-submit-btn {
-	width: 72px;
-	height: 29px;
-	line-height: 27px;
-	float: right;
-	font-size: 13px;
-	padding: 0 8px;
-}
-.#{$prefix}feedback-close-btn {
-	width: 72px;
-	height: 29px;
-	line-height: 27px;
-	float: right;
-	font-size: 13px;
-	padding: 0 8px;
-}
-.#{$prefix}feedback-helper {
+
+.ftbk-feedback-helper {
 	background: rgba(0,0,0,0);
 	cursor: default;
 }
-##{$prefix}feedback-close {
+#ftbk-feedback-close {
 	cursor: pointer;
 	position: absolute;
 	width: 30px;
 	height: 30px;
 }
-.#{$prefix}feedback-wizard-close {
+.ftbk-feedback-wizard-close {
 	cursor: pointer;
 	position: absolute;
 	top: 2px;
@@ -223,20 +210,22 @@ $prefix: "ftbk-";
 		opacity: 1;
 	}
 }
-##{$prefix}feedback-welcome-error {
+#ftbk-feedback-welcome-error {
+	@extend %text-reset;
 	@extend %error;
 }
-##{$prefix}feedback-overview-error {
+#ftbk-feedback-overview-error {
+	@extend %text-reset;
 	@extend %error;
-	margin-top: 20px;
+	margin-top: 10px;
+	max-width: 50%;	
 }
-##{$prefix}feedback-highlighter {
+#ftbk-feedback-highlighter {
 	display: none;
 	bottom: 100px;
 	right: 100px;
 	position: fixed;
 	width: 540px;
-	height: 195px;
 	@extend %modal;
 	label {
 		float: left;
@@ -249,7 +238,7 @@ $prefix: "ftbk-";
 		}
 	}
 }
-##{$prefix}feedback-overview {
+#ftbk-feedback-overview {
 	display: none;
 	top: 50%;
 	left: 50%;
@@ -260,15 +249,12 @@ $prefix: "ftbk-";
 	@extend %modal;
 	max-width: 100% !important;
 }
-##{$prefix}feedback-submit-error {
+#ftbk-feedback-submit-error,
+#ftbk-feedback-submit-success {
 	@extend %submit_modal;
 	@extend %modal;
 }
-##{$prefix}feedback-submit-success {
-	@extend %submit_modal;
-	@extend %modal;
-}
-.#{$prefix}feedback-btn-gray {
+.ftbk-feedback-btn-gray {
 	text-align: center;
 	cursor: pointer;
 	border: 1px solid $black_10;
@@ -282,7 +268,7 @@ $prefix: "ftbk-";
 		background-image: linear-gradient(to bottom,$color_desert_storm_approx,$seashell);
 	}
 }
-.#{$prefix}feedback-btn-blue {
+.ftbk-feedback-btn-blue {
 	text-align: center;
 	cursor: pointer;
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
@@ -291,20 +277,20 @@ $prefix: "ftbk-";
 	border: 1px solid $color_cerulean_blue_approx;
 	color: $white;
 }
-.#{$prefix}feedback-buttons {
+.ftbk-feedback-buttons {
 	float: right;
-	margin-top: 20px;
+	margin-top: 10px;
 	clear: both;
 }
-.#{$prefix}feedback-additional {
+.ftbk-feedback-additional {
 	margin-bottom: 20px!important;
 }
-##{$prefix}feedback-overview-description {
+#ftbk-feedback-overview-description {
 	@media #{$fullscreen} {
 		float: left;
 	}
 }
-##{$prefix}feedback-overview-screenshot {
+#ftbk-feedback-overview-screenshot {
 	display: none;
 	float: right;
 	max-width: 50%;
@@ -312,35 +298,23 @@ $prefix: "ftbk-";
 		display: block;
 	}
 }
-.#{$prefix}feedback-screenshot {
+.ftbk-feedback-screenshot {
 	width: 396px;
 	max-width: 100%;
 	padding: 1px;
 	border: 1px solid $color_silver_chalice_approx;
 }
-##{$prefix}feedback-browser-info {
+#ftbk-feedback-browser-info, 
+#ftbk-feedback-page-info, 
+#ftbk-feedback-page-structure,
+#ftbk-feedback-additional-none {
 	margin-top: 16px;
 	display: none;
 }
-##{$prefix}feedback-page-info {
-	margin-top: 16px;
-	display: none;
-}
-##{$prefix}feedback-page-structure {
-	margin-top: 16px;
-	display: none;
-}
-##{$prefix}feedback-additional-none {
-	margin-top: 16px;
-	display: none;
-}
-.#{$prefix}feedback {
-	font-family: $font;
-}
-.#{$prefix}feedback-helper[data-type="highlight"] > .#{$prefix}feedback-helper-inner {
+.ftbk-feedback-helper[data-type="highlight"] > .ftbk-feedback-helper-inner {
 	background: $color_blue_ribbon_10_approx;
 }
-##{$prefix}feedback-overview-description-text span {
+#ftbk-feedback-overview-description-text span {
 	font-size: 14px;
 	margin: 8px 0;
 	color: $color_storm_dust_approx;

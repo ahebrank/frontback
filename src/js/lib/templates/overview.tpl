@@ -20,8 +20,8 @@
 	</div>
 
 	<div class="ftbk-feedback-buttons">
-		<button id="ftbk-feedback-submit" class="ftbk-feedback-submit-btn feedback-btn-blue">Submit</button>
-		<button id="ftbk-feedback-overview-back" class="ftbk-feedback-back-btn feedback-btn-gray">Back</button>
+		<button id="ftbk-feedback-submit" class="ftbk-feedback-submit-btn ftbk-feedback-btn-blue">Submit</button>
+		<button id="ftbk-feedback-overview-back" class="ftbk-feedback-back-btn ftbk-feedback-btn-gray">Back</button>
 	</div>
 	
 	<div id="ftbk-feedback-overview-error">Please enter an email and a title/description.</div>

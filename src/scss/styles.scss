@@ -90,6 +90,24 @@ $fullscreen: screen and (min-width: 641px);
 	}
 }
 
+// general resets
+#ftbk-feedback-module {
+	button {
+		margin: 0;
+		@extend %text-reset;
+	}
+	p {
+		@extend %text-reset;
+		font-size: 13px;
+	}
+	h3 {
+		@extend %text-reset;
+		font-weight: normal;
+		font-size: 15px;
+		margin: 8px 0;
+	}
+}
+
 .ftbk-feedback-btn {
 	margin: 0;
 	@extend %text-reset;
@@ -108,23 +126,6 @@ $fullscreen: screen and (min-width: 641px);
 
 	@media #{$fullscreen} {
 		right: 60px;
-	}
-}
-
-#ftbk-feedback-module {
-	button {
-		margin: 0;
-		@extend %text-reset;
-	}
-	p {
-		@extend %text-reset;
-		font-size: 13px;
-	}
-	h3 {
-		@extend %text-reset;
-		font-weight: normal;
-		font-size: 15px;
-		margin: 8px 0;
 	}
 }
 

@@ -116,215 +116,217 @@ $fullscreen: screen and (min-width: 641px);
 		margin: 0;
 		@extend %text-reset;
 	}
-
-	#ftbk-feedback-module {
-		p {
-			@extend %text-reset;
-			font-size: 13px;
-		}
-		h3 {
-			@extend %text-reset;
-			font-weight: normal;
-			font-size: 15px;
-			margin: 8px 0;
-		}
-	}
-	.ftbk-feedback-logo {
-		font-family: "Trebuchet MS", Helvetica, sans-serif;
-		font-size: 18px;
-	}
-
-	#ftbk-feedback-note-tmp {
-		resize: none;
-		width: 444px;
-		height: auto;
-		min-height: 90px;
-		outline: none;
-		padding: 4px;
-		&:focus {
-			border: 1px solid $color_fountain_blue_approx;
-		}
-	}
-	#ftbk-feedback-overview-note {
-		resize: none;
-		height: 120px;
-		outline: none;
-		border: 1px solid $gray;
-		width: 100%;
-		padding: 5px;
-		&:focus {
-			border: 1px solid $color_fountain_blue_approx;
-		}
-		@media #{$fullscreen} {
-			width: 314px;
-		}
-	}
-	#ftbk-feedback-overview-title,
-	#ftbk-feedback-email {
-		@extend %input;
-		&:focus {
-			border: 1px solid $color_fountain_blue_approx;
-		}
-	}
-	#ftbk-feedback-canvas {
-		position: absolute;
-		top: 0;
-		left: 0;
-	}
-	#ftbk-feedback-welcome {
-		top: 30%;
-		left: 50%;
-		margin-left: -270px;
-		display: block;
-		position: fixed;
-		@extend %modal;
-	}
-	.ftbk-feedback-next-btn,
-	.ftbk-feedback-back-btn,
-	.ftbk-feedback-submit-btn,
-	.ftbk-feedback-close-btn {
-		width: 72px;
-		height: 29px;
-		line-height: 27px;
-		float: right;
+	p {
+		@extend %text-reset;
 		font-size: 13px;
-		padding: 0 8px;
 	}
-	.ftbk-feedback-back-btn {
-		margin-right: 20px;
-	}
-
-	.ftbk-feedback-helper {
-		background: rgba(0,0,0,0);
-		cursor: default;
-	}
-	#ftbk-feedback-close {
-		cursor: pointer;
-		position: absolute;
-		width: 30px;
-		height: 30px;
-	}
-	.ftbk-feedback-wizard-close {
-		cursor: pointer;
-		position: absolute;
-		top: 2px;
-		right: 2px;
-		width: 30px;
-		height: 30px;
-		opacity: 0.65;
-		&:hover {
-			opacity: 1;
-		}
-	}
-	#ftbk-feedback-welcome-error {
+	h3 {
 		@extend %text-reset;
-		@extend %error;
-	}
-	#ftbk-feedback-overview-error {
-		@extend %text-reset;
-		@extend %error;
-		margin-top: 10px;
-		max-width: 50%;
-	}
-	#ftbk-feedback-highlighter {
-		display: none;
-		bottom: 100px;
-		right: 100px;
-		position: fixed;
-		width: 540px;
-		@extend %modal;
-		label {
-			float: left;
-			margin: 0 0 0 10px;
-			line-height: 30px;
-			font-size: 13px;
-			font-weight: normal;
-			&.lower {
-				margin-top: 10px;
-			}
-		}
-	}
-	#ftbk-feedback-overview {
-		display: none;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		position: fixed;
-		width: 840px!important;
-		height: auto;
-		@extend %modal;
-		max-width: 100% !important;
-	}
-	#ftbk-feedback-submit-error,
-	#ftbk-feedback-submit-success {
-		@extend %submit_modal;
-		@extend %modal;
-	}
-	.ftbk-feedback-btn-gray {
-		text-align: center;
-		cursor: pointer;
-		border: 1px solid $black_10;
-		color: $color_tundora_approx;
-		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-		border-radius: 2px;
-		background-image: linear-gradient(to bottom,$color_wild_sand_approx,$seashell);
-		&:hover {
-			color: $color_mine_shaft_approx;
-			border: 1px solid $color_pumice_approx;
-			background-image: linear-gradient(to bottom,$color_desert_storm_approx,$seashell);
-		}
-	}
-	.ftbk-feedback-btn-blue {
-		text-align: center;
-		cursor: pointer;
-		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
-		border-radius: 2px;
-		background-image: linear-gradient(to bottom,$color_cornflower_blue_approx,$color_royal_blue_approx);
-		border: 1px solid $color_cerulean_blue_approx;
-		color: $white;
-	}
-	.ftbk-feedback-buttons {
-		float: right;
-		margin-top: 10px;
-		clear: both;
-	}
-	.ftbk-feedback-additional {
-		margin-bottom: 20px!important;
-	}
-	#ftbk-feedback-overview-description {
-		@media #{$fullscreen} {
-			float: left;
-		}
-	}
-	#ftbk-feedback-overview-screenshot {
-		display: none;
-		float: right;
-		max-width: 50%;
-		@media #{$fullscreen} {
-			display: block;
-		}
-	}
-	.ftbk-feedback-screenshot {
-		width: 396px;
-		max-width: 100%;
-		padding: 1px;
-		border: 1px solid $color_silver_chalice_approx;
-	}
-	#ftbk-feedback-browser-info,
-	#ftbk-feedback-page-info,
-	#ftbk-feedback-page-structure,
-	#ftbk-feedback-additional-none {
-		margin-top: 16px;
-		display: none;
-	}
-	.ftbk-feedback-helper[data-type="highlight"] > .ftbk-feedback-helper-inner {
-		background: $color_blue_ribbon_10_approx;
-	}
-	#ftbk-feedback-overview-description-text span {
-		font-size: 14px;
+		font-weight: normal;
+		font-size: 15px;
 		margin: 8px 0;
-		color: $color_storm_dust_approx;
-		padding-left: 10px;
-		margin-left: 26px;
 	}
+}
+
+.ftbk-feedback-btn-gray {
+	text-align: center;
+	cursor: pointer;
+	border: 1px solid $black_10;
+	color: $color_tundora_approx;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 2px;
+	background-image: linear-gradient(to bottom,$color_wild_sand_approx,$seashell);
+	&:hover {
+		color: $color_mine_shaft_approx;
+		border: 1px solid $color_pumice_approx;
+		background-image: linear-gradient(to bottom,$color_desert_storm_approx,$seashell);
+	}
+}
+
+.ftbk-feedback-btn-blue {
+	text-align: center;
+	cursor: pointer;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 2px;
+	background-image: linear-gradient(to bottom,$color_cornflower_blue_approx,$color_royal_blue_approx);
+	border: 1px solid $color_cerulean_blue_approx;
+	color: $white;
+}
+
+.ftbk-feedback-buttons {
+	float: right;
+	margin-top: 10px;
+	clear: both;
+}
+
+.ftbk-feedback-logo {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-size: 18px;
+}
+
+#ftbk-feedback-note-tmp {
+	resize: none;
+	width: 444px;
+	height: auto;
+	min-height: 90px;
+	outline: none;
+	padding: 4px;
+	&:focus {
+		border: 1px solid $color_fountain_blue_approx;
+	}
+}
+#ftbk-feedback-overview-note {
+	resize: none;
+	height: 120px;
+	outline: none;
+	border: 1px solid $gray;
+	width: 100%;
+	padding: 5px;
+	&:focus {
+		border: 1px solid $color_fountain_blue_approx;
+	}
+	@media #{$fullscreen} {
+		width: 314px;
+	}
+}
+#ftbk-feedback-overview-title,
+#ftbk-feedback-email {
+	@extend %input;
+	&:focus {
+		border: 1px solid $color_fountain_blue_approx;
+	}
+}
+#ftbk-feedback-canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+#ftbk-feedback-welcome {
+	top: 30%;
+	left: 50%;
+	margin-left: -270px;
+	display: block;
+	position: fixed;
+	@extend %modal;
+}
+.ftbk-feedback-next-btn,
+.ftbk-feedback-back-btn,
+.ftbk-feedback-submit-btn,
+.ftbk-feedback-close-btn {
+	width: 72px;
+	height: 29px;
+	line-height: 27px;
+	float: right;
+	font-size: 13px;
+	padding: 0 8px;
+}
+.ftbk-feedback-back-btn {
+	margin-right: 20px;
+}
+
+.ftbk-feedback-helper {
+	background: rgba(0,0,0,0);
+	cursor: default;
+}
+#ftbk-feedback-close {
+	cursor: pointer;
+	position: absolute;
+	width: 30px;
+	height: 30px;
+}
+.ftbk-feedback-wizard-close {
+	cursor: pointer;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	width: 30px;
+	height: 30px;
+	opacity: 0.65;
+	&:hover {
+		opacity: 1;
+	}
+}
+#ftbk-feedback-welcome-error {
+	@extend %text-reset;
+	@extend %error;
+}
+#ftbk-feedback-overview-error {
+	@extend %text-reset;
+	@extend %error;
+	margin-top: 10px;
+	max-width: 50%;
+}
+#ftbk-feedback-highlighter {
+	display: none;
+	bottom: 100px;
+	right: 100px;
+	position: fixed;
+	width: 540px;
+	@extend %modal;
+	label {
+		float: left;
+		margin: 0 0 0 10px;
+		line-height: 30px;
+		font-size: 13px;
+		font-weight: normal;
+		&.lower {
+			margin-top: 10px;
+		}
+	}
+}
+#ftbk-feedback-overview {
+	display: none;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	position: fixed;
+	width: 840px!important;
+	height: auto;
+	@extend %modal;
+	max-width: 100% !important;
+}
+#ftbk-feedback-submit-error,
+#ftbk-feedback-submit-success {
+	@extend %submit_modal;
+	@extend %modal;
+}
+
+.ftbk-feedback-additional {
+	margin-bottom: 20px!important;
+}
+#ftbk-feedback-overview-description {
+	@media #{$fullscreen} {
+		float: left;
+	}
+}
+#ftbk-feedback-overview-screenshot {
+	display: none;
+	float: right;
+	max-width: 50%;
+	@media #{$fullscreen} {
+		display: block;
+	}
+}
+.ftbk-feedback-screenshot {
+	width: 396px;
+	max-width: 100%;
+	padding: 1px;
+	border: 1px solid $color_silver_chalice_approx;
+}
+#ftbk-feedback-browser-info,
+#ftbk-feedback-page-info,
+#ftbk-feedback-page-structure,
+#ftbk-feedback-additional-none {
+	margin-top: 16px;
+	display: none;
+}
+.ftbk-feedback-helper[data-type="highlight"] > .ftbk-feedback-helper-inner {
+	background: $color_blue_ribbon_10_approx;
+}
+#ftbk-feedback-overview-description-text span {
+	font-size: 14px;
+	margin: 8px 0;
+	color: $color_storm_dust_approx;
+	padding-left: 10px;
+	margin-left: 26px;
 }

@@ -90,33 +90,32 @@ $fullscreen: screen and (min-width: 641px);
 	}
 }
 
-#ftbk-feedback-module {
+.ftbk-feedback-btn {
+	margin: 0;
+	@extend %text-reset;
+	font-size: 14px;
+	position: fixed;
+	bottom: -3px;
+	right: 10px;
+	width: auto;
+	padding: 10px;
+	outline: 0;
+	//Instead of the line below you could use @include background-clip($clip)
+	background-clip: padding-box;
+	//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+	box-shadow: 0 4px 16px $black_20;
+	z-index: 40000;
 
+	@media #{$fullscreen} {
+		right: 60px;
+	}
+}
+
+#ftbk-feedback-module {
 	button {
 		margin: 0;
 		@extend %text-reset;
 	}
-
-	.ftbk-feedback-btn {
-		font-size: 14px;
-		position: fixed;
-		bottom: -3px;
-		right: 10px;
-		width: auto;
-		padding: 10px;
-		outline: 0;
-		//Instead of the line below you could use @include background-clip($clip)
-		background-clip: padding-box;
-		//Instead of the line below you could use @include box-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
-		box-shadow: 0 4px 16px $black_20;
-		z-index: 40000;
-
-		@media #{$fullscreen} {
-			right: 60px;
-		}
-	}
-
-
 
 	#ftbk-feedback-module {
 		p {
@@ -225,7 +224,7 @@ $fullscreen: screen and (min-width: 641px);
 		@extend %text-reset;
 		@extend %error;
 		margin-top: 10px;
-		max-width: 50%;	
+		max-width: 50%;
 	}
 	#ftbk-feedback-highlighter {
 		display: none;
@@ -311,8 +310,8 @@ $fullscreen: screen and (min-width: 641px);
 		padding: 1px;
 		border: 1px solid $color_silver_chalice_approx;
 	}
-	#ftbk-feedback-browser-info, 
-	#ftbk-feedback-page-info, 
+	#ftbk-feedback-browser-info,
+	#ftbk-feedback-page-info,
 	#ftbk-feedback-page-structure,
 	#ftbk-feedback-additional-none {
 		margin-top: 16px;

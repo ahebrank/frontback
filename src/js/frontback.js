@@ -1,6 +1,6 @@
 global.jQuery = require('../bower_components/jquery/dist/jquery.js');
 require('../bower_components/promise-polyfill/promise.js');
-global.html2canvas = require('../bower_components/html2canvas/dist/html2canvas.js');
+global.html2canvas = require('../bower_components/html2canvas/dist/html2canvas.svg.js');
 require('./lib/feedback.js');
 
 function addstylesheet(url) {

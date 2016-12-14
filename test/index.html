@@ -11,8 +11,9 @@
 		</div>
 
 		<script>
+			var host = window.location.hostname;
 			var frontbackRepo = 'https://gitlab.com/newcity/test';
-			var frontbackPostURL = 'http://localhost:9000';
+			var frontbackPostURL = 'http://' + host + ':9000';
 			var script = document.createElement('script');
 			script.src = frontbackPostURL + '/assets/js/frontback.js';
 			document.body.appendChild(script);

@@ -1,101 +1,108 @@
-_html2canvas.Renderer = function(parseQueue, options){
+var log = require('./log');
 
-  // http://www.w3.org/TR/CSS21/zindex.html
-  function createRenderQueue(parseQueue) {
-    var queue = [],
-    rootContext;
+function Renderer(width, height, images, options, document) {
+    this.width = width;
+    this.height = height;
+    this.images = images;
+    this.options = options;
+    this.document = document;
+}
 
-    rootContext = (function buildStackingContext(rootNode) {
-      var rootContext = {};
-      function insert(context, node, specialParent) {
-        var zi = (node.zIndex.zindex === 'auto') ? 0 : Number(node.zIndex.zindex),
-        contextForChildren = context, // the stacking context for children
-        isPositioned = node.zIndex.isPositioned,
-        isFloated = node.zIndex.isFloated,
-        stub = {node: node},
-        childrenDest = specialParent; // where children without z-index should be pushed into
+Renderer.prototype.renderImage = function(container, bounds, borderData, imageContainer) {
+    var paddingLeft = container.cssInt('paddingLeft'),
+        paddingTop = container.cssInt('paddingTop'),
+        paddingRight = container.cssInt('paddingRight'),
+        paddingBottom = container.cssInt('paddingBottom'),
+        borders = borderData.borders;
 
-        if (node.zIndex.ownStacking) {
-          // '!' comes before numbers in sorted array
-          contextForChildren = stub.context = { '!': [{node:node, children: []}]};
-          childrenDest = undefined;
-        } else if (isPositioned || isFloated) {
-          childrenDest = stub.children = [];
-        }
-
-        if (zi === 0 && specialParent) {
-          specialParent.push(stub);
-        } else {
-          if (!context[zi]) { context[zi] = []; }
-          context[zi].push(stub);
-        }
-
-        node.zIndex.children.forEach(function(childNode) {
-          insert(contextForChildren, childNode, childrenDest);
-        });
-      }
-      insert(rootContext, rootNode);
-      return rootContext;
-    })(parseQueue);
-
-    function sortZ(context) {
-      Object.keys(context).sort().forEach(function(zi) {
-        var nonPositioned = [],
-        floated = [],
-        positioned = [],
-        list = [];
-
-        // positioned after static
-        context[zi].forEach(function(v) {
-          if (v.node.zIndex.isPositioned || v.node.zIndex.opacity < 1) {
-            // http://www.w3.org/TR/css3-color/#transparency
-            // non-positioned element with opactiy < 1 should be stacked as if it were a positioned element with ‘z-index: 0’ and ‘opacity: 1’.
-            positioned.push(v);
-          } else if (v.node.zIndex.isFloated) {
-            floated.push(v);
-          } else {
-            nonPositioned.push(v);
-          }
-        });
-
-        (function walk(arr) {
-          arr.forEach(function(v) {
-            list.push(v);
-            if (v.children) { walk(v.children); }
-          });
-        })(nonPositioned.concat(floated, positioned));
-
-        list.forEach(function(v) {
-          if (v.context) {
-            sortZ(v.context);
-          } else {
-            queue.push(v.node);
-          }
-        });
-      });
-    }
-
-    sortZ(rootContext);
-
-    return queue;
-  }
-
-  function getRenderer(rendererName) {
-    var renderer;
-
-    if (typeof options.renderer === "string" && _html2canvas.Renderer[rendererName] !== undefined) {
-      renderer = _html2canvas.Renderer[rendererName](options);
-    } else if (typeof rendererName === "function") {
-      renderer = rendererName(options);
-    } else {
-      throw new Error("Unknown renderer");
-    }
-
-    if ( typeof renderer !== "function" ) {
-      throw new Error("Invalid renderer defined");
-    }
-    return renderer;
-  }
-
-  return getRenderer(options.renderer)(parseQueue, options, document, createRenderQueue(parseQueue.stack), _html2canvas);
+    var width = bounds.width - (borders[1].width + borders[3].width + paddingLeft + paddingRight);
+    var height = bounds.height - (borders[0].width + borders[2].width + paddingTop + paddingBottom);
+    this.drawImage(
+        imageContainer,
+        0,
+        0,
+        imageContainer.image.width || width,
+        imageContainer.image.height || height,
+        bounds.left + paddingLeft + borders[3].width,
+        bounds.top + paddingTop + borders[0].width,
+        width,
+        height
+    );
 };
+
+Renderer.prototype.renderBackground = function(container, bounds, borderData) {
+    if (bounds.height > 0 && bounds.width > 0) {
+        this.renderBackgroundColor(container, bounds);
+        this.renderBackgroundImage(container, bounds, borderData);
+    }
+};
+
+Renderer.prototype.renderBackgroundColor = function(container, bounds) {
+    var color = container.color("backgroundColor");
+    if (!color.isTransparent()) {
+        this.rectangle(bounds.left, bounds.top, bounds.width, bounds.height, color);
+    }
+};
+
+Renderer.prototype.renderBorders = function(borders) {
+    borders.forEach(this.renderBorder, this);
+};
+
+Renderer.prototype.renderBorder = function(data) {
+    if (!data.color.isTransparent() && data.args !== null) {
+        this.drawShape(data.args, data.color);
+    }
+};
+
+Renderer.prototype.renderBackgroundImage = function(container, bounds, borderData) {
+    var backgroundImages = container.parseBackgroundImages();
+    backgroundImages.reverse().forEach(function(backgroundImage, index, arr) {
+        switch(backgroundImage.method) {
+        case "url":
+            var image = this.images.get(backgroundImage.args[0]);
+            if (image) {
+                this.renderBackgroundRepeating(container, bounds, image, arr.length - (index+1), borderData);
+            } else {
+                log("Error loading background-image", backgroundImage.args[0]);
+            }
+            break;
+        case "linear-gradient":
+        case "gradient":
+            var gradientImage = this.images.get(backgroundImage.value);
+            if (gradientImage) {
+                this.renderBackgroundGradient(gradientImage, bounds, borderData);
+            } else {
+                log("Error loading background-image", backgroundImage.args[0]);
+            }
+            break;
+        case "none":
+            break;
+        default:
+            log("Unknown background-image type", backgroundImage.args[0]);
+        }
+    }, this);
+};
+
+Renderer.prototype.renderBackgroundRepeating = function(container, bounds, imageContainer, index, borderData) {
+    var size = container.parseBackgroundSize(bounds, imageContainer.image, index);
+    var position = container.parseBackgroundPosition(bounds, imageContainer.image, index, size);
+    var repeat = container.parseBackgroundRepeat(index);
+    switch (repeat) {
+    case "repeat-x":
+    case "repeat no-repeat":
+        this.backgroundRepeatShape(imageContainer, position, size, bounds, bounds.left + borderData[3], bounds.top + position.top + borderData[0], 99999, size.height, borderData);
+        break;
+    case "repeat-y":
+    case "no-repeat repeat":
+        this.backgroundRepeatShape(imageContainer, position, size, bounds, bounds.left + position.left + borderData[3], bounds.top + borderData[0], size.width, 99999, borderData);
+        break;
+    case "no-repeat":
+        this.backgroundRepeatShape(imageContainer, position, size, bounds, bounds.left + position.left + borderData[3], bounds.top + position.top + borderData[0], size.width, size.height, borderData);
+        break;
+    default:
+        this.renderBackgroundRepeat(imageContainer, position, size, {top: bounds.top, left: bounds.left}, borderData[3], borderData[0]);
+        break;
+    }
+};
+
+module.exports = Renderer;

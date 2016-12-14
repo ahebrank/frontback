@@ -479,8 +479,7 @@
 							redraw(ctx, true, true);
 						}
 					}
-					html2canvas($('body'), {
-						onrendered: function(canvas) {
+					html2canvas(document.body).then(function(canvas) {
 							if (!settings.screenshotStroke) {
 								redraw(ctx);
 							}
@@ -506,10 +505,8 @@
 								close();
 								_canvas.remove();
 							}
-						},
-						proxy: settings.proxy,
-						letterRendering: settings.letterRendering
-					});
+						}
+					);
 				}
 
 				$(document).on('keyup', '#ftbk-feedback-note-tmp,#ftbk-feedback-overview-note', function(e) {

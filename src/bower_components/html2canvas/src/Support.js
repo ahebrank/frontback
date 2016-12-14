@@ -1,63 +1,51 @@
-_html2canvas.Util.Support = function (options, doc) {
+function Support(document) {
+    this.rangeBounds = this.testRangeBounds(document);
+    this.cors = this.testCORS();
+    this.svg = this.testSVG();
+}
 
-  function supportSVGRendering() {
-    var img = new Image(),
-    canvas = doc.createElement("canvas"),
-    ctx = (canvas.getContext === undefined) ? false : canvas.getContext("2d");
-    if (ctx === false) {
-      return false;
-    }
-    canvas.width = canvas.height = 10;
-    img.src = [
-    "data:image/svg+xml,",
-    "<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'>",
-    "<foreignObject width='10' height='10'>",
-    "<div xmlns='http://www.w3.org/1999/xhtml' style='width:10;height:10;'>",
-    "sup",
-    "</div>",
-    "</foreignObject>",
-    "</svg>"
-    ].join("");
-    try {
-      ctx.drawImage(img, 0, 0);
-      canvas.toDataURL();
-    } catch(e) {
-      return false;
-    }
-    _html2canvas.Util.log('html2canvas: Parse: SVG powered rendering available');
-    return true;
-  }
+Support.prototype.testRangeBounds = function(document) {
+    var range, testElement, rangeBounds, rangeHeight, support = false;
 
-  // Test whether we can use ranges to measure bounding boxes
-  // Opera doesn't provide valid bounds.height/bottom even though it supports the method.
+    if (document.createRange) {
+        range = document.createRange();
+        if (range.getBoundingClientRect) {
+            testElement = document.createElement('boundtest');
+            testElement.style.height = "123px";
+            testElement.style.display = "block";
+            document.body.appendChild(testElement);
 
-  function supportRangeBounds() {
-    var r, testElement, rangeBounds, rangeHeight, support = false;
+            range.selectNode(testElement);
+            rangeBounds = range.getBoundingClientRect();
+            rangeHeight = rangeBounds.height;
 
-    if (doc.createRange) {
-      r = doc.createRange();
-      if (r.getBoundingClientRect) {
-        testElement = doc.createElement('boundtest');
-        testElement.style.height = "123px";
-        testElement.style.display = "block";
-        doc.body.appendChild(testElement);
-
-        r.selectNode(testElement);
-        rangeBounds = r.getBoundingClientRect();
-        rangeHeight = rangeBounds.height;
-
-        if (rangeHeight === 123) {
-          support = true;
+            if (rangeHeight === 123) {
+                support = true;
+            }
+            document.body.removeChild(testElement);
         }
-        doc.body.removeChild(testElement);
-      }
     }
 
     return support;
-  }
-
-  return {
-    rangeBounds: supportRangeBounds(),
-    svgRendering: options.svgRendering && supportSVGRendering()
-  };
 };
+
+Support.prototype.testCORS = function() {
+    return typeof((new Image()).crossOrigin) !== "undefined";
+};
+
+Support.prototype.testSVG = function() {
+    var img = new Image();
+    var canvas = document.createElement("canvas");
+    var ctx =  canvas.getContext("2d");
+    img.src = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'></svg>";
+
+    try {
+        ctx.drawImage(img, 0, 0);
+        canvas.toDataURL();
+    } catch(e) {
+        return false;
+    }
+    return true;
+};
+
+module.exports = Support;

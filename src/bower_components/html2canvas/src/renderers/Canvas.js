@@ -1,128 +1,181 @@
-_html2canvas.Renderer.Canvas = function(options) {
-  options = options || {};
+var Renderer = require('../renderer');
+var LinearGradientContainer = require('../lineargradientcontainer');
+var log = require('../log');
 
-  var doc = document,
-  safeImages = [],
-  testCanvas = document.createElement("canvas"),
-  testctx = testCanvas.getContext("2d"),
-  Util = _html2canvas.Util,
-  canvas = options.canvas || doc.createElement('canvas');
-
-  function createShape(ctx, args) {
-    ctx.beginPath();
-    args.forEach(function(arg) {
-      ctx[arg.name].apply(ctx, arg['arguments']);
-    });
-    ctx.closePath();
-  }
-
-  function safeImage(item) {
-    if (safeImages.indexOf(item['arguments'][0].src ) === -1) {
-      testctx.drawImage(item['arguments'][0], 0, 0);
-      try {
-        testctx.getImageData(0, 0, 1, 1);
-      } catch(e) {
-        testCanvas = doc.createElement("canvas");
-        testctx = testCanvas.getContext("2d");
-        return false;
-      }
-      safeImages.push(item['arguments'][0].src);
+function CanvasRenderer(width, height) {
+    Renderer.apply(this, arguments);
+    this.canvas = this.options.canvas || this.document.createElement("canvas");
+    if (!this.options.canvas) {
+        this.canvas.width = width;
+        this.canvas.height = height;
     }
-    return true;
-  }
+    this.ctx = this.canvas.getContext("2d");
+    this.taintCtx = this.document.createElement("canvas").getContext("2d");
+    this.ctx.textBaseline = "bottom";
+    this.variables = {};
+    log("Initialized CanvasRenderer with size", width, "x", height);
+}
 
-  function renderItem(ctx, item) {
-    switch(item.type){
-      case "variable":
-        ctx[item.name] = item['arguments'];
-        break;
-      case "function":
-        switch(item.name) {
-          case "createPattern":
-            if (item['arguments'][0].width > 0 && item['arguments'][0].height > 0) {
-              try {
-                ctx.fillStyle = ctx.createPattern(item['arguments'][0], "repeat");
-              }
-              catch(e) {
-                Util.log("html2canvas: Renderer: Error creating pattern", e.message);
-              }
-            }
-            break;
-          case "drawShape":
-            createShape(ctx, item['arguments']);
-            break;
-          case "drawImage":
-            if (item['arguments'][8] > 0 && item['arguments'][7] > 0) {
-              if (!options.taintTest || (options.taintTest && safeImage(item))) {
-                ctx.drawImage.apply( ctx, item['arguments'] );
-              }
-            }
-            break;
-          default:
-            ctx[item.name].apply(ctx, item['arguments']);
-        }
-        break;
-    }
-  }
+CanvasRenderer.prototype = Object.create(Renderer.prototype);
 
-  return function(parsedData, options, document, queue, _html2canvas) {
-    var ctx = canvas.getContext("2d"),
-    newCanvas,
-    bounds,
-    fstyle,
-    zStack = parsedData.stack;
-
-    canvas.width = canvas.style.width =  options.width || zStack.ctx.width;
-    canvas.height = canvas.style.height = options.height || zStack.ctx.height;
-
-    fstyle = ctx.fillStyle;
-    ctx.fillStyle = (Util.isTransparent(zStack.backgroundColor) && options.background !== undefined) ? options.background : parsedData.backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = fstyle;
-
-    queue.forEach(function(storageContext) {
-      // set common settings for canvas
-      ctx.textBaseline = "bottom";
-      ctx.save();
-
-      if (storageContext.transform.matrix) {
-        ctx.translate(storageContext.transform.origin[0], storageContext.transform.origin[1]);
-        ctx.transform.apply(ctx, storageContext.transform.matrix);
-        ctx.translate(-storageContext.transform.origin[0], -storageContext.transform.origin[1]);
-      }
-
-      if (storageContext.clip){
-        ctx.beginPath();
-        ctx.rect(storageContext.clip.left, storageContext.clip.top, storageContext.clip.width, storageContext.clip.height);
-        ctx.clip();
-      }
-
-      if (storageContext.ctx.storage) {
-        storageContext.ctx.storage.forEach(function(item) {
-          renderItem(ctx, item);
-        });
-      }
-
-      ctx.restore();
-    });
-
-    Util.log("html2canvas: Renderer: Canvas renderer done - returning canvas obj");
-
-    if (options.elements.length === 1) {
-      if (typeof options.elements[0] === "object" && options.elements[0].nodeName !== "BODY") {
-        // crop image to the bounds of selected (single) element
-        bounds = _html2canvas.Util.Bounds(options.elements[0]);
-        newCanvas = document.createElement('canvas');
-        newCanvas.width = Math.ceil(bounds.width);
-        newCanvas.height = Math.ceil(bounds.height);
-        ctx = newCanvas.getContext("2d");
-
-        ctx.drawImage(canvas, bounds.left, bounds.top, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height);
-        canvas = null;
-        return newCanvas;
-      }
-    }
-
-    return canvas;
-  };
+CanvasRenderer.prototype.setFillStyle = function(fillStyle) {
+    this.ctx.fillStyle = typeof(fillStyle) === "object" && !!fillStyle.isColor ? fillStyle.toString() : fillStyle;
+    return this.ctx;
 };
+
+CanvasRenderer.prototype.rectangle = function(left, top, width, height, color) {
+    this.setFillStyle(color).fillRect(left, top, width, height);
+};
+
+CanvasRenderer.prototype.circle = function(left, top, size, color) {
+    this.setFillStyle(color);
+    this.ctx.beginPath();
+    this.ctx.arc(left + size / 2, top + size / 2, size / 2, 0, Math.PI*2, true);
+    this.ctx.closePath();
+    this.ctx.fill();
+};
+
+CanvasRenderer.prototype.circleStroke = function(left, top, size, color, stroke, strokeColor) {
+    this.circle(left, top, size, color);
+    this.ctx.strokeStyle = strokeColor.toString();
+    this.ctx.stroke();
+};
+
+CanvasRenderer.prototype.drawShape = function(shape, color) {
+    this.shape(shape);
+    this.setFillStyle(color).fill();
+};
+
+CanvasRenderer.prototype.taints = function(imageContainer) {
+    if (imageContainer.tainted === null) {
+        this.taintCtx.drawImage(imageContainer.image, 0, 0);
+        try {
+            this.taintCtx.getImageData(0, 0, 1, 1);
+            imageContainer.tainted = false;
+        } catch(e) {
+            this.taintCtx = document.createElement("canvas").getContext("2d");
+            imageContainer.tainted = true;
+        }
+    }
+
+    return imageContainer.tainted;
+};
+
+CanvasRenderer.prototype.drawImage = function(imageContainer, sx, sy, sw, sh, dx, dy, dw, dh) {
+    if (!this.taints(imageContainer) || this.options.allowTaint) {
+        this.ctx.drawImage(imageContainer.image, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
+};
+
+CanvasRenderer.prototype.clip = function(shapes, callback, context) {
+    this.ctx.save();
+    shapes.filter(hasEntries).forEach(function(shape) {
+        this.shape(shape).clip();
+    }, this);
+    callback.call(context);
+    this.ctx.restore();
+};
+
+CanvasRenderer.prototype.shape = function(shape) {
+    this.ctx.beginPath();
+    shape.forEach(function(point, index) {
+        if (point[0] === "rect") {
+            this.ctx.rect.apply(this.ctx, point.slice(1));
+        } else {
+            this.ctx[(index === 0) ? "moveTo" : point[0] + "To" ].apply(this.ctx, point.slice(1));
+        }
+    }, this);
+    this.ctx.closePath();
+    return this.ctx;
+};
+
+CanvasRenderer.prototype.font = function(color, style, variant, weight, size, family) {
+    this.setFillStyle(color).font = [style, variant, weight, size, family].join(" ").split(",")[0];
+};
+
+CanvasRenderer.prototype.fontShadow = function(color, offsetX, offsetY, blur) {
+    this.setVariable("shadowColor", color.toString())
+        .setVariable("shadowOffsetY", offsetX)
+        .setVariable("shadowOffsetX", offsetY)
+        .setVariable("shadowBlur", blur);
+};
+
+CanvasRenderer.prototype.clearShadow = function() {
+    this.setVariable("shadowColor", "rgba(0,0,0,0)");
+};
+
+CanvasRenderer.prototype.setOpacity = function(opacity) {
+    this.ctx.globalAlpha = opacity;
+};
+
+CanvasRenderer.prototype.setTransform = function(transform) {
+    this.ctx.translate(transform.origin[0], transform.origin[1]);
+    this.ctx.transform.apply(this.ctx, transform.matrix);
+    this.ctx.translate(-transform.origin[0], -transform.origin[1]);
+};
+
+CanvasRenderer.prototype.setVariable = function(property, value) {
+    if (this.variables[property] !== value) {
+        this.variables[property] = this.ctx[property] = value;
+    }
+
+    return this;
+};
+
+CanvasRenderer.prototype.text = function(text, left, bottom) {
+    this.ctx.fillText(text, left, bottom);
+};
+
+CanvasRenderer.prototype.backgroundRepeatShape = function(imageContainer, backgroundPosition, size, bounds, left, top, width, height, borderData) {
+    var shape = [
+        ["line", Math.round(left), Math.round(top)],
+        ["line", Math.round(left + width), Math.round(top)],
+        ["line", Math.round(left + width), Math.round(height + top)],
+        ["line", Math.round(left), Math.round(height + top)]
+    ];
+    this.clip([shape], function() {
+        this.renderBackgroundRepeat(imageContainer, backgroundPosition, size, bounds, borderData[3], borderData[0]);
+    }, this);
+};
+
+CanvasRenderer.prototype.renderBackgroundRepeat = function(imageContainer, backgroundPosition, size, bounds, borderLeft, borderTop) {
+    var offsetX = Math.round(bounds.left + backgroundPosition.left + borderLeft), offsetY = Math.round(bounds.top + backgroundPosition.top + borderTop);
+    this.setFillStyle(this.ctx.createPattern(this.resizeImage(imageContainer, size), "repeat"));
+    this.ctx.translate(offsetX, offsetY);
+    this.ctx.fill();
+    this.ctx.translate(-offsetX, -offsetY);
+};
+
+CanvasRenderer.prototype.renderBackgroundGradient = function(gradientImage, bounds) {
+    if (gradientImage instanceof LinearGradientContainer) {
+        var gradient = this.ctx.createLinearGradient(
+            bounds.left + bounds.width * gradientImage.x0,
+            bounds.top + bounds.height * gradientImage.y0,
+            bounds.left +  bounds.width * gradientImage.x1,
+            bounds.top +  bounds.height * gradientImage.y1);
+        gradientImage.colorStops.forEach(function(colorStop) {
+            gradient.addColorStop(colorStop.stop, colorStop.color.toString());
+        });
+        this.rectangle(bounds.left, bounds.top, bounds.width, bounds.height, gradient);
+    }
+};
+
+CanvasRenderer.prototype.resizeImage = function(imageContainer, size) {
+    var image = imageContainer.image;
+    if(image.width === size.width && image.height === size.height) {
+        return image;
+    }
+
+    var ctx, canvas = document.createElement('canvas');
+    canvas.width = size.width;
+    canvas.height = size.height;
+    ctx = canvas.getContext("2d");
+    ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, size.width, size.height );
+    return canvas;
+};
+
+function hasEntries(array) {
+    return array.length > 0;
+}
+
+module.exports = CanvasRenderer;

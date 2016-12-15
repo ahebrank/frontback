@@ -90,6 +90,7 @@
 					'height': h
 				};
 
+				$('html, body').addClass('ftbk-fixed');
 				$('#ftbk-feedback-module').css(moduleStyle);
 				$('#ftbk-feedback-canvas').attr(canvasAttr).css('z-index', '30000');
 
@@ -468,8 +469,7 @@
 					canDraw = false;
 
 					$('#ftbk-feedback-canvas').css('cursor', 'default');
-					var sy = $(document).scrollTop(),
-						dh = $(window).height();
+					var dh = $(window).height();
 					$('#ftbk-feedback-helpers').hide();
 					$('#ftbk-feedback-highlighter').hide();
 					if (!settings.screenshotStroke) {
@@ -483,15 +483,15 @@
 						proxy: settings.proxy,
 						letterRendering: settings.letterRendering
 					};
-					html2canvas(document.body, html2canvas_opts).then(function(canvas) {
+					html2canvas($('body'), html2canvas_opts).then(function(canvas) {
 							if (!settings.screenshotStroke) {
 								redraw(ctx);
 							}
+
 							_canvas = $('<canvas id="ftbk-feedback-canvas-tmp" width="'+ w +'" height="'+ dh +'"/>').hide().appendTo('body');
 							_ctx = _canvas.get(0).getContext('2d');
-							_ctx.drawImage(canvas, 0, sy, w, dh, 0, 0, w, dh);
+							_ctx.drawImage(canvas, 0, 0, w, dh, 0, 0, w, dh);
 							img = _canvas.get(0).toDataURL();
-							$(document).scrollTop(sy);
 							post.img = img;
 							settings.onScreenshotTaken(post.img);
 							if(settings.showDescriptionModal) {
@@ -583,6 +583,8 @@
 			$('[data-highlighted="true"]').removeAttr('data-highlight-id').removeAttr('data-highlighted');
 			$('#ftbk-feedback-module').remove();
 			$('.ftbk-feedback-btn').show();
+
+			$('html, body').removeClass('ftbk-fixed');
 
 			settings.onClose.call(this);
 		}

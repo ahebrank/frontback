@@ -108,6 +108,10 @@ $fullscreen: screen and (min-width: 641px);
 	}
 }
 
+.ftbk-fixed {
+	overflow: hidden;
+}
+
 .ftbk-feedback-btn {
 	margin: 0;
 	@extend %text-reset;
@@ -197,7 +201,8 @@ $fullscreen: screen and (min-width: 641px);
 		border: 1px solid $color_fountain_blue_approx;
 	}
 }
-#ftbk-feedback-canvas {
+#ftbk-feedback-canvas,
+#ftbk-feedback-canvas-tmp {
 	position: absolute;
 	top: 0;
 	left: 0;

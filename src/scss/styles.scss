@@ -109,7 +109,8 @@ $fullscreen: screen and (min-width: 641px);
 }
 
 .ftbk-fixed {
-	overflow: hidden;
+	overflow: hidden !important;
+	height: auto !important;
 }
 
 .ftbk-feedback-btn {

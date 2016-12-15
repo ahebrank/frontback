@@ -479,7 +479,11 @@
 							redraw(ctx, true, true);
 						}
 					}
-					html2canvas(document.body).then(function(canvas) {
+					var html2canvas_opts = {
+						proxy: settings.proxy,
+						letterRendering: settings.letterRendering
+					};
+					html2canvas(document.body, html2canvas_opts).then(function(canvas) {
 							if (!settings.screenshotStroke) {
 								redraw(ctx);
 							}

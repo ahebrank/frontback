@@ -1,13 +1,16 @@
-global.jQuery = require('../bower_components/jquery/dist/jquery.js');
+global.frontback = {};
+global.frontback.jQuery = require('../bower_components/jquery/dist/jquery.js');
 require('../bower_components/promise-polyfill/promise.js');
-global.fabric = require('../bower_components/fabric.js/dist/fabric.js');
-global.html2canvas = require('../bower_components/html2canvas/dist/html2canvas.js');
+if (!global.html2canvas) {
+  global.fabric = require('../bower_components/fabric.js/dist/fabric.js');
+  global.html2canvas = require('../bower_components/html2canvas/dist/html2canvas.js');
+}
 
 require('./lib/feedback.js');
 
 function addstylesheet(url) {
    var $link = '<link rel="stylesheet" type="text/css" href="' + url + '">';
-   jQuery('head').append($link);
+   frontback.jQuery('head').append($link);
 }
 
 if (!frontbackRepo) {
@@ -20,7 +23,7 @@ if (frontbackRepo && frontbackPostURL) {
 	css = frontbackPostURL + '/assets/css/styles.css';
 	addstylesheet(css);
 
-	jQuery.feedback({
+	frontback.jQuery.feedback({
 		repoID: frontbackRepo,
 	    ajaxURL: frontbackPostURL,
 	});

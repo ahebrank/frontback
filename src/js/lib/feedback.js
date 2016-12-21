@@ -635,4 +635,4 @@
 
 	};
 
-}(jQuery));
+}(frontback.jQuery));

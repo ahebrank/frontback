@@ -12,10 +12,12 @@ This leans heavily on:
 
 ```html
 <script>
-	var frontbackRepo = 'https://gitlab.com/newcity/test';
-	var frontbackPostURL = 'http://localhost:9000';
+	window.frontback = {
+		repo: 'https://gitlab.com/newcity/test',
+		postUrl: 'http://' + host + ':9000'
+	};
 	var script = document.createElement('script');
-	script.src = frontbackPostURL + '/assets/js/frontback.js';
+	script.src = frontback.postUrl + '/assets/js/frontback.js';
 	document.body.appendChild(script);
 </script>
 ```

@@ -39,21 +39,18 @@ In a place accessible to the endpoint proxy, add configuration:
 
 ### Start it up
 
-The nginx/uwsgi/flask configuration has a lot of pieces. The following skips over
-setting up a virtual environment and assume the flask app (installed in
-	`/usr/local/frontback/endpoint`) is proxied by Nginx via wsgi.
+The python wsgi web stack configuration has a lot of pieces in its newer incarnation.
+The following skips over setting up a virtual environment and assumes the flask app
+is installed in `/usr/local/frontback/endpoint`.
 
-#### Set up the wsgi application
+#### Newer way: Nginx uwsgi proxy
 
 1. Make sure `uwsgi` is installed (e.g., `apt-get install uwsgi`)
 2. Copy the upstart file to `/etc/init` (`cp /usr/local/frontback/endpoint/frontback.conf.upstart /etc/init/frontback.config`)
 3. Start it up (e.g., `service frontback start`)
 4. (optionally) Make it persistent (e.g., `initctl reload-configuration`)
-
-#### Set up the web proxy (with nginx)
-
-1. Make sure the uwsgi parameters are availble to nginx
-2. Add to a `server` block in nginx configuration:
+5. Make sure the uwsgi parameters are availble to nginx
+6. Add to a `server` block in nginx configuration:
 
 ```
 location /frontback {
@@ -64,6 +61,23 @@ location /frontback {
 ```
 
 See e.g., https://www.digitalocean.com/community/tutorials/how-to-deploy-python-wsgi-applications-using-uwsgi-web-server-with-nginx for more detail about setting up and proxying uwsgi applications.
+
+#### Older way: Apache2 with mod_wsgi
+
+1. Install mod_wsgi (e.g., `apt-get install libapache2-mod-wsgi`)
+2. Within an apache2 virtual host, add config like:
+
+```
+WSGIDaemonProcess frontback user=www-data group=www-data threads=5 home=
+/usr/local/frontback/endpoint
+WSGIScriptAlias / /usr/local/frontback/endpoint/wsgi.py
+
+<Directory /usr/local/frontback/endpoint>
+  	WSGIProcessGroup frontback
+  	WSGIApplicationGroup %{GLOBAL}
+		Require all granted
+</Directory>
+```
 
 
 ## Building and testing

@@ -46,7 +46,7 @@ setting up a virtual environment and assume the flask app (installed in
 #### Set up the wsgi application
 
 1. Make sure `uwsgi` is installed (e.g., `apt-get install uwsgi`)
-2. Copy the upstart file to `/etc/init` (`cp /usr/local/frontback/endpoint/frontback.conf.upstart /etc/init/frontback.confg`)
+2. Copy the upstart file to `/etc/init` (`cp /usr/local/frontback/endpoint/frontback.conf.upstart /etc/init/frontback.config`)
 3. Start it up (e.g., `service frontback start`)
 4. (optionally) Make it persistent (e.g., `initctl reload-configuration`)
 

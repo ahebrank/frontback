@@ -39,7 +39,32 @@ In a place accessible to the endpoint proxy, add configuration:
 
 ### Start it up
 
-The nginx/uwsgi/flash configuration is not trivial, but see config files in the `endpoint` directory.
+The nginx/uwsgi/flask configuration has a lot of pieces. The following skips over
+setting up a virtual environment and assume the flask app (installed in
+	`/usr/local/frontback/endpoint`) is proxied by Nginx via wsgi.
+
+#### Set up the wsgi application
+
+1. Make sure `uwsgi` is installed (e.g., `apt-get install uwsgi`)
+2. Copy the upstart file to `/etc/init` (`cp /usr/local/frontback/endpoint/frontback.conf.upstart /etc/init/frontback.confg`)
+3. Start it up (e.g., `service frontback start`)
+4. (optionally) Make it persistent (e.g., `initctl reload-configuration`)
+
+#### Set up the web proxy (with nginx)
+
+1. Make sure the uwsgi parameters are availble to nginx
+2. Add to a `server` block in nginx configuration:
+
+```
+location /frontback {
+   uwsgi_pass unix:/usr/local/frontback/endpoint/frontback.sock;
+   include /etc/nginx/uwsgi_params;
+   uwsgi_param UWSGI_SCRIPT /frontback;
+}
+```
+
+See e.g., https://www.digitalocean.com/community/tutorials/how-to-deploy-python-wsgi-applications-using-uwsgi-web-server-with-nginx for more detail about setting up and proxying uwsgi applications.
+
 
 ## Building and testing
 

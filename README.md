@@ -1,6 +1,6 @@
 # Frontback
 
-Pluggable front-end issue submission for VCS and issue boards.  A script allows end users to take screenshots of a problem, add a comment and automatic browser info, and submit it all as a Gitlab issue.
+Pluggable front-end issue submission for VCS and issue boards.  A script allows end users to take screenshots of a problem, add a comment and automatic browser info, and submit it all as an issue or card.
 
 This leans heavily on:
 - [ivoviz/feedback](https://github.com/ivoviz/feedback)
@@ -29,17 +29,21 @@ This leans heavily on:
 
 Where the first two variables define the homepage of the repository and the endpoint of the proxy.
 
-### Configure the repo at the endpoint
+### Configure the service targets at the endpoint
 
-In a place accessible to the endpoint proxy, add configuration.
+In a place accessible to the endpoint proxy, add configuration in a json array. Services may be combined in a single file and APIs are selected based on the homepage URL.
 
 ### Gitlab
+
+Find your Gitlab private token from https://gitlab.com/profile/personal_access_tokens (or similar for your hosted instance)
+
+Use the project homepage as a key:
 
 ```json
 {
     "https://gitlab.com/newcity/test": {
         "private_token": "GITLAB-PRIVATE-TOKEN",
-        "assignee_id": "@ahebrank"
+        "assignee_id": "ahebrank"
     },
 		...
 }
@@ -49,12 +53,14 @@ In a place accessible to the endpoint proxy, add configuration.
 
 Generate a Trello application key at https://trello.com/app-key and use that to generate an auth token from https://trello.com/1/connect?key=[key]&name=Frontback&response_type=token&scope=read,write
 
+Then use the trello board URL as the key:
+
 ```json
 {
 		"https://trello.com/b/S1QWR14x/api-test": {
 				"app_key": "APPLICATION_KEY",
 				"private_token": "PRIVATE_AUTH_TOKEN",
-				"assignee_id": "ahebrank@gmail.com"
+				"assignee_id": "ahebrank"
 		}
 }
 ```

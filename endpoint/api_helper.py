@@ -2,7 +2,7 @@ from apis.gitlab_api import GitlabApi
 from apis.trello_api import TrelloApi
 
 class Api:
-    def matchApiFromId(self, repoId):
+    def match_api_from_id(self, repoId):
         if "gitlab.com" in repoId:
             return GitlabApi
         if "trello.com" in repoId:

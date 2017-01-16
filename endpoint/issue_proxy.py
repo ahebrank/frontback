@@ -36,7 +36,7 @@ def create_app(config, debug=False):
             if repoConfig:
                 # get API based on repo identifier
                 api_helper = Api()
-                api = api_helper.matchApiFromId(repoID)
+                api = api_helper.match_api_from_id(repoID)
                 
                 app_key = repoConfig.get('app_key')
                 private_token = repoConfig.get('private_token')

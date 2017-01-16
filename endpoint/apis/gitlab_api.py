@@ -8,12 +8,14 @@ class GitlabApi:
     base_url = None
     homepage = None
     token = None
+    project_id = None
 
-    def __init__(self, homepage, token):
+    def __init__(self, homepage, token, app_key):
         self.token = token
         o = urlparse(homepage)
         self.base_url = o.scheme + "://" + o.netloc + "/api/v3"
         self.homepage = homepage
+        self.project_id = self.lookup_project_id()
 
     def get_url(self, endpoint):
         if '?' in endpoint:
@@ -59,34 +61,49 @@ class GitlabApi:
             return project['id']
         return None
 
-    def create_issue(self, project_id, title, body, assignee_id = None):
+    def create_issue(self, title, body, assignee_id = None):
         data = {
-            'id': project_id,
+            'id': self.project_id,
             'title': title,
             'description': body
         }
-        if (assignee_id):
+        if assignee_id:
             data['assignee_id'] = assignee_id
-        return self.post("/projects/{id}/issues".format(**data), data)
+        success = self.post("/projects/{id}/issues".format(**data), data)
+        iid = success.get('iid')
+        if iid:
+            return True
+        return False
 
-    def comment_on_issue(self, project_id, issue_id, comment):
+    def comment_on_issue(self, issue_id, comment):
         data = {
-            'id': project_id,
+            'id': self.project_id,
             'issue_id': issue_id,
             'body': comment
         }
         return self.post("/projects/{id}/issues/{issue_id}/notes".format(**data), data)
 
-    def upload_image(self, project_id, img):
+    def attach_image(self, img):
         prefix = "data:image/png;base64,"
         if not img.startswith(prefix):
             return False
         img = img[len(prefix):]
         file = binascii.a2b_base64(img)
         data = {
-            'id': project_id
+            'id': self.project_id
         }
-        return self.post("/projects/{id}/uploads".format(**data), data, file)
-
-    def append_body(self, line):
-        return "\n\n" + line
+        result = self.post("/projects/{id}/uploads".format(**data), data, file)
+        file_md = result.get('markdown')
+        if file_md:
+            return file_md
+        return False
+        
+    def get_username(self, raw_email, parsed_email):
+        if raw_email.startswith('@'):
+            return raw_email
+        elif parsed_email[1]:
+            if "@" in parsed_email[1]:
+                return "@" + gl.lookup_username(parsed_email[1])
+            else:
+                return "@" + raw_email
+        return False

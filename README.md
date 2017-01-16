@@ -1,10 +1,15 @@
 # Frontback
 
-Front-end issue submission for Gitlab.  A script allows end users to take screenshots of a problem, add a comment and automatic browser info, and submit it all as a Gitlab issue.
+Pluggable front-end issue submission for VCS and issue boards.  A script allows end users to take screenshots of a problem, add a comment and automatic browser info, and submit it all as a Gitlab issue.
 
 This leans heavily on:
 - [ivoviz/feedback](https://github.com/ivoviz/feedback)
 - [niklasvh/html2canvas](https://github.com/niklasvh/html2canvas)
+
+## Currently supporting
+
+- Gitlab
+- Trello
 
 ## Quickstart
 
@@ -26,14 +31,31 @@ Where the first two variables define the homepage of the repository and the endp
 
 ### Configure the repo at the endpoint
 
-In a place accessible to the endpoint proxy, add configuration:
+In a place accessible to the endpoint proxy, add configuration.
+
+### Gitlab
 
 ```json
 {
     "https://gitlab.com/newcity/test": {
         "private_token": "GITLAB-PRIVATE-TOKEN",
         "assignee_id": "@ahebrank"
-    }
+    },
+		...
+}
+```
+
+### Trello
+
+Generate a Trello application key at https://trello.com/app-key and use that to generate an auth token from https://trello.com/1/connect?key=[key]&name=Frontback&response_type=token&scope=read,write
+
+```json
+{
+		"https://trello.com/b/S1QWR14x/api-test": {
+				"app_key": "APPLICATION_KEY",
+				"private_token": "PRIVATE_AUTH_TOKEN",
+				"assignee_id": "ahebrank@gmail.com"
+		}
 }
 ```
 

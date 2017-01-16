@@ -8,7 +8,7 @@ import subprocess
 import requests
 from flask import Flask, request, abort, Response, jsonify, send_from_directory
 import argparse
-from gitlab_api import GitlabApi
+from api_helper import Api
 from email.utils import parseaddr
 
 repos = {}
@@ -33,17 +33,22 @@ def create_app(config, debug=False):
             # common for events
             repoID = payload.get('repoID')
             repoConfig = repos.get(repoID)
+            
             if repoConfig:
+                # get API based on repo identifier
+                api_helper = Api()
+                api = api_helper.matchApiFromId(repoID)
+                
+                app_key = repoConfig.get('app_key')
                 private_token = repoConfig.get('private_token')
                 assignee_id = repoConfig.get('assignee_id')
 
                 if private_token:
-                    gl = GitlabApi(repoID, private_token)
-                    project_id = gl.lookup_project_id()
+                    a = api(repoID, private_token, app_key)
 
                     # try to lookup a username
-                    if not assignee_id.isdigit():
-                        assignee_id = gl.lookup_user_id(assignee_id)
+                    if assignee_id and not assignee_id.isdigit():
+                        assignee_id = a.lookup_user_id(assignee_id)
 
                     title = payload.get('title')
                     body = payload.get('note')
@@ -54,39 +59,27 @@ def create_app(config, debug=False):
                     # attach the image
                     img = payload.get('img')
                     if img:
-                        file = gl.upload_image(project_id, img)
-                        if file:
-                            file_md = file.get('markdown')
-                            if file_md:
-                                body += gl.append_body(file_md)
+                        f = a.attach_image(img)
+                        # handle with a body attachment
+                        if f:
+                            body += api_helper.append_body(f)
 
                     # browser info
                     url = payload.get('url')
-                    body += gl.append_body('URL: ' + url)
+                    body += api_helper.append_body('URL: ' + url)
                     browser = payload.get('browser')
                     if browser:
-                        body += gl.append_body('Useragent: ' + browser.get('userAgent'))
+                        body += api_helper.append_body('Useragent: ' + browser.get('userAgent'))
 
                     email = payload.get('email')
                     if (email):
                         parsed_email = parseaddr(email)
-                        if email.startswith('@'):
-                            username = email
-                        elif parsed_email[1]:
-                            if "@" in parsed_email[1]:
-                                username = "@" + gl.lookup_username(parsed_email[1])
-                            else:
-                                username = "@" + email
-                        else:
-                            username = False
-
+                        username = a.get_username(email, parsed_email)
                         if username:
-                            body += gl.append_body('Submitted by ' + username)
+                            body += api_helper.append_body('Submitted by ' + username)
 
-                    success = gl.create_issue(project_id, title, body, assignee_id)
-                    iid = success.get('iid')
-                    if iid:
-                        return set_resp(success)
+                    if a.create_issue(title, body, assignee_id):
+                        return set_resp({'status': 'Issue created'})
 
                     # issue couldn't be created
                     abort(500)
@@ -112,11 +105,11 @@ def create_app(config, debug=False):
 
     @app.errorhandler(400)
     def error400(e):
-        return set_resp({'status': 'bad request'}, 400)  
+        return set_resp({'status': 'bad request'}, 400)
 
     @app.errorhandler(500)
     def error500(e):
-        return set_resp({'status': 'error while creating issue'}, 500)  
+        return set_resp({'status': 'error while creating issue'}, 500)
 
 
     return app

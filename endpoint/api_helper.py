@@ -12,3 +12,10 @@ class Api:
         
     def append_body(self, line):
         return "\n\n" + line
+        
+    def try_to_parse(self, email):
+        if email.startswith('@'):
+            return email
+        parsed = parseaddr(email)
+        if "@" in parsed[1]:
+            return parsed[1]

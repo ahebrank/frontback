@@ -3,7 +3,7 @@
 
 	<div id="ftbk-feedback-overview-description">
 		<div id="ftbk-feedback-email-text">
-			<h3>Username / Email</h3>
+			<h3>Your issue tracker username</h3>
 			<input type="text" name="feedback-email" id="ftbk-feedback-email">
 		</div>
 		<div id="ftbk-feedback-overview-title-text">

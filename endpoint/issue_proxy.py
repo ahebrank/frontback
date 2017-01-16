@@ -9,7 +9,6 @@ import requests
 from flask import Flask, request, abort, Response, jsonify, send_from_directory
 import argparse
 from api_helper import Api
-from email.utils import parseaddr
 
 repos = {}
 
@@ -72,13 +71,12 @@ def create_app(config, debug=False):
                         body += api_helper.append_body('Useragent: ' + browser.get('userAgent'))
 
                     email = payload.get('email')
-                    if (email):
-                        parsed_email = parseaddr(email)
-                        username = a.get_username(email, parsed_email)
-                        if username:
-                            body += api_helper.append_body('Submitted by ' + username)
+                    if email:
+                        submitter_id = a.lookup_user_id(email)
+                        if submitter_id:
+                            body += api_helper.append_body('Submitted by ' + email)
 
-                    if a.create_issue(title, body, assignee_id):
+                    if a.create_issue(title, body, assignee_id, submitter_id):
                         return set_resp({'status': 'Issue created'})
 
                     # issue couldn't be created

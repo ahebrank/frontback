@@ -3,6 +3,7 @@ from urllib import quote_plus
 import requests
 import json
 import binascii
+from email.utils import parseaddr
 
 class GitlabApi:
     base_url = None
@@ -61,7 +62,7 @@ class GitlabApi:
             return project['id']
         return None
 
-    def create_issue(self, title, body, assignee_id = None):
+    def create_issue(self, title, body, assignee_id = None, submitter_id = None):
         data = {
             'id': self.project_id,
             'title': title,
@@ -98,10 +99,11 @@ class GitlabApi:
             return file_md
         return False
         
-    def get_username(self, raw_email, parsed_email):
-        if raw_email.startswith('@'):
+    def get_username(self, email):
+        if email.startswith('@'):
             return raw_email
-        elif parsed_email[1]:
+        parsed_email = parseaddr(email)
+        if parsed_email[1]:
             if "@" in parsed_email[1]:
                 return "@" + gl.lookup_username(parsed_email[1])
             else:

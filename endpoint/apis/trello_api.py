@@ -3,6 +3,7 @@ from urllib import quote_plus
 import requests
 import json
 import binascii
+from email.utils import parseaddr
 
 class TrelloApi:
     base_url = None
@@ -43,10 +44,10 @@ class TrelloApi:
         r = requests.get(self.get_url(endpoint))
         return json.loads(r.text)
 
-    def lookup_username(self, email):
-        return False;
-
     def lookup_user_id(self, username):
+        user = self.get("1/members/" + username)
+        if user.get('id'):
+            return user.get('id')
         return False
         
     def get_board_id(self):
@@ -70,15 +71,21 @@ class TrelloApi:
                     return l['id']
         return False
 
-    def create_issue(self, title, body, assignee_id = None):
+    def create_issue(self, title, body, assignee_id = None, submitter_id = None):
         data = {
             'idList': self.list_id,
             'name': title,
             'desc': body,
             'pos': 'top'
         }
+        card_members = []
         if assignee_id:
-            data['idMembers'] = assignee_id
+            card_members.append(assignee_id)
+        if submitter_id:
+            card_members.append(submitter_id)
+        if card_members:
+            data['idMembers'] = ",".join(card_members)
+            
         result = self.post("1/cards", data)
         if result.get('id'):
             i = result.get('id')
@@ -101,7 +108,4 @@ class TrelloApi:
         result = self.post("1/cards/" + card_id + '/attachments', data, self.image_to_upload)
         if result.get('id'):
             return True
-        return False
-        
-    def get_username(self, raw_email, parsed_email):
         return False

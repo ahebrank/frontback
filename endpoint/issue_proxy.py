@@ -70,11 +70,12 @@ def create_app(config, debug=False):
                     if browser:
                         body += api_helper.append_body('Useragent: ' + browser.get('userAgent'))
 
+                    # look up the submitter
                     email = payload.get('email')
+                    submitter_id = None
                     if email:
                         submitter_id = a.lookup_user_id(email)
-                        if submitter_id:
-                            body += api_helper.append_body('Submitted by ' + email)
+                        body += api_helper.append_body('Submitted by ' + email)
 
                     if a.create_issue(title, body, assignee_id, submitter_id):
                         return set_resp({'status': 'Issue created'})

@@ -1,4 +1,6 @@
 from base_api import BaseApi
+from urlparse import urlparse
+from urllib import quote_plus
 
 class TrelloApi(BaseApi):
     list_id = None
@@ -11,10 +13,9 @@ class TrelloApi(BaseApi):
     # https://trello.com/1/connect?key=[key]&name=Frontback&response_type=token&scope=read,write
 
     def __init__(self, homepage, token, key):
-        self.base_url = "https://api.trello.com/"
+        super(TrelloApi, self).__init__("https://api.trello.com/", homepage, token, key)
         self.homepage = homepage
         self.list_id = self.lookup_list_id()
-        self.append_parameters = "key=" + key + "&token=" + token
 
     def lookup_user_id(self, username):
         user = self.get("1/members/" + username)
@@ -72,12 +73,8 @@ class TrelloApi(BaseApi):
         return False
 
     def attach_image(self, img):
-        prefix = "data:image/png;base64,"
-        if not img.startswith(prefix):
-            return False
-        img = img[len(prefix):]
         # hang on to it for later
-        self.image_to_upload = binascii.a2b_base64(img)
+        self.image_to_upload = self.format_image(img)
         return False
         
     def upload_image_to_card(self, card_id):

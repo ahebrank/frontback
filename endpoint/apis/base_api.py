@@ -1,17 +1,18 @@
-from urlparse import urlparse
-from urllib import quote_plus
 import requests
 import json
 import binascii
-from email.utils import parseaddr
 import re
 
-class BaseApi:
+class BaseApi(object):
     
     base_url = None
     homepage = None
-    token = None
     append_parameters = ""
+    
+    def __init__(self, base_url, homepage, token, key):
+        self.base_url = base_url
+        self.homepage = homepage
+        self.append_parameters = "key=" + key + "&token=" + token
     
     # construct a URL
     def get_url(self, endpoint):
@@ -34,6 +35,14 @@ class BaseApi:
     def get(self, endpoint):
         r = requests.get(self.get_url(endpoint))
         return json.loads(r.text)
+        
+    # parse the image from the frontend
+    def format_image(self, img):
+        prefix = "data:image/png;base64,"
+        if not img.startswith(prefix):
+            return False
+        img = img[len(prefix):]
+        return binascii.a2b_base64(img)
 
     # return a list of @mentions from a text field
     def find_mentions(self, body):

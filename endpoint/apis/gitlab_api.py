@@ -1,14 +1,15 @@
 from base_api import BaseApi
+from urlparse import urlparse
+from urllib import quote_plus
+from email.utils import parseaddr
 
 class GitlabApi(BaseApi):
     project_id = None
 
     def __init__(self, homepage, token, app_key):
         o = urlparse(homepage)
-        self.base_url = o.scheme + "://" + o.netloc + "/api/v3"
-        self.homepage = homepage
+        super(GitlabApi, self).__init__(o.scheme + "://" + o.netloc + "/api/v3", homepage, token, app_key)
         self.project_id = self.lookup_project_id()
-        self.append_parameters = "private_token=" + token
 
     def lookup_username(self, email):
         users = self.get("/users?search=" + email)
@@ -61,11 +62,7 @@ class GitlabApi(BaseApi):
         return self.post("/projects/{id}/issues/{issue_id}/notes".format(**data), data)
 
     def attach_image(self, img):
-        prefix = "data:image/png;base64,"
-        if not img.startswith(prefix):
-            return False
-        img = img[len(prefix):]
-        file = binascii.a2b_base64(img)
+        file = self.format_image(img)
         data = {
             'id': self.project_id
         }

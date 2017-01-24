@@ -29,11 +29,18 @@ This leans heavily on:
 
 Where the first two variables define the homepage of the repository and the endpoint of the proxy.
 
+#### CMS integration
+
+There are currently a few experimental modules/plugins to provide the snippet integration with stored backend configuration.
+
+- WP: https://github.com/ahebrank/wp-frontback
+- Drupal 8: https://github.com/ahebrank/drupal-frontback (`composer require ahebrank/frontback`)
+
 ### Configure the service targets at the endpoint
 
 In a place accessible to the endpoint proxy, add configuration in a json array. Services may be combined in a single file and APIs are selected based on the homepage URL.
 
-### Gitlab
+#### Gitlab
 
 Find your Gitlab private token from https://gitlab.com/profile/personal_access_tokens (or similar for your hosted instance)
 
@@ -49,7 +56,7 @@ Use the project homepage as a key:
 }
 ```
 
-### Trello
+#### Trello
 
 Generate a Trello application key at https://trello.com/app-key and use that to generate an auth token from https://trello.com/1/connect?key=[key]&name=Frontback&response_type=token&scope=read,write
 

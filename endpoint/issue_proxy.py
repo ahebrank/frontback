@@ -59,25 +59,25 @@ def create_app(config, debug=False):
                     img = payload.get('img')
                     if img:
                         f = a.attach_image(img)
-                        # handle with a body attachment
+                        # if URL returned, handle with a body attachment
                         if f:
                             body += api_helper.append_body(f)
 
                     # browser info
                     url = payload.get('url')
-                    body += api_helper.append_body('URL: ' + url)
+                    meta = 'URL: ' + url
                     browser = payload.get('browser')
                     if browser:
-                        body += api_helper.append_body('Useragent: ' + browser.get('userAgent'))
+                        meta += api_helper.append_body('Useragent: ' + browser.get('userAgent'))
 
                     # look up the submitter
                     email = payload.get('email')
                     submitter_id = None
                     if email:
                         submitter_id = a.lookup_user_id(email)
-                        body += api_helper.append_body('Submitted by ' + email)
+                        meta += api_helper.append_body('Submitted by ' + email)
 
-                    if a.create_issue(title, body, assignee_id, submitter_id):
+                    if a.create_issue(title, body, meta, assignee_id, submitter_id):
                         return set_resp({'status': 'Issue created'})
 
                     # issue couldn't be created

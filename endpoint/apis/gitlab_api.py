@@ -62,7 +62,10 @@ class GitlabApi:
             return project['id']
         return None
 
-    def create_issue(self, title, body, assignee_id = None, submitter_id = None):
+    def create_issue(self, title, body, meta, assignee_id = None, submitter_id = None):
+        # collapse metadata into issue description
+        body = body + "\n\n" + meta
+        
         data = {
             'id': self.project_id,
             'title': title,

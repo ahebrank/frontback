@@ -71,11 +71,11 @@ class TrelloApi:
                     return l['id']
         return False
 
-    def create_issue(self, title, body, assignee_id = None, submitter_id = None):
+    def create_issue(self, title, body, meta, assignee_id = None, submitter_id = None):
         data = {
             'idList': self.list_id,
             'name': title,
-            'desc': body,
+            'desc': meta,
             'pos': 'top'
         }
         card_members = []
@@ -84,13 +84,18 @@ class TrelloApi:
         if submitter_id:
             card_members.append(submitter_id)
         if card_members:
-            data['idMembers'] = ",".join(card_members)
+            data['idMembers'] = ",".join(set(card_members))
             
         result = self.post("1/cards", data)
         if result.get('id'):
             i = result.get('id')
+            # attach an image
             if self.image_to_upload:
                 self.upload_image_to_card(i)
+            # attach the description as first comment
+            # this is to make sure @mentions in the comment trigger notifications
+            if body:
+                self.add_comment(i, body)
             return True
         return False
 
@@ -106,6 +111,15 @@ class TrelloApi:
     def upload_image_to_card(self, card_id):
         data = {}
         result = self.post("1/cards/" + card_id + '/attachments', data, self.image_to_upload)
+        if result.get('id'):
+            return True
+        return False
+        
+    def add_comment(card_id, body):
+        data = {
+            'text': body
+        }
+        result = self.post("1/cards/" + card_id + '/actions/comments', data)
         if result.get('id'):
             return True
         return False

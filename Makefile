@@ -6,5 +6,5 @@
 	chmod 600 /root/.ssh/config
 
 .ci_push_production:
-	rsync -rlDvz endpoint/ root@$(DEPLOY_HOST):/usr/local/frontback
+	rsync -rlDvz endpoint/ --delete root@$(DEPLOY_HOST):/usr/local/frontback
 	ssh root@$(DEPLOY_HOST) test -f /usr/local/frontback/repos.json

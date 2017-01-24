@@ -6,6 +6,10 @@ before_script:
   - ssh-add <(echo "$PIPELINES_PRIVATE_KEY")
   - make .ci_init
   
+cache:
+  paths:
+    - node_modules/
+  
 stages:
   - build
   - deploy

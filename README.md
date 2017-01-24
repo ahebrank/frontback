@@ -81,12 +81,15 @@ is installed in `/usr/local/frontback/endpoint`.
 6. Add to a `server` block in nginx configuration:
 
 ```
-location /frontback {
-   uwsgi_pass unix:/usr/local/frontback/endpoint/frontback.sock;
-   include /etc/nginx/uwsgi_params;
-   uwsgi_param UWSGI_SCRIPT /frontback;
+location ~ /frontback(/.*) {
+    uwsgi_pass unix:/usr/local/frontback/endpoint/frontback.sock;
+    include /etc/nginx/uwsgi_params;
+    # strip the subdirectory
+    uwsgi_param PATH_INFO "$1";
 }
 ```
+
+(This example includes config to strip off the subdirectory, since the Flask application assumes requests at the webroot.)
 
 See e.g., https://www.digitalocean.com/community/tutorials/how-to-deploy-python-wsgi-applications-using-uwsgi-web-server-with-nginx for more detail about setting up and proxying uwsgi applications.
 

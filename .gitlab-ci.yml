@@ -1,0 +1,24 @@
+---
+image: newcity/builder:latest
+
+before_script:
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$PIPELINES_PRIVATE_KEY")
+  - make .ci_init
+  
+stages:
+  - build
+  - deploy
+  
+build:
+  stage: build
+  script:
+    - npm install --silent
+    - gulp build-all
+  
+deploy:
+  stage: deploy
+  script:
+    - make .ci_push_production
+  only:
+    - master

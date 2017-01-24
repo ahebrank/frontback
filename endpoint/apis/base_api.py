@@ -36,7 +36,7 @@ class BaseApi:
         return json.loads(r.text)
 
     # return a list of @mentions from a text field
-    def find_mentions(body):
+    def find_mentions(self, body):
         r = re.compile(r"(@\w+)", re.MULTILINE)
         return r.findall(body)
         

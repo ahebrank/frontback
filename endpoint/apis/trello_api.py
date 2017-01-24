@@ -115,7 +115,7 @@ class TrelloApi:
             return True
         return False
         
-    def add_comment(card_id, body):
+    def add_comment(self, card_id, body):
         data = {
             'text': body
         }

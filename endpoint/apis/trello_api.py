@@ -1,14 +1,6 @@
-from urlparse import urlparse
-from urllib import quote_plus
-import requests
-import json
-import binascii
-from email.utils import parseaddr
+from base_api import BaseApi
 
-class TrelloApi:
-    base_url = None
-    homepage = None
-    token = None
+class TrelloApi(BaseApi):
     list_id = None
     image_to_upload = False
     
@@ -19,30 +11,10 @@ class TrelloApi:
     # https://trello.com/1/connect?key=[key]&name=Frontback&response_type=token&scope=read,write
 
     def __init__(self, homepage, token, key):
-        self.key = key
-        self.token = token
         self.base_url = "https://api.trello.com/"
         self.homepage = homepage
         self.list_id = self.lookup_list_id()
-
-    def get_url(self, endpoint):
-        if '?' in endpoint:
-            parameter_delmiter = "&"
-        else:
-            parameter_delmiter = "?"
-        url = self.base_url + endpoint + parameter_delmiter + "key=" + self.key + "&token=" + self.token
-        return url
-
-    def post(self, endpoint, data, file = None):
-        if file:
-            r = requests.post(self.get_url(endpoint), data=data, files={'file': ('screenshot.png', file, 'image/png')})
-        else:
-            r = requests.post(self.get_url(endpoint), data=data)
-        return json.loads(r.text)
-
-    def get(self, endpoint):
-        r = requests.get(self.get_url(endpoint))
-        return json.loads(r.text)
+        self.append_parameters = "key=" + key + "&token=" + token
 
     def lookup_user_id(self, username):
         user = self.get("1/members/" + username)
@@ -75,7 +47,7 @@ class TrelloApi:
         data = {
             'idList': self.list_id,
             'name': title,
-            'desc': meta,
+            'desc': body + "\n\n" + meta,
             'pos': 'top'
         }
         card_members = []
@@ -92,10 +64,10 @@ class TrelloApi:
             # attach an image
             if self.image_to_upload:
                 self.upload_image_to_card(i)
-            # attach the description as first comment
-            # this is to make sure @mentions in the comment trigger notifications
-            if body:
-                self.add_comment(i, body)
+            # make sure @mentions in the comment trigger notifications
+            mentions = self.find_mentions(body)
+            if mentions:
+                self.add_comment(i, "mentioning: " + ', '.join(mentions))
             return True
         return False
 

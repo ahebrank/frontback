@@ -1,41 +1,14 @@
-from urlparse import urlparse
-from urllib import quote_plus
-import requests
-import json
-import binascii
-from email.utils import parseaddr
+from base_api import BaseApi
 
-class GitlabApi:
-    base_url = None
-    homepage = None
-    token = None
+class GitlabApi(BaseApi):
     project_id = None
 
     def __init__(self, homepage, token, app_key):
-        self.token = token
         o = urlparse(homepage)
         self.base_url = o.scheme + "://" + o.netloc + "/api/v3"
         self.homepage = homepage
         self.project_id = self.lookup_project_id()
-
-    def get_url(self, endpoint):
-        if '?' in endpoint:
-            parameter_delmiter = "&"
-        else:
-            parameter_delmiter = "?"
-        url = self.base_url + endpoint + parameter_delmiter + "private_token=" + self.token
-        return url
-
-    def post(self, endpoint, data, file = None):
-        if file:
-            r = requests.post(self.get_url(endpoint), files={'file': ('screenshot.png', file, 'image/png')})
-        else:
-            r = requests.post(self.get_url(endpoint), data=data)
-        return json.loads(r.text)
-
-    def get(self, endpoint):
-        r = requests.get(self.get_url(endpoint))
-        return json.loads(r.text)
+        self.append_parameters = "private_token=" + token
 
     def lookup_username(self, email):
         users = self.get("/users?search=" + email)

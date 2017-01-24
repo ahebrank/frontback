@@ -19,6 +19,10 @@ build:
   script:
     - npm install --silent
     - gulp build-all
+  artifacts:
+    paths:
+      - endpoint
+    expire_in: 1 week
   
 deploy:
   stage: deploy

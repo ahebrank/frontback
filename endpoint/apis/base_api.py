@@ -9,10 +9,10 @@ class BaseApi(object):
     homepage = None
     append_parameters = ""
     
-    def __init__(self, base_url, homepage, token, key):
+    def __init__(self, base_url, homepage, creds):
         self.base_url = base_url
         self.homepage = homepage
-        self.append_parameters = "key=" + key + "&token=" + token
+        self.append_parameters = "&".join(["%s=%s" % (k, creds[k]) for k in creds if creds[k]])
     
     # construct a URL
     def get_url(self, endpoint):

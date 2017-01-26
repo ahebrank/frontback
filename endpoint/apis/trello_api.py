@@ -13,7 +13,7 @@ class TrelloApi(BaseApi):
     # https://trello.com/1/connect?key=[key]&name=Frontback&response_type=token&scope=read,write
 
     def __init__(self, homepage, token, key):
-        super(TrelloApi, self).__init__("https://api.trello.com/", homepage, token, key)
+        super(TrelloApi, self).__init__("https://api.trello.com/", homepage, {"key": key, "token": token})
         self.homepage = homepage
         self.list_id = self.lookup_list_id()
 

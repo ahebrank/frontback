@@ -8,7 +8,7 @@ class GitlabApi(BaseApi):
 
     def __init__(self, homepage, token, app_key):
         o = urlparse(homepage)
-        super(GitlabApi, self).__init__(o.scheme + "://" + o.netloc + "/api/v3", homepage, token, app_key)
+        super(GitlabApi, self).__init__(o.scheme + "://" + o.netloc + "/api/v3", homepage, {"private_token": token})
         self.project_id = self.lookup_project_id()
 
     def lookup_username(self, email):
@@ -21,7 +21,7 @@ class GitlabApi(BaseApi):
         if username.startswith("@"):
             username = username[1:]
         users = self.get("/users?username=" + username)
-        if len(users) == 1:
+        if (len(users) == 1) and (0 in users):
             return users[0]['id']
         return False
 

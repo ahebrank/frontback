@@ -1,4 +1,4 @@
-
+var interactive = false;
 
 var gulp = require('gulp'),
 	argv = require('yargs').argv,
@@ -40,6 +40,9 @@ var paths = {
 
 // Error reporter for plumber.
 var plumber_error = function (err) {
+	if (!interactive) {
+		throw err;
+	}
 	gutil.log( err );
 	this.emit('end');
 };
@@ -52,7 +55,7 @@ gulp.task('scss', function() {
 		.pipe( sass({ outputStyle: 'nested'}) )
 		.pipe( autoprefixer( [ 'last 2 versions', '> 1%' ] ) )
 		// Minify css only if --cssmin flag is used
-		.pipe( gulpif( argv.cssmin, cleanCSS() ) )
+		.pipe( gulpif( argv.min, cleanCSS() ) )
 		.pipe( gulp.dest( paths.dist.css ) );
 });
 
@@ -67,7 +70,7 @@ gulp.task('js', function() {
 		.on( 'error', plumber_error )
 		.pipe( source( 'frontback.js' ) )
 		.pipe( buffer() )
- 		.pipe( gulpif( argv.jsmin, uglify({ mangle: false })) )
+ 		.pipe( gulpif( argv.min, uglify({ mangle: false })) )
 		.pipe( gulp.dest( paths.dist.js ));
 });
 
@@ -80,6 +83,8 @@ gulp.task('reload', function() {
 
 // all the watchy stuff
 gulp.task('watcher', ['build-all'], function() {
+	
+	interactive = true;
 
 	// sane is a more configurable watcher than gulp watch.
 	// You can also have it use the more friendly OSX file

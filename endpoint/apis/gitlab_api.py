@@ -36,7 +36,7 @@ class GitlabApi(BaseApi):
             return project['id']
         return None
 
-    def create_issue(self, title, body, meta, assignee_id = None, submitter_id = None):
+    def create_issue(self, title, body, meta, assignee_id = None, submitter_id = None, tags = None):
         # collapse metadata into issue description
         body = body + "\n\n" + meta
         
@@ -47,6 +47,8 @@ class GitlabApi(BaseApi):
         }
         if assignee_id:
             data['assignee_id'] = assignee_id
+        if tags:
+            data['labels'] = ",".join(tags)
         success = self.post("/projects/{id}/issues".format(**data), data)
         iid = success.get('iid')
         if iid:

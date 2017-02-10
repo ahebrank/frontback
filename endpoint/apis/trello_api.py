@@ -3,6 +3,7 @@ from urlparse import urlparse
 from urllib import quote_plus
 
 class TrelloApi(BaseApi):
+    board_id = None
     list_id = None
     image_to_upload = False
     
@@ -15,8 +16,9 @@ class TrelloApi(BaseApi):
     def __init__(self, homepage, token, key):
         super(TrelloApi, self).__init__("https://api.trello.com/", homepage, {"key": key, "token": token})
         self.homepage = homepage
+        self.board_id = self.get_board_id()
         self.list_id = self.lookup_list_id()
-
+        
     def lookup_user_id(self, username):
         user = self.get("1/members/" + username)
         if user.get('id'):
@@ -31,20 +33,30 @@ class TrelloApi(BaseApi):
             return board.get('id')
         return False
         
-    def get_lists(self, board):
-        return self.get("1/boards/" + board + "/lists?fields=name")
+    def get_lists(self):
+        return self.get("1/boards/" + self.board_id + "/lists?fields=name")
         
     # find the list ID
     def lookup_list_id(self):
-        board = self.get_board_id()
-        if board:
-            lists = self.get_lists(board)
-            for l in lists:
-                if l['name'] == self.trello_list:
-                    return l['id']
+        lists = self.get_lists()
+        for l in lists:
+            if l['name'] == self.trello_list:
+                return l['id']
         return False
+        
+    def get_labels(self):
+        return self.get("1/boards/" + self.board_id + "/labels")
+    
+    # find label IDs
+    def lookup_label_ids(self, tags):
+        label_ids = []
+        labels = self.get_labels()
+        for l in labels:
+            if l['name'] and l['name'] in tags:
+                label_ids.append(l['id'])
+        return label_ids
 
-    def create_issue(self, title, body, meta, assignee_id = None, submitter_id = None):
+    def create_issue(self, title, body, meta, assignee_id = None, submitter_id = None, tags = None):
         data = {
             'idList': self.list_id,
             'name': title,
@@ -58,6 +70,11 @@ class TrelloApi(BaseApi):
             card_members.append(submitter_id)
         if card_members:
             data['idMembers'] = ",".join(set(card_members))
+                
+        if tags:
+            labels = self.lookup_label_ids(tags)
+            if labels:
+                data['idLabels'] = ",".join(labels)
             
         result = self.post("1/cards", data)
         if result.get('id'):

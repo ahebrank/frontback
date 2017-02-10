@@ -1,6 +1,13 @@
 {
     "https://gitlab.com/newcity/test": {
         "private_token": "GITLAB_PRIVATE_TOKEN",
-        "assignee_id": "@ahebrank"
+        "assignee_id": "@ahebrank",
+        "tags": "Incoming"
+    },
+    "https://trello.com/b/XXXXXX/api-test": {
+        "app_key": "TRELLO_APP_KEY",
+        "private_token": "TRELLO_PRIVATE_TOKEN",
+        "assignee_id": "ahebrank",
+        "tags": "Test Label"
     }
 }

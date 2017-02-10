@@ -44,13 +44,14 @@ In a place accessible to the endpoint proxy, add configuration in a json array. 
 
 Find your Gitlab private token from https://gitlab.com/profile/personal_access_tokens (or similar for your hosted instance)
 
-Use the project homepage as a key:
+Use the project homepage as a key and optionally set the assigned user (Gitlab ID) and default tag, which assigns a label and is useful for landing the issue on a particular board list.
 
 ```json
 {
     "https://gitlab.com/newcity/test": {
         "private_token": "GITLAB-PRIVATE-TOKEN",
-        "assignee_id": "ahebrank"
+        "assignee_id": "ahebrank",
+				"tag": "Incoming"
     },
 		...
 }
@@ -126,5 +127,5 @@ You can run the flask endpoint locally with:
 
 ```bash
 cd endpoint
-python issue_proxy.py -c repos.json -p 9000
+python issue_proxy.py -c repos.json -p 9000 --debug
 ```

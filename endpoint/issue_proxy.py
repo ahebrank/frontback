@@ -41,6 +41,10 @@ def create_app(config, debug=False):
                 app_key = repoConfig.get('app_key')
                 private_token = repoConfig.get('private_token')
                 assignee_id = repoConfig.get('assignee_id')
+                tags = repoConfig.get('tags')
+                # tags may be a string or an array
+                if not isinstance(tags, list):
+                    tags = [tags]
 
                 if private_token:
                     a = api(repoID, private_token, app_key)
@@ -77,7 +81,7 @@ def create_app(config, debug=False):
                         submitter_id = a.lookup_user_id(email)
                         meta += api_helper.append_body('Submitted by ' + email)
 
-                    if a.create_issue(title, body, meta, assignee_id, submitter_id):
+                    if a.create_issue(title, body, meta, assignee_id, submitter_id, tags):
                         return set_resp({'status': 'Issue created'})
 
                     # issue couldn't be created

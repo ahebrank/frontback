@@ -51,9 +51,9 @@ Use the project homepage as a key and optionally set the assigned user (Gitlab I
     "https://gitlab.com/newcity/test": {
         "private_token": "GITLAB-PRIVATE-TOKEN",
         "assignee_id": "ahebrank",
-				"tag": "Incoming"
+        "tag": "Incoming"
     },
-		...
+    ...
 }
 ```
 
@@ -61,15 +61,16 @@ Use the project homepage as a key and optionally set the assigned user (Gitlab I
 
 Generate a Trello application key at https://trello.com/app-key and use that to generate an auth token from https://trello.com/1/connect?key=[key]&name=Frontback&response_type=token&scope=read,write
 
-Then use the trello board URL as the key:
+Then use the trello board URL as the key and optionally set an assignee (Trello username) and tags (as an array, should match names of existing labels on your board).
 
 ```json
 {
-		"https://trello.com/b/S1QWR14x/api-test": {
-				"app_key": "APPLICATION_KEY",
-				"private_token": "PRIVATE_AUTH_TOKEN",
-				"assignee_id": "ahebrank"
-		}
+    "https://trello.com/b/S1QWR14x/api-test": {
+        "app_key": "APPLICATION_KEY",
+        "private_token": "PRIVATE_AUTH_TOKEN",
+        "assignee_id": "ahebrank",
+        "tags": "Informative Label"
+    }
 }
 ```
 

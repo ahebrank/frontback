@@ -51,7 +51,7 @@ Use the project homepage as a key and optionally set the assigned user (Gitlab I
     "https://gitlab.com/newcity/test": {
         "private_token": "GITLAB-PRIVATE-TOKEN",
         "assignee_id": "ahebrank",
-        "tag": "Incoming"
+        "tags": "Incoming"
     },
     ...
 }

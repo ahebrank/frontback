@@ -43,7 +43,7 @@ def create_app(config, debug=False):
                 assignee_id = repoConfig.get('assignee_id')
                 tags = repoConfig.get('tags')
                 # tags may be a string or an array
-                if not isinstance(tags, list):
+                if tags and not isinstance(tags, list):
                     tags = [tags]
 
                 if private_token:

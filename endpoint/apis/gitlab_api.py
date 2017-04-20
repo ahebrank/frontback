@@ -1,21 +1,20 @@
 from base_api import BaseApi
 from urlparse import urlparse
 from urllib import quote_plus
-from email.utils import parseaddr
 
 class GitlabApi(BaseApi):
     project_id = None
 
     def __init__(self, homepage, token, app_key):
-        o = urlparse(homepage)
-        super(GitlabApi, self).__init__(o.scheme + "://" + o.netloc + "/api/v3", homepage, {"private_token": token})
+        parsed_url = urlparse(homepage)
+        super(GitlabApi, self).__init__(parsed_url.scheme + "://" + parsed_url.netloc + "/api/v3", homepage, {"private_token": token})
         self.project_id = self.lookup_project_id()
 
     def lookup_username(self, email):
         users = self.get("/users?search=" + email)
         if len(users) == 1:
             return users[0]['username']
-        return False;
+        return False
 
     def lookup_user_id(self, username):
         if username.startswith("@"):
@@ -26,8 +25,8 @@ class GitlabApi(BaseApi):
         return False
 
     def get_project(self):
-        o = urlparse(self.homepage)
-        project_name = quote_plus(o.path[1:])
+        parsed_url = urlparse(self.homepage)
+        project_name = quote_plus(parsed_url.path[1:])
         return self.get("/projects/" + project_name)
 
     def lookup_project_id(self):
@@ -36,10 +35,10 @@ class GitlabApi(BaseApi):
             return project['id']
         return None
 
-    def create_issue(self, title, body, meta, assignee_id = None, submitter_id = None, tags = None):
+    def create_issue(self, title, body, meta, assignee_id=None, submitter_id=None, tags=None):
         # collapse metadata into issue description
         body = body + "\n\n" + meta
-        
+
         data = {
             'id': self.project_id,
             'title': title,
@@ -72,15 +71,4 @@ class GitlabApi(BaseApi):
         file_md = result.get('markdown')
         if file_md:
             return file_md
-        return False
-        
-    def get_username(self, email):
-        if email.startswith('@'):
-            return raw_email
-        parsed_email = parseaddr(email)
-        if parsed_email[1]:
-            if "@" in parsed_email[1]:
-                return "@" + gl.lookup_username(parsed_email[1])
-            else:
-                return "@" + raw_email
         return False

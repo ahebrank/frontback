@@ -1,22 +1,15 @@
 #!/usr/bin/env python
 import io
-import os
-import re
-import sys
 import json
-import subprocess
-import requests
-from flask import Flask, request, abort, Response, jsonify, send_from_directory
 import argparse
+from flask import Flask, request, abort, jsonify, send_from_directory
 from api_helper import Api
-
-repos = {}
 
 def create_app(config, debug=False):
     app = Flask(__name__)
     app.debug = debug
     try:
-        repos = json.loads(io.open(config, 'r').read())
+        repos_data = json.loads(io.open(config, 'r').read())
     except:
         print("Error opening repos file %s -- check file exists and is valid json" % config)
         raise
@@ -31,7 +24,7 @@ def create_app(config, debug=False):
 
             # common for events
             repo_id = payload.get('repo_id')
-            repo_config = repos.get(repo_id)
+            repo_config = repos_data.get(repo_id)
 
             if repo_config:
                 # get API based on repo identifier
@@ -78,7 +71,7 @@ def create_app(config, debug=False):
                     email = payload.get('email')
                     submitter_id = None
                     if email:
-                        submitter_id = this_api.lookup_user_id(email)
+                        submitter_id = this_api.get_username(email)
                         meta += api_helper.append_body('Submitted by ' + email)
 
                     if this_api.create_issue(title, body, meta, assignee_id, submitter_id, tags):
@@ -128,14 +121,11 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--config", action="store", help="path to repos configuration", required=True)
     parser.add_argument("-p", "--port", action="store", help="server port", required=False, default=8080)
     parser.add_argument("--debug", action="store_true", help="enable debug output", required=False, default=False)
-    
+
 
     args = parser.parse_args()
 
     port_number = int(args.port)
-    app = create_app(args.config)
+    this_app = create_app(args.config, args.debug)
 
-    if args.debug:
-        app.debug = True
-
-    app.run(host="0.0.0.0", port=port_number)
+    this_app.run(host="0.0.0.0", port=port_number)

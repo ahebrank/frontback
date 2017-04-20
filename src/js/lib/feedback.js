@@ -541,6 +541,7 @@
 							url: settings.ajaxURL,
 							dataType: 'json',
 							type: 'POST',
+							contentType: 'application/json',
 							data: JSON.stringify(post),
 							success: function() {
 								//$('#ftbk-feedback-module').append(settings.tpl.submitSuccess);

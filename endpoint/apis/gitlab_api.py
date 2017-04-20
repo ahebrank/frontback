@@ -20,7 +20,7 @@ class GitlabApi(BaseApi):
         if username.startswith("@"):
             username = username[1:]
         users = self.get("/users?username=" + username)
-        if (len(users) == 1) and (0 in users):
+        if len(users) == 1:
             return users[0]['id']
         return False
 

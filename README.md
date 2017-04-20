@@ -122,11 +122,13 @@ WSGIScriptAlias / /usr/local/frontback/endpoint/wsgi.py
 
 ## Building and testing
 
-`gulp` builds styles and scripts and puts up a test page at `http://localhost:3000`.  See `test/index.html` to modify the plugin configuration.
+Use `make test`, which does the following:
 
-You can run the flask endpoint locally with:
+- `gulp` builds styles and scripts and puts up a test page at `http://localhost:3000`.  See `test/index.html` to modify the plugin configuration.
 
-```bash
-cd endpoint
-python issue_proxy.py -c repos.json -p 9000 --debug
-```
+- run the endpoint:
+
+    ```bash
+    cd endpoint
+    python issue_proxy.py -c repos.json -p 9000 --debug
+    ```

@@ -1,3 +1,7 @@
+default:
+	gulp &
+	cd endpoint && python issue_proxy.py -c repos.json -p 9000 --debug 
+
 # CI targets
 .ci_init:
 	test -d /root/.ssh || mkdir /root/.ssh

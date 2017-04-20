@@ -18,7 +18,7 @@ def create_app(config, debug=False):
     try:
         repos = json.loads(io.open(config, 'r').read())
     except:
-        print "Error opening repos file %s -- check file exists and is valid json" % config
+        print("Error opening repos file %s -- check file exists and is valid json" % config)
         raise
 
     @app.route("/", methods=['GET', 'POST'])
@@ -27,31 +27,31 @@ def create_app(config, debug=False):
             abort(404)
         elif request.method == "POST":
             # Store the IP address of the requester
-            payload = request.get_json(force = True)
+            payload = request.get_json(force=True)
 
             # common for events
-            repoID = payload.get('repoID')
-            repoConfig = repos.get(repoID)
-            
-            if repoConfig:
+            repo_id = payload.get('repo_id')
+            repo_config = repos.get(repo_id)
+
+            if repo_config:
                 # get API based on repo identifier
                 api_helper = Api()
-                api = api_helper.match_api_from_id(repoID)
-                
-                app_key = repoConfig.get('app_key')
-                private_token = repoConfig.get('private_token')
-                assignee_id = repoConfig.get('assignee_id')
-                tags = repoConfig.get('tags')
+                api = api_helper.match_api_from_id(repo_id)
+
+                app_key = repo_config.get('app_key')
+                private_token = repo_config.get('private_token')
+                assignee_id = repo_config.get('assignee_id')
+                tags = repo_config.get('tags')
                 # tags may be a string or an array
                 if tags and not isinstance(tags, list):
                     tags = [tags]
 
                 if private_token:
-                    a = api(repoID, private_token, app_key)
+                    this_api = api(repo_id, private_token, app_key)
 
                     # try to lookup a username
                     if assignee_id and not assignee_id.isdigit():
-                        assignee_id = a.lookup_user_id(assignee_id)
+                        assignee_id = this_api.lookup_user_id(assignee_id)
 
                     title = payload.get('title')
                     body = payload.get('note')
@@ -62,10 +62,10 @@ def create_app(config, debug=False):
                     # attach the image
                     img = payload.get('img')
                     if img:
-                        f = a.attach_image(img)
+                        file_url = this_api.attach_image(img)
                         # if URL returned, handle with a body attachment
-                        if f:
-                            body += api_helper.append_body(f)
+                        if file_url:
+                            body += api_helper.append_body(file_url)
 
                     # browser info
                     url = payload.get('url')
@@ -78,10 +78,10 @@ def create_app(config, debug=False):
                     email = payload.get('email')
                     submitter_id = None
                     if email:
-                        submitter_id = a.lookup_user_id(email)
+                        submitter_id = this_api.lookup_user_id(email)
                         meta += api_helper.append_body('Submitted by ' + email)
 
-                    if a.create_issue(title, body, meta, assignee_id, submitter_id, tags):
+                    if this_api.create_issue(title, body, meta, assignee_id, submitter_id, tags):
                         return set_resp({'status': 'Issue created'})
 
                     # issue couldn't be created

@@ -11,7 +11,6 @@ def create_app(repos_data, debug=False):
     # allow from anywhere
     CORS(app)
     app.debug = debug
-    app.repos_data = repos_data
 
     @app.route("/", methods=['GET', 'POST'])
     def index():
@@ -25,7 +24,7 @@ def create_app(repos_data, debug=False):
 
             # common for events
             repo_id = payload.get('repoID')
-            repo_config = app.repos_data.get(repo_id)
+            repo_config = repos_data.get(repo_id)
 
             if not repo_config:
                 return set_resp({'status': 'repo not found in config'}, 400)

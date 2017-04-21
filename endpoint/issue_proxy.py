@@ -6,11 +6,16 @@ from flask import Flask, request, abort, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
 from api_helper import Api
 
-def create_app(repos_data, debug=False):
+def create_app(config, debug=False):
     app = Flask(__name__)
     # allow from anywhere
     CORS(app)
     app.debug = debug
+    try:
+        repos_data = json.loads(io.open(config, 'r').read())
+    except:
+        print("Error opening repos file %s -- check file exists and is valid json" % config)
+        raise
 
     @app.route("/", methods=['GET', 'POST'])
     def index():
@@ -123,12 +128,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     port_number = int(args.port)
 
-    try:
-        repos_data = json.loads(io.open(args.config, 'r').read())
-    except:
-        print("Error opening repos file %s -- check file exists and is valid json" % config)
-        raise
-
-    this_app = create_app(repos_data, args.debug)
+    this_app = create_app(args.config, args.debug)
 
     this_app.run(host="0.0.0.0", port=port_number)

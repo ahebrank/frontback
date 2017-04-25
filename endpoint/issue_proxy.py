@@ -32,7 +32,7 @@ def create_app(config, debug=False):
             repo_config = repos_data.get(repo_id)
 
             if not repo_config:
-                return set_resp({'status': 'repo not found in config'}, 400)
+                return set_resp({'status': 'repo not found in config', 'repo_id': repo_id}, 400)
 
             # get API based on repo identifier
             api_helper = Api()

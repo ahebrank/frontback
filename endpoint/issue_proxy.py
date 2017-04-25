@@ -25,7 +25,7 @@ def create_app(config, debug=False):
             payload = request.get_json()
 
             if not payload:
-                return set_resp({'status': 'request not json'}, 400)
+                return set_resp({'status': 'request not json', 'received': request.data}, 400)
 
             # common for events
             repo_id = payload.get('repoID')

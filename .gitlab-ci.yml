@@ -29,3 +29,14 @@ deploy:
     - make .ci_push_production
   only:
     - master
+
+pages:
+  stage: deploy
+  script:
+    - zip -d endpoint.zip endpoint
+    - mkdir public
+    - mv endpoint.zip public/
+    - echo '<a href="endpoint.zip">artifact</a>' > public/index.html
+  artifacts:
+    paths:
+      - public

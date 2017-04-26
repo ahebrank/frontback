@@ -33,10 +33,10 @@ deploy:
 pages:
   stage: deploy
   script:
-    - zip -d endpoint.zip endpoint
+    - zip -r dist.zip endpoint
     - mkdir public
-    - mv endpoint.zip public/
-    - echo '<a href="endpoint.zip">artifact</a>' > public/index.html
+    - mv dist.zip public/
+    - echo '<a href="dist.zip">dist.zip</a>' > public/index.html
   artifacts:
     paths:
       - public

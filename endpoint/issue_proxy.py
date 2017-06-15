@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import io
 import json
 import argparse
@@ -68,29 +68,8 @@ def create_app(config, asynchronous=False, debug=False):
 
             if debug:
                 print("Returning async OK (%s)" % (get_elapsed_time(start_time)))
-            return set_resp({'status': 'submitted'}, 200)
-
-    # static assets
-    @app.route('/assets/<path:path>')
-    def send_assets(path):
-        return send_from_directory('assets', path)
-
-    @app.errorhandler(404)
-    def error404(e):
-        return set_resp({'status': 'page not found'}, 404)
-
-    @app.errorhandler(403)
-    def error403(e):
-        return set_resp({'status': 'no authorization'}, 403)
-
-    @app.errorhandler(400)
-    def error400(e):
-        return set_resp({'status': 'bad request'}, 400)
-
-    @app.errorhandler(500)
-    def error500(e):
-        return set_resp({'status': 'error while creating issue'}, 500)
-
+            return set_resp({'status': 'submitted'})
+    
     def issue_worker(payload, repo_id, repo_config, start_time):
         # get API based on repo identifier
         api_helper = Api()
@@ -150,6 +129,27 @@ def create_app(config, asynchronous=False, debug=False):
                 print("Created issue (%s)" % (get_elapsed_time(start_time)))
             return True
         return False
+
+    # static assets
+    @app.route('/assets/<path:path>')
+    def send_assets(path):
+        return send_from_directory('assets', path)
+
+    @app.errorhandler(404)
+    def error404(e):
+        return set_resp({'status': 'page not found'}, 404)
+
+    @app.errorhandler(403)
+    def error403(e):
+        return set_resp({'status': 'no authorization'}, 403)
+
+    @app.errorhandler(400)
+    def error400(e):
+        return set_resp({'status': 'bad request'}, 400)
+
+    @app.errorhandler(500)
+    def error500(e):
+        return set_resp({'status': 'error while creating issue'}, 500)
 
     return app
 

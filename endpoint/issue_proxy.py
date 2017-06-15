@@ -2,6 +2,7 @@
 import io
 import json
 import argparse
+import time
 from flask import Flask, request, abort, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
 from api_helper import Api
@@ -22,6 +23,7 @@ def create_app(config, debug=False):
         if request.method == "GET":
             abort(404)
         elif request.method == "POST":
+            start_time = time.time()
             payload = request.get_json()
 
             if not payload:
@@ -33,6 +35,10 @@ def create_app(config, debug=False):
 
             if not repo_config:
                 return set_resp({'status': 'repo not found in config', 'repo_id': repo_id}, 400)
+
+            if app.debug:
+                print("Found config (%s): " % (get_elapsed_time(start_time)))
+                print(repo_config)
 
             # get API based on repo identifier
             api_helper = Api()
@@ -49,11 +55,18 @@ def create_app(config, debug=False):
             if not private_token:
                 abort(403)
 
+            if app.debug:
+                print("Loading API (%s)..." % (get_elapsed_time(start_time)))
             this_api = api(repo_id, private_token, app_key)
+            if app.debug:
+                print("Loaded API handler (%s)" % (get_elapsed_time(start_time)))
 
             # try to lookup a username
             if assignee_id and not assignee_id.isdigit():
+                print("Looking for user: %s (%s)..." % (assignee_i, get_elapsed_time(start_time)))
                 assignee_id = this_api.lookup_user_id(assignee_id)
+                if app.debug:
+                    print("Found user %s (%s)" % (assignee_id, get_elapsed_time(start_time)))
 
             title = payload.get('title')
             body = payload.get('note')
@@ -84,15 +97,12 @@ def create_app(config, debug=False):
                 meta += api_helper.append_body('Submitted by ' + submitter_id)
 
             if this_api.create_issue(title, body, meta, assignee_id, submitter_id, tags):
+                if app.debug:
+                    print("Created issue (%s)" % (get_elapsed_time(start_time)))
                 return set_resp({'status': 'issue created'})
 
             # issue couldn't be created
             abort(500)
-
-        # other type of request
-        abort(400)
-
-
 
     # static assets
     @app.route('/assets/<path:path>')
@@ -121,6 +131,9 @@ def set_resp(msg, status = 200):
     resp = jsonify(**msg)
     return resp, status
 
+def get_elapsed_time(start_time):
+    return "%0.2f sec" % (time.time() - start_time)
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="frontback gitlab proxy")
@@ -133,4 +146,4 @@ if __name__ == "__main__":
 
     this_app = create_app(args.config, args.debug)
 
-    this_app.run(host="0.0.0.0", port=port_number)
+    this_app.run(host="0.0.0.0", port=port_number, threaded=True)

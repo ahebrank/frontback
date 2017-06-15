@@ -42,7 +42,7 @@ def create_app(config, asynchronous=False, debug=False):
                 return set_resp({'status': 'repo not found in config', 'repo_id': repo_id}, 400)
 
             if debug:
-                print("Found config (%s): " % (get_elapsed_time(start_time)))
+                print("Found config for %s (%s): " % (repo_id, get_elapsed_time(start_time)))
                 print(repo_config)
 
             private_token = repo_config.get('private_token')

@@ -6,4 +6,4 @@ config = '/etc/default/frontback'
 application = create_app(config)
 
 if __name__ == "__main__":
-	application.run()
+	application.run(threaded=True)

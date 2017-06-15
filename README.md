@@ -115,7 +115,7 @@ WSGIScriptAlias / /usr/local/frontback/endpoint/wsgi.py
 <Directory /usr/local/frontback/endpoint>
   	WSGIProcessGroup frontback
   	WSGIApplicationGroup %{GLOBAL}
-		Require all granted
+    Require all granted
 </Directory>
 ```
 

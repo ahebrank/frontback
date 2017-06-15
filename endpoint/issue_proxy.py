@@ -89,6 +89,10 @@ def create_app(config, debug=False):
             # issue couldn't be created
             abort(500)
 
+        # other type of request
+        abort(400)
+
+
 
     # static assets
     @app.route('/assets/<path:path>')
@@ -115,7 +119,6 @@ def create_app(config, debug=False):
 
 def set_resp(msg, status = 200):
     resp = jsonify(**msg)
-    resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp, status
 
 if __name__ == "__main__":

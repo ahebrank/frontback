@@ -1,6 +1,5 @@
-from base_api import BaseApi
-from urlparse import urlparse
-from urllib import quote_plus
+from .base_api import BaseApi
+from urllib.parse import urlparse, quote_plus
 
 class TrelloApi(BaseApi):
     board_id = None

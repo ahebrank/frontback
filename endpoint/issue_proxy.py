@@ -3,13 +3,14 @@ import io
 import json
 import argparse
 import time
-from threading import Thread
 from flask import Flask, request, abort, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
 from api_helper import Api
+from concurrent.futures import ThreadPoolExecutor
 
 def create_app(config, asynchronous=False, debug=False):
     app = Flask(__name__)
+    executor = ThreadPoolExecutor(2)
 
     # allow from anywhere
     CORS(app)
@@ -51,11 +52,10 @@ def create_app(config, asynchronous=False, debug=False):
 
             # run the API
             if asynchronous:
-                thread = Thread(
-                    target=issue_worker,
-                    args=(payload, repo_id, repo_config, start_time,)
+                executor.submit(
+                    issue_worker,
+                    payload, repo_id, repo_config, start_time
                 )
-                thread.start()
             else:
                 if issue_worker(payload, repo_id, repo_config, start_time):
                     if debug:

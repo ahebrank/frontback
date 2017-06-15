@@ -8,7 +8,7 @@ from flask import Flask, request, abort, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
 from api_helper import Api
 
-def create_app(config, asynchronous = False, debug=False):
+def create_app(config, asynchronous=False, debug=False):
     app = Flask(__name__)
 
     # allow from anywhere
@@ -19,6 +19,9 @@ def create_app(config, asynchronous = False, debug=False):
     except:
         print("Error opening repos file %s -- check file exists and is valid json" % config)
         raise
+    if debug:
+        if asynchronous:
+            print("Async API mode")
 
     @app.route("/", methods=['GET', 'POST'])
     def index():
@@ -38,7 +41,7 @@ def create_app(config, asynchronous = False, debug=False):
             if not repo_config:
                 return set_resp({'status': 'repo not found in config', 'repo_id': repo_id}, 400)
 
-            if app.debug:
+            if debug:
                 print("Found config (%s): " % (get_elapsed_time(start_time)))
                 print(repo_config)
 
@@ -48,7 +51,10 @@ def create_app(config, asynchronous = False, debug=False):
 
             # run the API
             if asynchronous:
-                proc = multiprocessing.Process(target=issue_worker, args=(payload, repo_id, repo_config, start_time,))
+                proc = multiprocessing.Process(
+                    target=issue_worker,
+                    args=(payload, repo_id, repo_config, start_time,)
+                )
                 proc.start()
             else:
                 if issue_worker(payload, repo_id, repo_config, start_time):
@@ -93,17 +99,17 @@ def create_app(config, asynchronous = False, debug=False):
         if tags and not isinstance(tags, list):
             tags = [tags]
 
-        if app.debug:
+        if debug:
             print("Loading API (%s)..." % (get_elapsed_time(start_time)))
         this_api = api(repo_id, private_token, app_key)
-        if app.debug:
+        if debug:
             print("Loaded API handler (%s)" % (get_elapsed_time(start_time)))
 
         # try to lookup a username
         if assignee_id and not assignee_id.isdigit():
             print("Looking for user: %s (%s)..." % (assignee_id, get_elapsed_time(start_time)))
             assignee_id = this_api.lookup_user_id(assignee_id)
-            if app.debug:
+            if debug:
                 print("Found user %s (%s)" % (assignee_id, get_elapsed_time(start_time)))
 
         title = payload.get('title')
@@ -135,7 +141,7 @@ def create_app(config, asynchronous = False, debug=False):
             meta += api_helper.append_body('Submitted by ' + submitter_id)
 
         if this_api.create_issue(title, body, meta, assignee_id, submitter_id, tags):
-            if app.debug:
+            if debug:
                 print("Created issue (%s)" % (get_elapsed_time(start_time)))
             return True
         return False

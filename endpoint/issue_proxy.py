@@ -51,18 +51,23 @@ def create_app(config, asynchronous=False, debug=False):
 
             # run the API
             if asynchronous:
-                proc = multiprocessing.Process(
+                worker_process = multiprocessing.Process(
                     target=issue_worker,
                     args=(payload, repo_id, repo_config, start_time,)
                 )
-                proc.start()
+                worker_process.start()
             else:
                 if issue_worker(payload, repo_id, repo_config, start_time):
+                    if debug:
+                        print("Returning sync OK (%s)" % (get_elapsed_time(start_time)))
                     return set_resp({'status': 'submitted'}, 200)
                 else:
+                    if debug:
+                        print("Returning 500 error (%s)" % (get_elapsed_time(start_time)))
                     abort(500)
 
-
+            if debug:
+                print("Returning async OK (%s)" % (get_elapsed_time(start_time)))
             return set_resp({'status': 'submitted'}, 200)
 
     # static assets

@@ -3,7 +3,7 @@ import io
 import json
 import argparse
 import time
-import multiprocessing
+from threading import Thread
 from flask import Flask, request, abort, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
 from api_helper import Api
@@ -51,11 +51,11 @@ def create_app(config, asynchronous=False, debug=False):
 
             # run the API
             if asynchronous:
-                worker_process = multiprocessing.Process(
+                thread = Thread(
                     target=issue_worker,
                     args=(payload, repo_id, repo_config, start_time,)
                 )
-                worker_process.start()
+                thread.start()
             else:
                 if issue_worker(payload, repo_id, repo_config, start_time):
                     if debug:

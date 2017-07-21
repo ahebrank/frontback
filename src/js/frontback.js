@@ -2,7 +2,7 @@ if (global.frontback.repo && global.frontback.postUrl) {
   global.frontback.jQuery = require('../bower_components/jquery/dist/jquery.js');
   require('../bower_components/promise-polyfill/promise.js');
   if (!global.html2canvas) {
-    global.fabric = require('../bower_components/fabric.js/dist/fabric.js');
+    //global.fabric = require('../bower_components/fabric.js/dist/fabric.js');
     global.html2canvas = require('../bower_components/html2canvas/dist/html2canvas.js');
   }
 

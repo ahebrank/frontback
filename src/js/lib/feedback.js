@@ -101,7 +101,7 @@
 					$('html, body').addClass('ftbk-fixed');
 					$('#ftbk-feedback-module').css(moduleStyle);
 
-					var maxZ = getMaxZ('div:not([id^="ftbk"])') + 30000;
+					var maxZ = 30000;
 					$('#ftbk-feedback-canvas').attr(canvasAttr).css('z-index', maxZ);
 
 
@@ -111,7 +111,7 @@
 						$('#ftbk-feedback-canvas').css('cursor', 'crosshair');
 						$('#ftbk-feedback-helpers').show();
 						$('#ftbk-feedback-welcome').hide();
-						$('#ftbk-feedback-highlighter').show();
+						$('#ftbk-feedback-highlighter').show().css('z-index', maxZ + 10000);
 					}
 
 					if (fullScreen) {

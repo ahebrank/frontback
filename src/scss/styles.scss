@@ -265,8 +265,8 @@ $fullscreen: screen and (min-width: 641px);
 }
 #ftbk-feedback-highlighter {
 	display: none;
-	bottom: 100px;
 	right: 100px;
+	top: calc(100vh - 100px - 148px);
 	position: fixed;
 	width: 540px;
 	@extend %modal;

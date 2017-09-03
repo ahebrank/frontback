@@ -174,6 +174,7 @@
 						post.browser.onLine			= navigator.onLine;
 						post.browser.platform		= navigator.platform;
 						post.browser.userAgent		= navigator.userAgent;
+						post.browser.windowDims     = $(window).width() + ' x ' + $(window).height();
 						post.browser.plugins		= [];
 
 						$.each(navigator.plugins, function(i) {

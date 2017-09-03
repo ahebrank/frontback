@@ -7,12 +7,11 @@ class Api:
             return GitlabApi
         if "trello.com" in repoId:
             return TrelloApi
-            
         return None
-        
+
     def append_body(self, line):
         return "\n\n" + line
-        
+
     def try_to_parse(self, email):
         if email.startswith('@'):
             return email

@@ -74,6 +74,10 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
 }
 ```
 
+#### Other helpful configuration
+
+- *dev_url_replace*: perform string find/replace to append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click. Examples: `"dev_url_replace": "staging.example.com|localhost"`. For additional (e.g., staging) URLs, append more pipes.
+
 ### Start it up
 
 The python wsgi web stack configuration has a lot of pieces in its newer incarnation.

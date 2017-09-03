@@ -112,7 +112,17 @@ def create_app(config, asynchronous=False, debug=False):
 
         # browser info
         url = payload.get('url')
-        meta = 'URL: ' + url
+        dev_url_replace = repo_config.get('dev_url_replace')
+        if dev_url_replace:
+            dev_urls = []
+            dev_url_f_r = dev_url_replace.split('|')
+            f_url = dev_url_f_r.pop(0)
+            for r_url in dev_url_f_r:
+                dev_urls.append(url.replace(f_url, r_url))
+            if len(dev_urls):
+                url += ' (' + ' , '.join(dev_urls) + ')'
+        meta = 'URL: ' + url        
+
         browser = payload.get('browser')
         if browser:
             meta += api_helper.append_body('Useragent: ' + browser.get('userAgent'))

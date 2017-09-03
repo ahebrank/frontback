@@ -30,7 +30,7 @@ module.exports = {
 		if (val && val.length) {
 			// set cookie
 			email = val;
-			createCookie(key, email);
+			createCookie(key, email, 365);
 		}
 		else {
 			// get cookie

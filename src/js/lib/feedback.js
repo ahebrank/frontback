@@ -15,6 +15,7 @@
 		};
 
 		var cookieEmail = require('./email.js');
+		var dropzone = require('./dropzone.js');
 
 		var settings = $.extend({
 				ajaxURL: 				'',
@@ -503,8 +504,6 @@
 								_ctx = _canvas.get(0).getContext('2d');
 								_ctx.drawImage(canvas, 0, 0, w, dh, 0, 0, w, dh);
 								img = _canvas.get(0).toDataURL();
-								post.img = img;
-								settings.onScreenshotTaken(post.img);
 								if(settings.showDescriptionModal) {
 									$('#ftbk-feedback-canvas-tmp').remove();
 									$('#ftbk-feedback-overview').show();
@@ -513,9 +512,12 @@
 									$('#ftbk-feedback-overview-description-text>textarea').remove();
 									$('#ftbk-feedback-overview-screenshot>img').remove();
 									$('<textarea id="ftbk-feedback-overview-note">' + $('#ftbk-feedback-note').val() + '</textarea>').insertAfter('#ftbk-feedback-overview-description-text h3:eq(0)');
-									$('#ftbk-feedback-overview-screenshot').append('<img class="ftbk-feedback-screenshot" src="' + img + '" />');
+									$('#ftbk-feedback-overview-screenshot').append('<img id="ftbk-feedback-screenshot" class="ftbk-feedback-screenshot" src="' + img + '" />');
+								
+									dropzone.handleDrop('ftbk-feedback-image-dropzone', 'ftbk-feedback-screenshot');
 								}
 								else {
+									post.img = img;
 									$('#ftbk-feedback-module').remove();
 									close();
 									_canvas.remove();
@@ -541,9 +543,15 @@
 
 						if ($('#ftbk-feedback-email').val().length > 0 && ($('#ftbk-feedback-note').val().length > 0 || $('#ftbk-feedback-overview-title').val().length)) {
 							$('#ftbk-feedback-submit-success,#ftbk-feedback-submit-error').remove();
+							
+							if (!('img' in post)) {
+								img = document.getElementById('ftbk-feedback-screenshot').getAttribute('src');
+								post.img = img;
+							}
+							settings.onScreenshotTaken(post.img);
+							
 							$('#ftbk-feedback-overview').hide();
 
-							post.img = img;
 							post.email = $('#ftbk-feedback-email').val();
 							cookieEmail.overviewEmail($('#ftbk-feedback-email').val());
 							post.title = $('#ftbk-feedback-overview-title').val();

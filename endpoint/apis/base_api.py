@@ -39,10 +39,11 @@ class BaseApi(object):
 
     # parse the image from the frontend
     def format_image(self, img):
-        prefix = "data:image/png;base64,"
-        if not img.startswith(prefix):
+        allowed_prefixes = ["data:image/png;base64,", "data:image/jpeg;base64,"]
+        match_prefix = [len(prefix) for prefix in allowed_prefixes if img.startswith(prefix)]
+        if not match_prefix:
             return False
-        img = img[len(prefix):]
+        img = img[match_prefix[0]:]
         return binascii.a2b_base64(img)
 
     # return a list of @mentions from a text field

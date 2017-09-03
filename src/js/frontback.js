@@ -8,10 +8,10 @@ if (global.frontback.repo && global.frontback.postUrl) {
 
   require('./lib/feedback.js');
 
-  function addstylesheet(url) {
+  var addstylesheet = function(url) {
      var $link = '<link rel="stylesheet" type="text/css" href="' + url + '">';
      frontback.jQuery('head').append($link);
-  }
+  };
 
 	css = frontback.postUrl+ '/assets/css/styles.css';
 	addstylesheet(css);
@@ -23,9 +23,9 @@ if (global.frontback.repo && global.frontback.postUrl) {
 }
 else {
   if (!frontback.repo) {
-  	console.log('Frontback: need frontbackRepo set with repository homepage.');
+  	console.log('Frontback: need frontback.repo set with repository homepage.');
   }
   if (!frontback.postUrl) {
-  	console.log('Frontback: need frontbackPostURL set with endpoint.');
+  	console.log('Frontback: need frontback.postUrl set with endpoint.');
   }
 }

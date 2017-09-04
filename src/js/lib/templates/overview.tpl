@@ -27,5 +27,5 @@
 	</div>
 	
 	<div id="ftbk-feedback-overview-error">Please enter an email and a title/description.</div>
-	<div class="ftbk-feedback-wizard-close"></div>
+	<button class="ftbk-feedback-wizard-close">Close</button>
 </div>

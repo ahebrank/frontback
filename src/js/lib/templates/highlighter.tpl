@@ -5,6 +5,6 @@
 
 	<div class="ftbk-feedback-buttons">
 		<button id="ftbk-feedback-highlighter-next" class="ftbk-feedback-next-btn ftbk-feedback-btn-gray">Next</button>
-		<button id="ftbk-feedback-highlighter-back" class="ftbk-feedback-back-btn ftbk-feedback-btn-gray">Back</button></div><div class="ftbk-feedback-wizard-close">
+		<button id="ftbk-feedback-highlighter-back" class="ftbk-feedback-back-btn ftbk-feedback-btn-gray">Back</button></div><button class="ftbk-feedback-wizard-close">Close</button>
 	</div>
 </div>

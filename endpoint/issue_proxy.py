@@ -3,6 +3,7 @@ import io
 import json
 import argparse
 import time
+from urllib import parse
 from flask import Flask, request, abort, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
 from api_helper import Api
@@ -79,6 +80,8 @@ def create_app(config, asynchronous=False, debug=False):
         private_token = repo_config.get('private_token')
         assignee_id = repo_config.get('assignee_id')
         tags = repo_config.get('tags')
+        link_dompath = repo_config.get('link_dompath')
+
         # tags may be a string or an array
         if tags and not isinstance(tags, list):
             tags = [tags]
@@ -91,7 +94,8 @@ def create_app(config, asynchronous=False, debug=False):
 
         # try to lookup a username
         if assignee_id and not assignee_id.isdigit():
-            print("Looking for user: %s (%s)..." % (assignee_id, get_elapsed_time(start_time)))
+            if debug:
+                print("Looking for user: %s (%s)..." % (assignee_id, get_elapsed_time(start_time)))
             assignee_id = this_api.lookup_user_id(assignee_id)
             if debug:
                 print("Found user %s (%s)" % (assignee_id, get_elapsed_time(start_time)))
@@ -111,7 +115,13 @@ def create_app(config, asynchronous=False, debug=False):
                 body += api_helper.append_body(file_url)
 
         # browser info
+        dompath = payload.get('dompath')
         url = payload.get('url')
+        if dompath and link_dompath:
+            for i, d in enumerate(dompath):
+                dom_q = parse.urlencode({'fb_dompath[%d]' % (i): d})
+                url += ('&' if '?' in url else '?') + dom_q
+
         dev_url_replace = repo_config.get('dev_url_replace')
         if dev_url_replace:
             dev_urls = []
@@ -121,7 +131,10 @@ def create_app(config, asynchronous=False, debug=False):
                 dev_urls.append(url.replace(f_url, r_url))
             if len(dev_urls):
                 url += ' (' + ' , '.join(dev_urls) + ')'
-        meta = 'URL: ' + url        
+        meta = 'URL: ' + url
+
+        if dompath:
+            meta += api_helper.append_body('DOM: ' + '; '.join(dompath))
 
         browser = payload.get('browser')
         if browser:

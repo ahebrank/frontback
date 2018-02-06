@@ -3,7 +3,8 @@
         "private_token": "GITLAB_PRIVATE_TOKEN",
         "assignee_id": "@ahebrank",
         "tags": "Incoming",
-        "dev_url_replace": "staging.com|localhost"
+        "dev_url_replace": "staging.com|localhost",
+        "link_dompath": true
     },
     "https://trello.com/b/XXXXXX/api-test": {
         "app_key": "TRELLO_APP_KEY",

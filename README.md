@@ -78,6 +78,8 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
 
 - *dev_url_replace*: perform string find/replace to append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click. Examples: `"dev_url_replace": "staging.example.com|localhost"`. For additional (e.g., staging) URLs, append more pipes.
 
+- *link_dompath*: the issue reporting widget attempts to pass the path through to the DOM to any selected element in the screenshot. Setting this parameter to `true` will add a query parameter to the reporting URL so that visiting the page will re-highlight the originally highlighted element.
+
 ### Start it up
 
 The python wsgi web stack configuration has a lot of pieces in its newer incarnation.

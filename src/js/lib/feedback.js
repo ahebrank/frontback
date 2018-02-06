@@ -719,6 +719,12 @@
                         _w = $toHighlight.width() + parseInt($toHighlight.css('padding-left'), 10) + parseInt($toHighlight.css('padding-right'), 10) + 20,
                         _h = $toHighlight.height() + parseInt($toHighlight.css('padding-top'), 10) + parseInt($toHighlight.css('padding-bottom'), 10) + 20;
                     $('body').append('<div class="ftbk-feedback-rehighlighted" style="top:' + _y + 'px;left:' + _x + 'px;width:' + _w + 'px;height:' + _h + 'px;z-index:' + maxZ +';"></div>');
+                    var scrollY = _y - (document.body.clientHeight / 2);
+                    if (scrollY > 0) {
+                        $('html, body').animate({
+                            scrollTop: scrollY
+                        }, 500);
+                    }
                 });
             }
 

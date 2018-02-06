@@ -3,10 +3,11 @@ from urllib.parse import urlparse, quote_plus
 
 class GitlabApi(BaseApi):
     project_id = None
+    api_version = "v4"
 
     def __init__(self, homepage, token, app_key):
         parsed_url = urlparse(homepage)
-        super(GitlabApi, self).__init__(parsed_url.scheme + "://" + parsed_url.netloc + "/api/v3", homepage, {"private_token": token})
+        super(GitlabApi, self).__init__(parsed_url.scheme + "://" + parsed_url.netloc + "/api/" + self.api_version, homepage, {"private_token": token})
         self.project_id = self.lookup_project_id()
 
     def lookup_username(self, email):

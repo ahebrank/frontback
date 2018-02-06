@@ -134,5 +134,5 @@ Use `make test`, which does the following:
 
     ```bash
     cd endpoint
-    python issue_proxy.py -c repos.json -p 9000 --debug
+    python3 issue_proxy.py -c repos.json -p 9000 --debug
     ```

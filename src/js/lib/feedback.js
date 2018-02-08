@@ -510,7 +510,7 @@
                                 _canvas = $('<canvas id="ftbk-feedback-canvas-tmp" width="'+ w +'" height="'+ dh +'"/>').hide().appendTo('body');
                                 _ctx = _canvas.get(0).getContext('2d');
                                 _ctx.drawImage(canvas, 0, 0, w, dh, 0, 0, w, dh);
-                                img = _canvas.toDataURL();
+                                img = _canvas.get(0).toDataURL();
                                 if(settings.showDescriptionModal) {
                                     $('#ftbk-feedback-canvas-tmp').remove();
                                     $('#ftbk-feedback-overview').show();

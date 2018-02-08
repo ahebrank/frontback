@@ -66,3 +66,7 @@ class BaseApi(object):
             else:
                 return "@" + email
         return False
+
+    # return a list of usernames
+    def get_project_users(self):
+        return []

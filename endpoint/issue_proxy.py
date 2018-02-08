@@ -31,34 +31,17 @@ def create_app(config, asynchronous=False, debug=False):
         if request.method == "GET":
             abort(404)
         elif request.method == "POST":
-            payload = request.get_json()
-
-            if not payload:
-                return set_resp({'status': 'request not json', 'received': request.data}, 400)
-
-            # common for events
-            repo_id = payload.get('repoID')
-            repo_config = repos_data.get(repo_id)
-
-            if not repo_config:
-                return set_resp({'status': 'repo not found in config', 'repo_id': repo_id}, 400)
-
-            if debug:
-                print("Found config for %s (%s): " % (repo_id, get_elapsed_time(start_time)))
-                print(repo_config)
-
-            private_token = repo_config.get('private_token')
-            if not private_token:
-                abort(403)
+            config = setup_api(request, start_time)
 
             # run the API
             if asynchronous:
                 executor.submit(
                     issue_worker,
-                    payload, repo_id, repo_config, start_time
+                    config,
+                    start_time
                 )
             else:
-                if issue_worker(payload, repo_id, repo_config, start_time):
+                if issue_worker(config, start_time):
                     if debug:
                         print("Returning sync OK (%s)" % (get_elapsed_time(start_time)))
                     return set_resp({'status': 'submitted'}, 200)
@@ -70,14 +53,24 @@ def create_app(config, asynchronous=False, debug=False):
             if debug:
                 print("Returning async OK (%s)" % (get_elapsed_time(start_time)))
             return set_resp({'status': 'submitted'})
-    
-    def issue_worker(payload, repo_id, repo_config, start_time):
-        # get API based on repo identifier
-        api_helper = Api()
-        api = api_helper.match_api_from_id(repo_id)
 
-        app_key = repo_config.get('app_key')
-        private_token = repo_config.get('private_token')
+    @app.route("/users", methods=['POST'])
+    def users():
+        start_time = time.time()
+        config = setup_api(request, start_time)
+        this_api = config.get('api')
+        usernames = this_api.get_project_users()
+        if debug:
+            print("Got usernames %s (%s)" % (", ".join(usernames), get_elapsed_time(start_time)))
+        return set_resp({'usernames': usernames}, 200)
+    
+    def issue_worker(config, start_time):
+        payload = config.get('payload')
+        repo_config = config.get('repo_config')
+
+        api_helper = Api()
+        this_api = config.get('api')
+
         assignee_id = repo_config.get('assignee_id')
         tags = repo_config.get('tags')
         link_dompath = repo_config.get('link_dompath')
@@ -85,12 +78,6 @@ def create_app(config, asynchronous=False, debug=False):
         # tags may be a string or an array
         if tags and not isinstance(tags, list):
             tags = [tags]
-
-        if debug:
-            print("Loading API (%s)..." % (get_elapsed_time(start_time)))
-        this_api = api(repo_id, private_token, app_key)
-        if debug:
-            print("Loaded API handler (%s)" % (get_elapsed_time(start_time)))
 
         # try to lookup a username
         if assignee_id and not assignee_id.isdigit():
@@ -154,6 +141,48 @@ def create_app(config, asynchronous=False, debug=False):
                 print("Created issue (%s)" % (get_elapsed_time(start_time)))
             return True
         return False
+
+    def setup_api(request, start_time):
+        payload = request.get_json()
+
+        if not payload:
+            return set_resp({'status': 'request not json', 'received': request.data}, 400)
+
+        # common for events
+        repo_id = payload.get('repoID')
+        repo_config = repos_data.get(repo_id)
+
+        if not repo_config:
+            return set_resp({'status': 'repo not found in config', 'repo_id': repo_id}, 400)
+
+        if debug:
+            print("Found config for %s (%s): " % (repo_id, get_elapsed_time(start_time)))
+            print(repo_config)
+
+        private_token = repo_config.get('private_token')
+        if not private_token:
+            abort(403)
+
+        api_helper = Api()
+        api = api_helper.match_api_from_id(repo_id)
+
+        app_key = repo_config.get('app_key')
+        private_token = repo_config.get('private_token')
+
+        if debug:
+            print("Loading API (%s)..." % (get_elapsed_time(start_time)))
+        this_api = api(repo_id, private_token, app_key)
+        if debug:
+            print("Loaded API handler (%s)" % (get_elapsed_time(start_time)))
+
+        return {
+            'payload': payload,
+            'repo_id': repo_id,
+            'repo_config': repo_config,
+            'private_token': private_token,
+            'api': this_api
+        }
+
 
     # static assets
     @app.route('/assets/<path:path>')

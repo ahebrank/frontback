@@ -168,6 +168,29 @@
 
                     post.repoID = settings.repoID;
 
+                    // prefetch users
+                    settings.usernames = null;
+                    $.ajax({
+                        url: settings.ajaxURL + 'users',
+                        dataType: 'json',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(post),
+                        success: function(data) {
+                            if (data.usernames.length) {
+                                var $dropdown = $('<select name="feedback-email" id="ftbk-feedback-email">');
+                                for (var i = 0; i < data.usernames.length; i++) {
+                                    $dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
+                                }
+                                var email = cookieEmail.overviewEmail();
+                                $('#ftbk-feedback-email')
+                                    .replaceWith($dropdown)
+                                    .val(email);
+                                $('#ftbk-feedback-email option[value="' + email + '"]').attr('selected', 'selected');
+                            }
+                        }
+                    });
+
                     if (settings.postBrowserInfo) {
                         post.browser 				= {};
                         post.browser.appCodeName	= navigator.appCodeName;

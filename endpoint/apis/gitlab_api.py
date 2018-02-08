@@ -4,11 +4,28 @@ from urllib.parse import urlparse, quote_plus
 class GitlabApi(BaseApi):
     project_id = None
     api_version = "v4"
+    project = None
 
     def __init__(self, homepage, token, app_key):
         parsed_url = urlparse(homepage)
         super(GitlabApi, self).__init__(parsed_url.scheme + "://" + parsed_url.netloc + "/api/" + self.api_version, homepage, {"private_token": token})
         self.project_id = self.lookup_project_id()
+
+    def get_project_users(self):
+        users = []
+        project_users = self.get("/projects/%s/members" % (self.project_id))
+        if len(project_users) > 0:
+            users += project_users
+        # find members of project namespace
+        project = self.get_project()
+        namespace = project['namespace']['id']
+        group_users = self.get("/groups/%s/members" % (namespace))
+        if len(group_users) > 0:
+            users += group_users
+
+        if len(users) > 0:
+            return sorted(set([user['username'] for user in users]), key=lambda s: s.lower())
+        return []
 
     def lookup_username(self, email):
         users = self.get("/users?search=" + email)
@@ -25,9 +42,11 @@ class GitlabApi(BaseApi):
         return False
 
     def get_project(self):
-        parsed_url = urlparse(self.homepage)
-        project_name = quote_plus(parsed_url.path[1:])
-        return self.get("/projects/" + project_name)
+        if self.project is None:
+            parsed_url = urlparse(self.homepage)
+            project_name = quote_plus(parsed_url.path[1:])
+            self.project = self.get("/projects/" + project_name)
+        return self.project
 
     def lookup_project_id(self):
         project = self.get_project()

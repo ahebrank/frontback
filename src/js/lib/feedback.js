@@ -510,7 +510,14 @@
                                 _canvas = $('<canvas id="ftbk-feedback-canvas-tmp" width="'+ w +'" height="'+ dh +'"/>').hide().appendTo('body');
                                 _ctx = _canvas.get(0).getContext('2d');
                                 _ctx.drawImage(canvas, 0, 0, w, dh, 0, 0, w, dh);
-                                img = _canvas.get(0).toDataURL();
+                                // blank image
+                                img = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
+                                try {
+                                    img = _canvas.get(0).toDataURL();
+                                }
+                                catch (err) {
+                                    console.log(err.message);
+                                }
                                 if(settings.showDescriptionModal) {
                                     $('#ftbk-feedback-canvas-tmp').remove();
                                     $('#ftbk-feedback-overview').show();
@@ -520,7 +527,6 @@
                                     $('#ftbk-feedback-overview-screenshot>img').remove();
                                     $('<textarea id="ftbk-feedback-overview-note">' + $('#ftbk-feedback-note').val() + '</textarea>').insertAfter('#ftbk-feedback-overview-description-text h3:eq(0)');
                                     $('#ftbk-feedback-overview-screenshot').append('<img id="ftbk-feedback-screenshot" class="ftbk-feedback-screenshot" src="' + img + '" />');
-                                
                                     dropzone.handleDrop('ftbk-feedback-image-dropzone', 'ftbk-feedback-screenshot');
                                 }
                                 else {

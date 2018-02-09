@@ -2,18 +2,18 @@ from .base_api import BaseApi
 from urllib.parse import urlparse, quote_plus
 
 class GitlabApi(BaseApi):
-    project_id = None
     api_version = "v4"
+
     project = None
+    project_id = None
 
     def __init__(self, homepage, token, app_key):
         parsed_url = urlparse(homepage)
         super(GitlabApi, self).__init__(parsed_url.scheme + "://" + parsed_url.netloc + "/api/" + self.api_version, homepage, {"private_token": token})
-        self.project_id = self.lookup_project_id()
 
     def get_project_users(self):
         users = []
-        project_users = self.get("/projects/%s/members" % (self.project_id))
+        project_users = self.get("/projects/%s/members" % (self.lookup_project_id()))
         if len(project_users) > 0:
             users += project_users
         # find members of project namespace
@@ -49,17 +49,18 @@ class GitlabApi(BaseApi):
         return self.project
 
     def lookup_project_id(self):
-        project = self.get_project()
-        if "id" in project:
-            return project['id']
-        return None
+        if self.project_id is None:
+            project = self.get_project()
+            if "id" in project:
+                self.project_id = project['id']
+        return self.project_id
 
     def create_issue(self, title, body, meta, assignee_id=None, submitter_id=None, tags=None):
         # collapse metadata into issue description
         body = body + "\n\n" + meta
 
         data = {
-            'id': self.project_id,
+            'id': self.lookup_project_id(),
             'title': title,
             'description': body
         }
@@ -75,7 +76,7 @@ class GitlabApi(BaseApi):
 
     def comment_on_issue(self, issue_id, comment):
         data = {
-            'id': self.project_id,
+            'id': self.lookup_project_id(),
             'issue_id': issue_id,
             'body': comment
         }
@@ -84,7 +85,7 @@ class GitlabApi(BaseApi):
     def attach_image(self, img):
         file = self.format_image(img)
         data = {
-            'id': self.project_id
+            'id': self.lookup_project_id()
         }
         result = self.post("/projects/{id}/uploads".format(**data), data, file)
         file_md = result.get('markdown')

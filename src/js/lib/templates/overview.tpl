@@ -6,6 +6,10 @@
 			<h3>Your issue tracker username</h3>
 			<input type="text" name="feedback-email" id="ftbk-feedback-email">
 		</div>
+		<div id="ftbk-feedback-assignee-text">
+			<h3>Issue assignee</h3>
+			<input type="text" name="feedback-assignee" id="ftbk-feedback-assignee">
+		</div>
 		<div id="ftbk-feedback-overview-title-text">
 			<h3>Issue title</h3>
 			<input type="text" name="feedback-overview-title" id="ftbk-feedback-overview-title">

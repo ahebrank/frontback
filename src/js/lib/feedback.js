@@ -168,8 +168,21 @@
 
                     post.repoID = settings.repoID;
 
+                    // fetch assignee
+                    $.ajax({
+                        url: settings.ajaxURL + 'assignee',
+                        dataType: 'json',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(post),
+                        success: function(data) {
+                            if (data.username) {
+                                $('#ftbk-feedback-assignee').val(data.username);
+                            }
+                        }
+                    });
+
                     // prefetch users
-                    settings.usernames = null;
                     $.ajax({
                         url: settings.ajaxURL + 'users',
                         dataType: 'json',
@@ -178,15 +191,26 @@
                         data: JSON.stringify(post),
                         success: function(data) {
                             if (data.usernames.length) {
-                                var $dropdown = $('<select name="feedback-email" id="ftbk-feedback-email">');
-                                for (var i = 0; i < data.usernames.length; i++) {
-                                    $dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
+                                var i;
+                                var $user_dropdown = $('<select name="feedback-email" id="ftbk-feedback-email">');
+                                for (i = 0; i < data.usernames.length; i++) {
+                                    $user_dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
                                 }
                                 var email = cookieEmail.overviewEmail();
                                 $('#ftbk-feedback-email')
-                                    .replaceWith($dropdown)
+                                    .replaceWith($user_dropdown)
                                     .val(email);
                                 $('#ftbk-feedback-email option[value="' + email + '"]').attr('selected', 'selected');
+
+                                var $assignee_dropdown = $('<select name="feedback-assignee" id="ftbk-feedback-assignee">');
+                                for (i = 0; i < data.usernames.length; i++) {
+                                    $assignee_dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
+                                }
+                                var assignee = $('#ftbk-feedback-assignee').val();
+                                $('#ftbk-feedback-assignee')
+                                    .replaceWith($assignee_dropdown)
+                                    .val(assignee);
+                                $('#ftbk-feedback-assignee option[value="' + assignee + '"]').attr('selected', 'selected');
                             }
                         }
                     });

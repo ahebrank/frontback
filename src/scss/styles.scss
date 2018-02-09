@@ -196,12 +196,18 @@ $fullscreen: screen and (min-width: 641px);
 	}
 }
 #ftbk-feedback-overview-title,
-#ftbk-feedback-email {
+input#ftbk-feedback-email,
+input#ftbk-feedback-assignee {
 	@extend %input;
+}
+#ftbk-feedback-overview-title,
+input#ftbk-feedback-email,
+input#ftbk-feedback-assignee {
 	&:focus {
 		border: 1px solid $color_fountain_blue_approx;
 	}
 }
+
 #ftbk-feedback-canvas,
 #ftbk-feedback-canvas-tmp {
 	position: absolute;

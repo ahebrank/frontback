@@ -63,6 +63,16 @@ def create_app(config, asynchronous=False, debug=False):
         if debug:
             print("Got usernames %s (%s)" % (", ".join(usernames), get_elapsed_time(start_time)))
         return set_resp({'usernames': usernames}, 200)
+
+    @app.route("/assignee", methods=['POST'])
+    def assignee():
+        start_time = time.time()
+        config = setup_api(request, start_time)
+        repo_config = config.get('repo_config')
+        assignee = repo_config.get('assignee_id')
+        if debug:
+            print("Found assignee %s (%s)" % (assignee, get_elapsed_time(start_time)))
+        return set_resp({'username': assignee}, 200)
     
     def issue_worker(config, start_time):
         payload = config.get('payload')
@@ -78,6 +88,10 @@ def create_app(config, asynchronous=False, debug=False):
         # tags may be a string or an array
         if tags and not isinstance(tags, list):
             tags = [tags]
+
+        # override the default assignee?
+        if payload.get('assignee_id'):
+            assignee_id = payload.get('assignee_id')
 
         # try to lookup a username
         if assignee_id and not assignee_id.isdigit():

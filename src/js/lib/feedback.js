@@ -58,11 +58,11 @@
             var supportedBrowser = !!window.HTMLCanvasElement;
             var isFeedbackButtonNative = settings.feedbackButton == '.ftbk-feedback-btn';
             if (supportedBrowser) {
-                if(isFeedbackButtonNative) {
+                if(isFeedbackButtonNative && !settings.hideButton) {
                     var button = require('./templates/feedback-button.tpl')
                     $('body').append(button({'text': settings.initButtonText}));
-                    highlightqps();
                 }
+                highlightqps();
 
                 $(document).on('click', settings.feedbackButton, function(){
                     if(isFeedbackButtonNative) {
@@ -570,9 +570,7 @@
                                     $('#ftbk-feedback-overview').show();
                                     $('#ftbk-feedback-email').val(cookieEmail.overviewEmail());
                                     $('#ftbk-feedback-overview').find('input').filter(function() { return $(this).val() == ""; }).first().focus();
-                                    $('#ftbk-feedback-overview-description-text>textarea').remove();
                                     $('#ftbk-feedback-overview-screenshot>img').remove();
-                                    $('<textarea id="ftbk-feedback-overview-note">' + $('#ftbk-feedback-note').val() + '</textarea>').insertAfter('#ftbk-feedback-overview-description-text h3:eq(0)');
                                     $('#ftbk-feedback-overview-screenshot').append('<img id="ftbk-feedback-screenshot" class="ftbk-feedback-screenshot" src="' + img + '" />');
                                     dropzone.handleDrop('ftbk-feedback-image-dropzone', 'ftbk-feedback-screenshot');
                                 }

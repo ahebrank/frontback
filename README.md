@@ -27,7 +27,11 @@ This leans heavily on:
 </script>
 ```
 
-Where the first two variables define the homepage of the repository and the endpoint of the proxy.
+The `repo` and 'postUrl` keys define the homepage of the repository and the endpoint of the proxy.
+
+Other optional parameters include:
+
+- `hideButton`: hide the submission button while still running the script (might be helpful for preventing issue submission from local dev instances)
 
 #### CMS integration
 

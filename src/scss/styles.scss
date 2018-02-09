@@ -63,12 +63,6 @@ $fullscreen: screen and (min-width: 641px);
 	}
 }
 
-%text-reset {
-	font-family: Arial, sans-serif;
-	color: black;
-	font-size: 14px;
-}
-
 %error {
 	display: none;
 	color: $color_coral_red_approx;
@@ -80,7 +74,6 @@ $fullscreen: screen and (min-width: 641px);
 }
 
 %input {
-	@extend %text-reset;
 	outline: none;
 	border: 1px solid $gray;
 	width: 100%;
@@ -92,20 +85,12 @@ $fullscreen: screen and (min-width: 641px);
 
 // general resets
 #ftbk-feedback-module {
-	button {
-		margin: 0;
-		@extend %text-reset;
-	}
-	p, input, textarea, select {
-		@extend %text-reset;
-		font-size: 13px;
-	}
-	h3 {
-		@extend %text-reset;
-		font-weight: normal;
-		font-size: 15px;
-		margin: 8px 0;
-	}
+	line-height: 1.15;
+	-webkit-text-size-adjust: 100%;
+
+	font-family: sans-serif;
+
+	@import "reset";
 }
 
 .ftbk-fixed {
@@ -115,7 +100,6 @@ $fullscreen: screen and (min-width: 641px);
 
 .ftbk-feedback-btn {
 	margin: 0;
-	@extend %text-reset;
 	font-size: 14px;
 	position: fixed;
 	bottom: -3px;
@@ -166,8 +150,9 @@ $fullscreen: screen and (min-width: 641px);
 }
 
 .ftbk-feedback-logo {
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
-	font-size: 18px;
+	font-size: 110%;
+	font-weight: bold;
+	margin-bottom: 1em;
 }
 
 #ftbk-feedback-note-tmp {
@@ -177,9 +162,6 @@ $fullscreen: screen and (min-width: 641px);
 	min-height: 90px;
 	outline: none;
 	padding: 4px;
-	&:focus {
-		border: 1px solid $color_fountain_blue_approx;
-	}
 }
 #ftbk-feedback-overview-note {
 	resize: none;
@@ -188,9 +170,6 @@ $fullscreen: screen and (min-width: 641px);
 	border: 1px solid $gray;
 	width: 100%;
 	padding: 5px;
-	&:focus {
-		border: 1px solid $color_fountain_blue_approx;
-	}
 	@media #{$fullscreen} {
 		width: 314px;
 	}
@@ -199,13 +178,6 @@ $fullscreen: screen and (min-width: 641px);
 input#ftbk-feedback-email,
 input#ftbk-feedback-assignee {
 	@extend %input;
-}
-#ftbk-feedback-overview-title,
-input#ftbk-feedback-email,
-input#ftbk-feedback-assignee {
-	&:focus {
-		border: 1px solid $color_fountain_blue_approx;
-	}
 }
 
 #ftbk-feedback-canvas,
@@ -260,11 +232,9 @@ input#ftbk-feedback-assignee {
 	}
 }
 #ftbk-feedback-welcome-error {
-	@extend %text-reset;
 	@extend %error;
 }
 #ftbk-feedback-overview-error {
-	@extend %text-reset;
 	@extend %error;
 	margin-top: 10px;
 	max-width: 50%;
@@ -276,16 +246,6 @@ input#ftbk-feedback-assignee {
 	position: fixed;
 	width: 540px;
 	@extend %modal;
-	label {
-		float: left;
-		margin: 0 0 0 10px;
-		line-height: 30px;
-		font-size: 13px;
-		font-weight: normal;
-		&.lower {
-			margin-top: 10px;
-		}
-	}
 }
 #ftbk-feedback-overview {
 	display: none;
@@ -297,6 +257,10 @@ input#ftbk-feedback-assignee {
 	height: auto;
 	@extend %modal;
 	max-width: 100% !important;
+
+	label {
+		display: block;
+	}
 }
 #ftbk-feedback-submit-error,
 #ftbk-feedback-submit-success {
@@ -308,6 +272,9 @@ input#ftbk-feedback-assignee {
 	margin-bottom: 20px!important;
 }
 #ftbk-feedback-overview-description {
+	> div {
+		margin-bottom: 1em;
+	}
 	@media #{$fullscreen} {
 		float: left;
 	}

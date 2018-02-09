@@ -14,11 +14,12 @@ if (global.frontback.repo && global.frontback.postUrl) {
   };
 
 	css = frontback.postUrl+ '/assets/css/styles.css';
-	addstylesheet(css);
-
+  addstylesheet(css);
+  
 	frontback.jQuery.feedback({
     repoID: frontback.repo,
-	  ajaxURL: frontback.postUrl,
+    ajaxURL: frontback.postUrl,
+    hideButton: frontback.hideButton
 	});
 }
 else {

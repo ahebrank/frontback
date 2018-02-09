@@ -1,6 +1,6 @@
 <div class="ftbk-feedback" id="ftbk-feedback-welcome">
-	<div class="ftbk-feedback-logo">Feedback</div
-	><p>Feedback lets you send us suggestions about our products. We welcome problem reports, feature ideas and general comments.</p>
+	<div class="ftbk-feedback-logo">Feedback</di>>
+	<p>Feedback lets you send us suggestions about our products. We welcome problem reports, feature ideas and general comments.</p>
 
 	<p>Start by writing a brief description:</p>
 	<textarea id="ftbk-feedback-note-tmp"></textarea>

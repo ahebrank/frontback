@@ -18,7 +18,8 @@ var gulp = require('gulp'),
 	sass = require('gulp-sass'),
 	gutil = require('gulp-util'),
 	jstify = require('jstify'),
-	uglify = require('gulp-uglify');
+	uglify = require('gulp-uglify'),
+	replace = require('gulp-replace');
 
 // bower_path is used as a prefix in other paths
 var bower_path = 'src/bower_components';
@@ -65,12 +66,18 @@ gulp.task('js', function() {
 	});
 		
 	b.transform(jstify);
+
+	var v = process.env.CI_COMMIT_SHA;
+	if (!v) {
+		v = '0';
+	}
 	
 	return b.bundle()
 		.on( 'error', plumber_error )
 		.pipe( source( 'frontback.js' ) )
 		.pipe( buffer() )
- 		.pipe( gulpif( argv.min, uglify({ mangle: false })) )
+		.pipe( replace( 'DEPLOY_KEY', v ) ) 
+		.pipe( gulpif( argv.min, uglify({ mangle: false })) )
 		.pipe( gulp.dest( paths.dist.js ));
 });
 

@@ -15,6 +15,7 @@
     "gulp-filter": "^4.0.0",
     "gulp-if": "^2.0.0",
     "gulp-plumber": "latest",
+    "gulp-replace": "^0.6.1",
     "gulp-sane-watch": "^1.1.2",
     "gulp-sass": "^2.3.2",
     "gulp-uglify": "^1.5.3",

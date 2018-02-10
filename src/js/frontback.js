@@ -13,7 +13,7 @@ if (global.frontback.repo && global.frontback.postUrl) {
      frontback.jQuery('head').append($link);
   };
 
-	css = frontback.postUrl+ '/assets/css/styles.css';
+	css = frontback.postUrl+ '/assets/css/styles.css?v=DEPLOY_KEY';
   addstylesheet(css);
   
 	frontback.jQuery.feedback({

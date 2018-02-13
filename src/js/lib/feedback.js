@@ -614,6 +614,7 @@
                             cookieEmail.overviewEmail($('#ftbk-feedback-email').val());
                             post.title = $('#ftbk-feedback-overview-title').val();
                             post.note = $('#ftbk-feedback-note').val();
+                            post.assignee_id = $('#ftbk-feedback-assignee').val();
                             $.ajax({
                                 url: settings.ajaxURL,
                                 dataType: 'json',

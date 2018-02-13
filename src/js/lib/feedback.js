@@ -55,6 +55,10 @@
                 settings.ajaxURL += '/';
             }
 
+            if (!settings.options) {
+                settings.options = {};
+            }
+
             var supportedBrowser = !!window.HTMLCanvasElement;
             var isFeedbackButtonNative = settings.feedbackButton == '.ftbk-feedback-btn';
             if (supportedBrowser) {

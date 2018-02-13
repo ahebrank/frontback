@@ -19,7 +19,8 @@ This leans heavily on:
 <script>
 	window.frontback = {
 		repo: 'https://gitlab.com/newcity/test',
-		postUrl: 'http://' + host + ':9000'
+        postUrl: 'http://' + host + ':9000',
+        options: {}
 	};
 	var script = document.createElement('script');
 	script.src = frontback.postUrl + '/assets/js/frontback.js';
@@ -29,9 +30,11 @@ This leans heavily on:
 
 The `repo` and 'postUrl` keys define the homepage of the repository and the endpoint of the proxy.
 
-Other optional parameters include:
+`options` parameters include:
 
-- `hideButton`: hide the submission button while still running the script (might be helpful for preventing issue submission from local dev instances)
+- `options.hideButton`: if `true`, hide the submission button while still running the script (might be helpful for preventing issue submission from local dev instances)
+- `options.hideAssigneeOptions`: if `true`, hide the assignee select (the default assignee from the endpoint repo config will be used if provided)
+- `options.hideReporterOptions`: if `true`, hide the user select (it will remain a text box)
 
 #### CMS integration
 

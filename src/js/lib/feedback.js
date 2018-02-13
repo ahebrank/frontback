@@ -58,7 +58,7 @@
             var supportedBrowser = !!window.HTMLCanvasElement;
             var isFeedbackButtonNative = settings.feedbackButton == '.ftbk-feedback-btn';
             if (supportedBrowser) {
-                if(isFeedbackButtonNative && !settings.hideButton) {
+                if(isFeedbackButtonNative && !settings.options.hideButton) {
                     var button = require('./templates/feedback-button.tpl')
                     $('body').append(button({'text': settings.initButtonText}));
                 }
@@ -169,51 +169,63 @@
                     post.repoID = settings.repoID;
 
                     // fetch assignee
-                    $.ajax({
-                        url: settings.ajaxURL + 'assignee',
-                        dataType: 'json',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(post),
-                        success: function(data) {
-                            if (data.username) {
-                                $('#ftbk-feedback-assignee').val(data.username);
-                            }
-                        }
-                    });
-
-                    // prefetch users
-                    $.ajax({
-                        url: settings.ajaxURL + 'users',
-                        dataType: 'json',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(post),
-                        success: function(data) {
-                            if (data.usernames.length) {
-                                var i;
-                                var $user_dropdown = $('<select name="feedback-email" id="ftbk-feedback-email">');
-                                for (i = 0; i < data.usernames.length; i++) {
-                                    $user_dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
+                    if (settings.options.hideAssigneeOptions) {
+                        $('#ftbk-feedback-assignee-text').remove();
+                    }
+                    else {
+                        $.ajax({
+                            url: settings.ajaxURL + 'assignee',
+                            dataType: 'json',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(post),
+                            success: function(data) {
+                                if (data.username) {
+                                    $('#ftbk-feedback-assignee').val(data.username);
                                 }
-                                var email = cookieEmail.overviewEmail();
-                                $('#ftbk-feedback-email')
-                                    .replaceWith($user_dropdown)
-                                    .val(email);
-                                $('#ftbk-feedback-email option[value="' + email + '"]').attr('selected', 'selected');
-
-                                var $assignee_dropdown = $('<select name="feedback-assignee" id="ftbk-feedback-assignee">');
-                                for (i = 0; i < data.usernames.length; i++) {
-                                    $assignee_dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
-                                }
-                                var assignee = $('#ftbk-feedback-assignee').val();
-                                $('#ftbk-feedback-assignee')
-                                    .replaceWith($assignee_dropdown)
-                                    .val(assignee);
-                                $('#ftbk-feedback-assignee option[value="' + assignee + '"]').attr('selected', 'selected');
                             }
-                        }
-                    });
+                        });
+                    }
+
+                    // fetch user select options
+                    if (!settings.options.hideAssigneeOptions || !settings.options.hideReporterOptions) {
+                        $.ajax({
+                            url: settings.ajaxURL + 'users',
+                            dataType: 'json',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(post),
+                            success: function(data) {
+                                if (data.usernames.length) {
+                                    var i;
+
+                                    if (!settings.options.hideReporterOptions) {
+                                        var $user_dropdown = $('<select name="feedback-email" id="ftbk-feedback-email">');
+                                        for (i = 0; i < data.usernames.length; i++) {
+                                            $user_dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
+                                        }
+                                        var email = cookieEmail.overviewEmail();
+                                        $('#ftbk-feedback-email')
+                                            .replaceWith($user_dropdown)
+                                            .val(email);
+                                        $('#ftbk-feedback-email option[value="' + email + '"]').attr('selected', 'selected');
+                                    }
+
+                                    if (!settings.options.hideAssigneeOptions) {
+                                        var $assignee_dropdown = $('<select name="feedback-assignee" id="ftbk-feedback-assignee">');
+                                        for (i = 0; i < data.usernames.length; i++) {
+                                            $assignee_dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
+                                        }
+                                        var assignee = $('#ftbk-feedback-assignee').val();
+                                        $('#ftbk-feedback-assignee')
+                                            .replaceWith($assignee_dropdown)
+                                            .val(assignee);
+                                        $('#ftbk-feedback-assignee option[value="' + assignee + '"]').attr('selected', 'selected');
+                                    }
+                                }
+                            }
+                        });
+                    }
 
                     if (settings.postBrowserInfo) {
                         post.browser 				= {};

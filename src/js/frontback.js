@@ -19,7 +19,7 @@ if (global.frontback.repo && global.frontback.postUrl) {
 	frontback.jQuery.feedback({
     repoID: frontback.repo,
     ajaxURL: frontback.postUrl,
-    hideButton: frontback.hideButton
+    options: frontback.options
 	});
 }
 else {

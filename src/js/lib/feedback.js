@@ -799,10 +799,10 @@
             }
 
             function getZIndex(e) {
-                var z = document.defaultView.getComputedStyle(e).getPropertyValue('z-index');
+                var z = window.getComputedStyle(e).getPropertyValue('z-index');
                 if (isNaN(z)) {
                     var p = e.parentNode;
-                    if (p) {
+                    if (p instanceof HTMLElement) {
                         return getZIndex(p);
                     }
                     return 0;

@@ -787,11 +787,7 @@
                         _w = $toHighlight.width() + parseInt($toHighlight.css('padding-left'), 10) + parseInt($toHighlight.css('padding-right'), 10) + 20,
                         _h = $toHighlight.height() + parseInt($toHighlight.css('padding-top'), 10) + parseInt($toHighlight.css('padding-bottom'), 10) + 20;
                     // place just below the element to be highlighted
-                    var zindex = $toHighlight.css('z-index');
-                    if (isNan(zindex)) {
-                        zindex = 0;
-                    }
-                    zindex -= 1;
+                    var zindex = getZIndex($toHighlight[0]) - 1;
                     $('body').append('<div class="ftbk-feedback-rehighlighted" style="top:' + _y + 'px;left:' + _x + 'px;width:' + _w + 'px;height:' + _h + 'px;z-index:' + zindex +';"></div>');
                     var scrollY = _y - (document.body.clientHeight / 2);
                     if (scrollY > 0) {
@@ -800,6 +796,18 @@
                         }, 500);
                     }
                 });
+            }
+
+            function getZIndex(e) {
+                var z = document.defaultView.getComputedStyle(e).getPropertyValue('z-index');
+                if (isNaN(z)) {
+                    var p = e.parentNode;
+                    if (p) {
+                        return getZIndex(p);
+                    }
+                    return 0;
+                }
+                return z; 
             }
 
         };

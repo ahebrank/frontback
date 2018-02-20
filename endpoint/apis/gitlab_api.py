@@ -13,13 +13,15 @@ class GitlabApi(BaseApi):
 
     def get_project_users(self):
         users = []
-        project_users = self.get("/projects/%s/members" % (self.lookup_project_id()))
+        # TODO: deal with pagination for really big projects
+        project_users = self.get("/projects/%s/members?per_page=100" % (self.lookup_project_id()))
         if len(project_users) > 0:
             users += project_users
         # find members of project namespace
         project = self.get_project()
         namespace = project['namespace']['id']
-        group_users = self.get("/groups/%s/members" % (namespace))
+        # TODO: deal with pagination for really big groups
+        group_users = self.get("/groups/%s/members?per_page=100" % (namespace))
         if len(group_users) > 0:
             users += group_users
 

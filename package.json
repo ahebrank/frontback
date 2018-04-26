@@ -3,26 +3,29 @@
   "version": "0.0.1",
   "author": "",
   "devDependencies": {
-    "browser-sync": "latest",
+    "browser-sync": "^2.23.7",
     "browserify": "^13.1.1",
-    "colors": "^1.1.2",
+    "colors": "^1.2.1",
     "del": "^2.2.0",
     "gulp": "latest",
-    "gulp-autoprefixer": "latest",
+    "gulp-autoprefixer": "^5.0.0",
     "gulp-clean-css": "^2.0.6",
     "gulp-concat": "latest",
     "gulp-count": "^0.2.0",
     "gulp-filter": "^4.0.0",
     "gulp-if": "^2.0.0",
-    "gulp-plumber": "latest",
+    "gulp-plumber": "^1.2.0",
     "gulp-replace": "^0.6.1",
     "gulp-sane-watch": "^1.1.2",
     "gulp-sass": "^2.3.2",
     "gulp-uglify": "^1.5.3",
     "gulp-util": "^3.0.7",
     "jstify": "^0.14.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^1.1.2",
     "yargs": "^4.4.0"
+  },
+  "dependencies": {
+    "npm": "^6.0.0"
   }
 }

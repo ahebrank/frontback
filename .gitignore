@@ -4,3 +4,4 @@ node_modules
 repos.json
 *.pyc
 endpoint/assets
+endpoint/test

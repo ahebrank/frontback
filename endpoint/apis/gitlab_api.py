@@ -7,7 +7,7 @@ class GitlabApi(BaseApi):
     project = None
     project_id = None
 
-    def __init__(self, homepage, token, app_key):
+    def __init__(self, homepage, token, app_key = False):
         parsed_url = urlparse(homepage)
         super(GitlabApi, self).__init__(parsed_url.scheme + "://" + parsed_url.netloc + "/api/" + self.api_version, homepage, {"private_token": token})
 
@@ -24,6 +24,11 @@ class GitlabApi(BaseApi):
         group_users = self.get("/groups/%s/members?per_page=100" % (namespace))
         if len(group_users) > 0:
             users += group_users
+        # is this a subgroup? get members of parent group as well
+        if 'parent_id' in project['namespace'] and project['namespace']['parent_id'] is not None:
+            group_users = self.get("/groups/%s/members?per_page=100" % (project['namespace']['parent_id']))
+            if len(group_users) > 0:
+                users += group_users
 
         if len(users) > 0:
             return sorted(set([user['username'] for user in users]), key=lambda s: s.lower())

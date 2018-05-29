@@ -125,6 +125,7 @@ $fullscreen: screen and (min-width: 641px);
 	color: $color_tundora_approx;
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 	border-radius: 2px;
+	background-color: $color_wild_sand_approx;
 	background-image: linear-gradient(to bottom,$color_wild_sand_approx,$seashell);
 	&:hover {
 		color: $color_mine_shaft_approx;
@@ -138,6 +139,7 @@ $fullscreen: screen and (min-width: 641px);
 	cursor: pointer;
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 	border-radius: 2px;
+	background-color: $color_cornflower_blue_approx;
 	background-image: linear-gradient(to bottom,$color_cornflower_blue_approx,$color_royal_blue_approx);
 	border: 1px solid $color_cerulean_blue_approx;
 	color: $white;

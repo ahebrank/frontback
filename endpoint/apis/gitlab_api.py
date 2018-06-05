@@ -29,6 +29,12 @@ class GitlabApi(BaseApi):
             group_users = self.get("/groups/%s/members?per_page=100" % (project['namespace']['parent_id']))
             if len(group_users) > 0:
                 users += group_users
+        # shared groups
+        if 'shared_with_groups' in project:
+            for group in project['shared_with_groups']:
+                group_users = self.get("/groups/%s/members?per_page=100" % (group['group_id']))
+                if len(group_users) > 0:
+                    users += group_users
 
         if len(users) > 0:
             return sorted(set([user['username'] for user in users]), key=lambda s: s.lower())

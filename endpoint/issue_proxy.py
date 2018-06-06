@@ -61,7 +61,7 @@ def create_app(config, asynchronous=False, debug=False):
         this_api = config.get('api')
         usernames = this_api.get_project_users()
         if debug:
-            print("Got usernames %s (%s)" % (", ".join(usernames), get_elapsed_time(start_time)))
+            print("Got usernames %s (%s)" % (", ".join([user['username'] for user in usernames]), get_elapsed_time(start_time)))
         return set_resp({'usernames': usernames}, 200)
 
     @app.route("/assignee", methods=['POST'])

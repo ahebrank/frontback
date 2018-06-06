@@ -206,7 +206,7 @@
                                     if (!settings.options.hideReporterOptions) {
                                         var $user_dropdown = $('<select name="feedback-email" id="ftbk-feedback-email">');
                                         for (i = 0; i < data.usernames.length; i++) {
-                                            $user_dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
+                                            $user_dropdown.append('<option value=' +  data.usernames[i].username + '>' + data.usernames[i].name + ' (' + data.usernames[i].username + ')</option>');
                                         }
                                         var email = cookieEmail.overviewEmail();
                                         $('#ftbk-feedback-email')
@@ -218,7 +218,7 @@
                                     if (!settings.options.hideAssigneeOptions) {
                                         var $assignee_dropdown = $('<select name="feedback-assignee" id="ftbk-feedback-assignee">');
                                         for (i = 0; i < data.usernames.length; i++) {
-                                            $assignee_dropdown.append('<option value=' + data.usernames[i] + '>' + data.usernames[i] + '</option>');
+                                            $assignee_dropdown.append('<option value=' + data.usernames[i].username + '>' + data.usernames[i].name + ' (' + data.usernames[i].username + ')</option>');
                                         }
                                         var assignee = $('#ftbk-feedback-assignee').val();
                                         $('#ftbk-feedback-assignee')

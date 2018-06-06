@@ -24,5 +24,8 @@
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^1.1.2",
     "yargs": "^4.4.0"
+  },
+  "dependencies": {
+    "underscore": "^1.9.1"
   }
 }

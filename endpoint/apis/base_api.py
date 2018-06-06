@@ -70,3 +70,9 @@ class BaseApi(object):
     # return a list of usernames
     def get_project_users(self):
         return []
+
+    # name sort key function - split a GIVEN FAMILY name for sorting
+    def name_key(self, fullname):
+        p = fullname.split()
+        n = [p[-1]] + p[:-1]
+        return ' '.join(n).lower()

@@ -37,7 +37,8 @@ class GitlabApi(BaseApi):
                     users += group_users
 
         if len(users) > 0:
-            return sorted(set([user['username'] for user in users]), key=lambda s: s.lower())
+            sorted_users = sorted(users, key=lambda user: self.name_key(user['name']))
+            return [{'username': user['username'], 'name': user['name']} for user in sorted_users]
         return []
 
     def lookup_username(self, email):

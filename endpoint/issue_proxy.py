@@ -81,7 +81,7 @@ def create_app(config, asynchronous=False, debug=False):
         api_helper = Api()
         this_api = config.get('api')
 
-        assignee_id = repo_config.get('assignee_id')
+        assignee_username = repo_config.get('assignee_id')
         tags = repo_config.get('tags')
         link_dompath = repo_config.get('link_dompath')
 
@@ -91,16 +91,22 @@ def create_app(config, asynchronous=False, debug=False):
 
         # override the default assignee?
         if payload.get('assignee_id'):
-            assignee_id = payload.get('assignee_id')
+            assignee_username = payload.get('assignee_id')
 
         # try to lookup a username
-        if assignee_id and not assignee_id.isdigit():
-            if debug:
-                print("Looking for user: %s (%s)..." % (assignee_id, get_elapsed_time(start_time)))
-            assignee_id = this_api.lookup_user_id(assignee_id)
-            if debug:
-                print("Found user %s (%s)" % (assignee_id, get_elapsed_time(start_time)))
-
+        assignee_id = assignee_username
+        if assignee_username:
+            if not assignee_username.isdigit():
+                if debug:
+                    print("Looking for user: %s (%s)..." % (assignee_username, get_elapsed_time(start_time)))
+                assignee_id = this_api.lookup_user_id(assignee_username)
+                if debug:
+                    print("Found user %s (%s)" % (assignee_id, get_elapsed_time(start_time)))
+            else:
+                # assume a numeric username is the ID
+                if debug:
+                    print("Assuming username is numeric ID: %s (%s)..." % (assignee_username, get_elapsed_time(start_time)))
+        
         title = payload.get('title')
         body = payload.get('note')
 
@@ -149,6 +155,11 @@ def create_app(config, asynchronous=False, debug=False):
         if email:
             submitter_id = this_api.get_username(email)
             meta += api_helper.append_body('Submitted by ' + submitter_id)
+        # append the assignee to the issue body
+        if assignee_username:
+            if not assignee_username.isdigit():
+                assignee_username = this_api.get_username(assignee_username)
+            meta += api_helper.append_body('Initially assigned to ' + assignee_username)
 
         if this_api.create_issue(title, body, meta, assignee_id, submitter_id, tags):
             if debug:

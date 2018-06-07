@@ -37,6 +37,10 @@ class GitlabApi(BaseApi):
                     users += group_users
 
         if len(users) > 0:
+            # dedupe
+            dict_enum = {item['username']:index for index, item in enumerate(users)}
+            users = [users[i] for i in list(dict_enum.values())]
+            # sort
             sorted_users = sorted(users, key=lambda user: self.name_key(user['name']))
             return [{'username': user['username'], 'name': user['name']} for user in sorted_users]
         return []

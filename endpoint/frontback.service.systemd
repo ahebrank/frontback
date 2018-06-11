@@ -5,7 +5,7 @@ Description=uWSGI server instance configured to serve frontback
 User=www-data
 Group=www-data
 WorkingDirectory=/usr/local/frontback/endpoint
-ExecStart=/usr/bin/uwsgi --ini frontback.ini --check-static /assets
+ExecStart=/usr/local/bin/uwsgi --ini frontback.ini --check-static /assets
 Restart=always
 
 [Install]

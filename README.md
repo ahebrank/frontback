@@ -89,27 +89,32 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
 
 ### Start it up
 
-The python wsgi web stack configuration has a lot of pieces in its newer incarnation.
-The following skips over setting up a virtual environment and assumes the flask app
-is installed in `/usr/local/frontback/endpoint`.
+The python wsgi web stack configuration has a lot of pieces. The following skips over setting up a virtual environment and assumes the flask app is installed in `/usr/local/frontback/endpoint`.
 
-#### Newer way: Nginx uwsgi proxy
+#### Base requirements
 
-1. Make sure `uwsgi` is installed (e.g., `apt-get install uwsgi`)
-2. Copy the upstart config to `/etc/init` (`cp /usr/local/frontback/endpoint/frontback.conf.upstart /etc/init/frontback.config`) OR link the systemd service (`ln -s /usr/local/frontback/endpoint/frontback.service.systemd /etc/systemd/system/frontback.service`)
+1. Python 3.x is required
+2. `pip3 install -r /usr/local/frontback/endpoint/requirements.txt`
+
+#### Nginx uwsgi proxy
+
+1. Make sure `uwsgi` is installed (e.g., `pip3 install uwsgi`)
+2. Copy the upstart config to `/etc/init` (`cp /usr/local/frontback/endpoint/service-config/frontback.conf.upstart /etc/init/frontback.config`) OR copy the systemd service (`cp /usr/local/frontback/endpoint/service-config/frontback.service.systemd /lib/systemd/system/frontback.service`)
 3. Start it up (e.g., `service frontback start` or `systemctl start frontback`)
-4. (optionally) Make it persistent (e.g., `initctl reload-configuration`)
-5. Make sure the uwsgi parameters are availble to nginx
+4. (optionally) Make it persistent (e.g., `initctl reload-configuration` or `systemctl enable frontback`)
+5. Make sure the uwsgi parameters are availble to nginx (`cat /etc/nginx/uwsgi_params`)
 6. Add to a `server` block in nginx configuration:
 
 ```
 location ~ /frontback(/.*) {
-    uwsgi_pass unix:/usr/local/frontback/endpoint/frontback.sock;
+    uwsgi_pass unix:/tmp/frontback.sock;
     include /etc/nginx/uwsgi_params;
     # strip the subdirectory
     uwsgi_param PATH_INFO "$1";
 }
 ```
+
+7. restart nginx
 
 (This example includes config to strip off the subdirectory, since the Flask application assumes requests at the webroot.)
 

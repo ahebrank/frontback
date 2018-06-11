@@ -17,14 +17,14 @@ This leans heavily on:
 
 ```html
 <script>
-	window.frontback = {
-		repo: 'https://gitlab.com/newcity/test',
+    window.frontback = {
+        repo: 'https://gitlab.com/newcity/test',
         postUrl: 'http://' + host + ':9000',
         options: {}
-	};
-	var script = document.createElement('script');
-	script.src = frontback.postUrl + '/assets/js/frontback.js';
-	document.body.appendChild(script);
+    };
+    var script = document.createElement('script');
+    script.src = frontback.postUrl + '/assets/js/frontback.js';
+    document.body.appendChild(script);
 </script>
 ```
 
@@ -96,8 +96,8 @@ is installed in `/usr/local/frontback/endpoint`.
 #### Newer way: Nginx uwsgi proxy
 
 1. Make sure `uwsgi` is installed (e.g., `apt-get install uwsgi`)
-2. Copy the upstart file to `/etc/init` (`cp /usr/local/frontback/endpoint/frontback.conf.upstart /etc/init/frontback.config`)
-3. Start it up (e.g., `service frontback start`)
+2. Copy the upstart config to `/etc/init` (`cp /usr/local/frontback/endpoint/frontback.conf.upstart /etc/init/frontback.config`) OR link the systemd service (`ln -s /usr/local/frontback/endpoint/frontback.service.systemd /etc/systemd/system/frontback.service`)
+3. Start it up (e.g., `service frontback start` or `systemctl start frontback`)
 4. (optionally) Make it persistent (e.g., `initctl reload-configuration`)
 5. Make sure the uwsgi parameters are availble to nginx
 6. Add to a `server` block in nginx configuration:

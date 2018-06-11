@@ -1,0 +1,12 @@
+[Unit]
+Description=uWSGI server instance configured to serve frontback
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/usr/local/frontback/endpoint
+ExecStart=/usr/bin/uwsgi --ini frontback.ini --check-static /assets
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

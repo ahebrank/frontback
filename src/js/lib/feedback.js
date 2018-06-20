@@ -640,8 +640,12 @@
                                 type: 'POST',
                                 contentType: 'application/json',
                                 data: JSON.stringify(post),
-                                success: function() {
-                                    //$('#ftbk-feedback-module').append(settings.tpl.submitSuccess);
+                                success: function(data) {
+                                    if ('response' in data) {
+                                        $('#ftbk-feedback-success-notify')
+                                            .html('<a target="_blank" href="' + data.response.url + '">Issue ' + data.response.id + ' created.</a>')
+                                            .show();
+                                    }
                                     close();
                                 },
                                 error: function(){

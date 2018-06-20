@@ -41,10 +41,11 @@ def create_app(config, asynchronous=False, debug=False):
                     start_time
                 )
             else:
-                if issue_worker(config, start_time):
+                response = issue_worker(config, start_time)
+                if response:
                     if debug:
                         print("Returning sync OK (%s)" % (get_elapsed_time(start_time)))
-                    return set_resp({'status': 'submitted'}, 200)
+                    return set_resp({'status': 'submitted', 'response': response}, 200)
                 else:
                     if debug:
                         print("Returning 500 error (%s)" % (get_elapsed_time(start_time)))
@@ -52,7 +53,7 @@ def create_app(config, asynchronous=False, debug=False):
 
             if debug:
                 print("Returning async OK (%s)" % (get_elapsed_time(start_time)))
-            return set_resp({'status': 'submitted'})
+            return set_resp({'status': 'submitted'}, 200)
 
     @app.route("/users", methods=['POST'])
     def users():
@@ -161,10 +162,12 @@ def create_app(config, asynchronous=False, debug=False):
                 assignee_username = this_api.get_username(assignee_username)
             meta += api_helper.append_body('Initially assigned to ' + assignee_username)
 
-        if this_api.create_issue(title, body, meta, assignee_id, submitter_id, tags):
+        response = this_api.create_issue(title, body, meta, assignee_id, submitter_id, tags)
+        if response:
             if debug:
                 print("Created issue (%s)" % (get_elapsed_time(start_time)))
-            return True
+                print(response)
+            return response
         return False
 
     def setup_api(request, start_time):

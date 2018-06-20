@@ -360,7 +360,7 @@ input#ftbk-feedback-assignee {
 
 .ftbk-feedback-restore {
 	display: none;
-	
+
 	margin: 0;
 	font-size: 14px;
 	position: fixed;
@@ -375,5 +375,24 @@ input#ftbk-feedback-assignee {
 
 	@media #{$fullscreen} {
 		right: 60px;
+	}
+}
+
+.ftbk-feedback-success-notify {
+	display: none;
+	margin: 0;
+	font-size: 14px;
+	position: fixed;
+	bottom: -3px;
+	right: 120px;
+	width: auto;
+	padding: 10px;
+	outline: 0;
+	background-clip: padding-box;
+	box-shadow: 0 4px 16px $black_20;
+	z-index: 40000;
+
+	@media #{$fullscreen} {
+		right: 200px;
 	}
 }

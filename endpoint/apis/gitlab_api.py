@@ -6,9 +6,11 @@ class GitlabApi(BaseApi):
 
     project = None
     project_id = None
+    homepage = None
 
     def __init__(self, homepage, token, app_key = False):
         parsed_url = urlparse(homepage)
+        self.homepage = homepage
         super(GitlabApi, self).__init__(parsed_url.scheme + "://" + parsed_url.netloc + "/api/" + self.api_version, homepage, {"private_token": token})
 
     def get_project_users(self):
@@ -89,7 +91,12 @@ class GitlabApi(BaseApi):
         success = self.post("/projects/{id}/issues".format(**data), data)
         iid = success.get('iid')
         if iid:
-            return True
+            issue_data = {
+                'homepage': self.homepage,
+                'issue_id': iid
+            }
+            issue_url = "{homepage}/issues/{issue_id}".format(**issue_data)
+            return {'title': title, 'id': iid, 'url': issue_url}
         return False
 
     def comment_on_issue(self, issue_id, comment):

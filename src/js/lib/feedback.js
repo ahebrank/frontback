@@ -538,8 +538,11 @@
                         redraw(ctx);
                     });
 
-                    $('#ftbk-feedback-module').on('click', '.ftbk-feedback-wizard-close,.ftbk-feedback-close-btn', function() {
+                    $('#ftbk-feedback-module').on('click', '.ftbk-feedback-wizard-close, .ftbk-feedback-close-btn', function() {
                         close();
+                    });
+                    $('#ftbk-feedback-module').on('click', '.ftbk-feedback-wizard-minimize, #ftbk-feedback-restore', function() {
+                        toggleMinimize();
                     });
 
                     $(document).on('keyup', function(e) {
@@ -682,6 +685,18 @@
                 $('html, body').removeClass('ftbk-fixed');
 
                 settings.onClose.call(this);
+            }
+
+            function toggleMinimize() {
+                $('html, body').toggleClass('ftbk-fixed');
+                if ($('body').hasClass('ftbk-fixed')) {
+                    $('#ftbk-feedback-overview, #ftbk-feedback-canvas').show();
+                    $('#ftbk-feedback-restore').hide();
+                }
+                else {
+                    $('#ftbk-feedback-overview, #ftbk-feedback-canvas').hide();
+                    $('#ftbk-feedback-restore').show();
+                }
             }
 
             function redraw(ctx, border, noshading) {

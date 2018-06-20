@@ -221,18 +221,6 @@ input#ftbk-feedback-assignee {
 	width: 30px;
 	height: 30px;
 }
-.ftbk-feedback-wizard-close {
-	cursor: pointer;
-	position: absolute;
-	top: 2px;
-	right: 2px;
-	width: 30px;
-	height: 30px;
-	opacity: 0.65;
-	&:hover {
-		opacity: 1;
-	}
-}
 #ftbk-feedback-welcome-error {
 	@extend %error;
 }
@@ -333,19 +321,59 @@ input#ftbk-feedback-assignee {
 	margin-left: 26px;
 }
 
-.ftbk-feedback-wizard-close {
+@mixin icon-button($content) {
 	background: none;
 	border: none;
 	font-size: 0 !important;
+	cursor: pointer;
+	opacity: 0.65;
+	width: 30px;
+	height: 30px;
+	&:hover {
+		opacity: 1;
+	}
 	&::after {
 		padding-top: 5px;
 		display: inline-block;
 		font-size: 18px;
-		content: '✕';
+		content: $content;
 	}
+}
+
+.ftbk-feedback-wizard-close {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	@include icon-button('✕');
+}
+.ftbk-feedback-wizard-minimize {
+	position: absolute;
+	top: 2px;
+	right: 40px;
+	@include icon-button('−');
 }
 
 .ftbk-feedback-rehighlighted {
 	position: absolute;
 	border: 4px solid black;
+}
+
+.ftbk-feedback-restore {
+	display: none;
+	
+	margin: 0;
+	font-size: 14px;
+	position: fixed;
+	bottom: -3px;
+	right: 10px;
+	width: auto;
+	padding: 10px;
+	outline: 0;
+	background-clip: padding-box;
+	box-shadow: 0 4px 16px $black_20;
+	z-index: 40000;
+
+	@media #{$fullscreen} {
+		right: 60px;
+	}
 }

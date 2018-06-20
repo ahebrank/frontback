@@ -32,5 +32,8 @@
 	</div>
 	
 	<div id="ftbk-feedback-overview-error">Please enter an email and a title/description.</div>
+	<button class="ftbk-feedback-wizard-minimize">Minimize</button>
 	<button class="ftbk-feedback-wizard-close">Close</button>
 </div>
+
+<button id="ftbk-feedback-restore" class="ftbk-feedback-restore">Reveal Feedback</button>

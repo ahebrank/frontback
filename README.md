@@ -34,6 +34,7 @@ The `repo` and 'postUrl` keys define the homepage of the repository and the endp
 
 - `options.hideButton`: if `true`, hide the submission button while still running the script (might be helpful for preventing issue submission from local dev instances)
 - `options.hideAssigneeOptions`: if `true`, hide the assignee select (the default assignee from the endpoint repo config will be used if provided)
+- `options.overrideDefaultAssignee`: override the default assignee per frontend instance by specifying a username
 - `options.hideReporterOptions`: if `true`, hide the user select (it will remain a text box)
 
 #### CMS integration
@@ -59,8 +60,7 @@ Use the project homepage as a key and optionally set the assigned user (Gitlab I
         "private_token": "GITLAB-PRIVATE-TOKEN",
         "assignee_id": "ahebrank",
         "tags": "Incoming"
-    },
-    ...
+    }
 }
 ```
 

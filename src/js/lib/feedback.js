@@ -176,6 +176,9 @@
                     if (settings.options.hideAssigneeOptions) {
                         $('#ftbk-feedback-assignee-text').remove();
                     }
+                    else if (settings.options.overrideDefaultAssignee) {
+                        $('#ftbk-feedback-assignee').val(settings.options.overrideDefaultAssignee);
+                    }
                     else {
                         $.ajax({
                             url: settings.ajaxURL + 'assignee',

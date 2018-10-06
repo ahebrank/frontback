@@ -20,7 +20,8 @@ This leans heavily on:
     window.frontback = {
         repo: 'https://gitlab.com/newcity/test',
         postUrl: 'http://' + host + ':9000',
-        options: {}
+        options: {},
+        extra: {}
     };
     var script = document.createElement('script');
     script.src = frontback.postUrl + '/assets/js/frontback.js';
@@ -36,6 +37,15 @@ The `repo` and 'postUrl` keys define the homepage of the repository and the endp
 - `options.hideAssigneeOptions`: if `true`, hide the assignee select (the default assignee from the endpoint repo config will be used if provided)
 - `options.overrideDefaultAssignee`: override the default assignee per frontend instance by specifying a username
 - `options.hideReporterOptions`: if `true`, hide the user select (it will remain a text box)
+
+The `extra` parameter is optional but may be used to pass additional metadata (for instance, CMS contextual variables like the current username). These should be specified with a dictionary:
+
+```js
+extra: {
+    "User": my_cms_settings.username,
+    "Site section": my_cms_settings.section
+}
+```
 
 #### CMS integration
 

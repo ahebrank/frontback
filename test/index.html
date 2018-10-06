@@ -54,7 +54,10 @@
 			window.frontback = {
 				//repo: 'https://trello.com/b/S1QWR14e/api-test',
 				repo: 'https://gitlab.com/newcity/frontback',
-				postUrl: 'http://' + host + ':9000'
+				postUrl: 'http://' + host + ':9000',
+				extra: {
+					"Test extra parameter": "Hello world!"
+				}
 			};
 			var script = document.createElement('script');
 			script.src = frontback.postUrl + '/assets/js/frontback.js';

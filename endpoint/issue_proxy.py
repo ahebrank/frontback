@@ -149,6 +149,11 @@ def create_app(config, asynchronous=False, debug=False):
             meta += api_helper.append_body('Useragent: ' + browser.get('userAgent'))
             meta += api_helper.append_body('Platfom: ' + browser.get('platform'))
             meta += api_helper.append_body('Window size: ' + browser.get('windowDims'))
+        
+        extra = payload.get('extra')
+        if extra:
+            for k in extra:
+                meta += api_helper.append_body(k + ': ' + extra[k])
 
         # look up the submitter
         email = payload.get('email')

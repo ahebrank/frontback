@@ -15,11 +15,12 @@ if (global.frontback.repo && global.frontback.postUrl) {
 
 	css = frontback.postUrl+ '/assets/css/styles.css?v=DEPLOY_KEY';
   addstylesheet(css);
-  
+
 	frontback.jQuery.feedback({
     repoID: frontback.repo,
     ajaxURL: frontback.postUrl,
-    options: frontback.options
+    options: frontback.options,
+    extra: frontback.extra
 	});
 }
 else {

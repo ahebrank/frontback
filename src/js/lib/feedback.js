@@ -59,6 +59,10 @@
                 settings.options = {};
             }
 
+            if (!settings.extra) {
+                settings.extra = {};
+            }
+
             var supportedBrowser = !!window.HTMLCanvasElement;
             var isFeedbackButtonNative = settings.feedbackButton == '.ftbk-feedback-btn';
             if (supportedBrowser) {
@@ -257,6 +261,10 @@
 
                     if (settings.postHTML) {
                         post.html = $('html').html();
+                    }
+
+                    if (settings.extra) {
+                        post.extra = settings.extra;
                     }
 
                     if (fullScreen) {

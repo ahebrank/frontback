@@ -550,7 +550,14 @@
                     });
 
                     $('#ftbk-feedback-module').on('click', '.ftbk-feedback-wizard-close, .ftbk-feedback-close-btn', function() {
+                        var tmp = false;
+                        if ($(this).hasClass('ftbk-feedback-error-close')) {
+                            tmp = window.feedback_formdata;
+                        }
                         close();
+                        if (tmp) {
+                            window.feedback_formdata = tmp;
+                        }
                     });
                     $('#ftbk-feedback-module').on('click', '.ftbk-feedback-wizard-minimize, #ftbk-feedback-restore', function() {
                         toggleMinimize();
@@ -560,6 +567,26 @@
                         if (e.keyCode == 27)
                             close();
                     });
+
+                    function restoreform() {
+                        if (typeof window.feedback_formdata !== 'undefined' && window.feedback_formdata) {
+                            var data = JSON.parse(window.feedback_formdata);
+                            var v, selector;
+                            for (var n in data) {
+                                v = data[n];
+                                selector = '[name="feedback-' + n + '"]';
+                                if ($(selector).length) {
+                                    $(selector).val(v);
+                                }
+                            }
+                            if (data.img) {
+                                $('#ftbk-feedback-overview-screenshot img').remove();
+                                $('#ftbk-feedback-overview-screenshot').append('<img id="ftbk-feedback-screenshot" class="ftbk-feedback-screenshot" src="' + data.img + '" />');
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
 
                     function screenshot(shading) {
                         canDraw = false;
@@ -600,7 +627,7 @@
                                     $('#ftbk-feedback-overview').show();
                                     $('#ftbk-feedback-email').val(cookieEmail.overviewEmail());
                                     $('#ftbk-feedback-overview').find('input').filter(function() { return $(this).val() == ""; }).first().focus();
-                                    $('#ftbk-feedback-overview-screenshot>img').remove();
+                                    $('#ftbk-feedback-overview-screenshot img').remove();
                                     $('#ftbk-feedback-overview-screenshot').append('<img id="ftbk-feedback-screenshot" class="ftbk-feedback-screenshot" src="' + img + '" />');
                                     dropzone.handleDrop('ftbk-feedback-image-dropzone', 'ftbk-feedback-screenshot');
                                 }
@@ -610,6 +637,9 @@
                                     close();
                                     _canvas.remove();
                                 }
+
+                                // check to add back existing data (after) previous error)
+                                restoreform();
                             }
                         );
                     }
@@ -645,13 +675,15 @@
                             post.title = $('#ftbk-feedback-overview-title').val();
                             post.note = $('#ftbk-feedback-note').val();
                             post.assignee_id = $('#ftbk-feedback-assignee').val();
+                            var formdata = JSON.stringify(post);
                             $.ajax({
                                 url: settings.ajaxURL,
                                 dataType: 'json',
                                 type: 'POST',
                                 contentType: 'application/json',
-                                data: JSON.stringify(post),
+                                data: formdata,
                                 success: function(data) {
+                                    window.feedback_formdata = false;
                                     if ('response' in data) {
                                         $('#ftbk-feedback-success-notify')
                                             .html('<a target="_blank" href="' + data.response.url + '">Issue ' + data.response.id + ' created.</a>')
@@ -660,6 +692,7 @@
                                     close();
                                 },
                                 error: function(){
+                                    window.feedback_formdata = formdata;
                                     $('#ftbk-feedback-module').append(settings.tpl.submitError);
                                 }
                             });
@@ -698,6 +731,8 @@
                 $('.ftbk-feedback-btn').show();
 
                 $('html, body').removeClass('ftbk-fixed');
+
+                window.feedback_formdata = false;
 
                 settings.onClose.call(this);
             }

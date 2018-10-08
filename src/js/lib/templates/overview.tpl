@@ -8,15 +8,15 @@
 		</div>
 		<div id="ftbk-feedback-assignee-text">
 			<label for="ftbk-feedback-assignee">Issue assignee</label>
-			<input type="text" name="feedback-assignee" id="ftbk-feedback-assignee">
+			<input type="text" name="feedback-assignee_id" id="ftbk-feedback-assignee">
 		</div>
 		<div id="ftbk-feedback-overview-title-text">
 			<label for="ftbk-feedback-overview-title">Issue title</label>
-			<input type="text" name="feedback-overview-title" id="ftbk-feedback-overview-title">
+			<input type="text" name="feedback-title" id="ftbk-feedback-overview-title">
 		</div>
 		<div id="ftbk-feedback-overview-description-text">
 			<label for="ftbk-feedback-overview-note">Description</label>
-			<textarea id="ftbk-feedback-overview-note"></textarea>
+			<textarea name="feedback-note" id="ftbk-feedback-overview-note"></textarea>
 		</div>
 	</div>
 

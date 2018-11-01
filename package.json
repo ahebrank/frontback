@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "",
   "devDependencies": {
-    "browser-sync": "^2.24.6",
+    "browser-sync": "^2.26.3",
     "browserify": "^13.1.1",
     "colors": "^1.2.1",
     "del": "^2.2.0",

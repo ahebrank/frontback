@@ -13,6 +13,7 @@ stages:
 build:
   stage: build
   script:
+    - npm install -g gulp@4
     - npm install --silent
     - gulp buildAll --min
   artifacts:

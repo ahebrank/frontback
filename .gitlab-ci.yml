@@ -1,5 +1,5 @@
 ---
-image: newcity/builder:latest
+image: newcity/builder:gulp4
 
 before_script:
   - eval $(ssh-agent -s)
@@ -13,7 +13,6 @@ stages:
 build:
   stage: build
   script:
-    - npm install -g gulp@4
     - npm install --silent
     - gulp buildAll --min
   artifacts:

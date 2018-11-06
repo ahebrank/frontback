@@ -8,21 +8,18 @@ var gulp = require('gulp'),
 	buffer = require('vinyl-buffer'),
 	browserSync = require('browser-sync'),
 	cleanCSS = require('gulp-clean-css'),
-	concat = require('gulp-concat'),
-	del = require('del'),
 	plumber = require('gulp-plumber'),
 	sanewatch = require('gulp-sane-watch'),
-	filter = require('gulp-filter'),
-	count = require('gulp-count'),
 	gulpif = require('gulp-if'),
 	sass = require('gulp-sass'),
-	gutil = require('gulp-util'),
 	jstify = require('jstify'),
 	uglify = require('gulp-uglify'),
-	replace = require('gulp-replace');
+	replace = require('gulp-replace'),
+	log = require('fancy-log');
 
 // bower_path is used as a prefix in other paths
 var bower_path = 'src/bower_components';
+
 
 var paths = {
 	src: {
@@ -44,12 +41,12 @@ var plumber_error = function (err) {
 	if (!interactive) {
 		throw err;
 	}
-	gutil.log( err );
+	log.error( err );
 	this.emit('end');
 };
 
 // application and third-party SASS -> CSS
-gulp.task('scss', function() {
+const scss = () => {
 	return gulp.src( paths.src.scss )
 		.pipe( plumber({ errorHandler: plumber_error }) )
 
@@ -58,9 +55,9 @@ gulp.task('scss', function() {
 		// Minify css only if --cssmin flag is used
 		.pipe( gulpif( argv.min, cleanCSS() ) )
 		.pipe( gulp.dest( paths.dist.css ) );
-});
+};
 
-gulp.task('js', function() {
+const js = () => {
 	var b = browserify({
 		entries: [paths.src.js]
 	});
@@ -79,17 +76,13 @@ gulp.task('js', function() {
 		.pipe( replace( 'DEPLOY_KEY', v ) ) 
 		.pipe( gulpif( argv.min, uglify({ mangle: false })) )
 		.pipe( gulp.dest( paths.dist.js ));
-});
+};
 
 // build-all builds everything in one go.
-gulp.task('build-all', ['scss', 'js']);
-
-gulp.task('reload', function() {
-	browserSync.reload();
-});
+const buildAll = gulp.parallel(scss, js);
 
 // all the watchy stuff
-gulp.task('watcher', ['build-all'], function() {
+const watcher = () => {
 	
 	interactive = true;
 
@@ -108,17 +101,9 @@ gulp.task('watcher', ['build-all'], function() {
 	//var watcherOptions = { debounce:300,watchman:true };
 	var watcherOptions = { debounce:300 };
 
-	sanewatch(paths.watch.scss, watcherOptions,
-		function() {
-			gulp.start('scss');
-		}
-	);
+	sanewatch(paths.watch.scss, watcherOptions, () => { scss });
 
-	sanewatch(paths.watch.js, watcherOptions,
-		function() {
-			gulp.start('js');
-		}
-	);
+	sanewatch(paths.watch.js, watcherOptions, () => { js });
 
 	// When patternlab rebuilds it modifies a text file
 	// with the latest change information -- so we can
@@ -130,9 +115,9 @@ gulp.task('watcher', ['build-all'], function() {
 			baseDir: "./test"
 		}
 	});
-});
+};
 
-// Default build task
-gulp.task('default', function() {
-	gulp.start('watcher');
-});
+const defaultTasks = gulp.series(buildAll, watcher);
+
+module.exports = { buildAll };
+module.exports.default = defaultTasks;

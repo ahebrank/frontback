@@ -5,11 +5,7 @@ before_script:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "$PIPELINES_PRIVATE_KEY")
   - make .ci_init
-  
-cache:
-  paths:
-    - node_modules/
-  
+
 stages:
   - build
   - deploy
@@ -18,7 +14,7 @@ build:
   stage: build
   script:
     - npm install --silent
-    - gulp build-all --min
+    - gulp buildAll --min
   artifacts:
     paths:
       - endpoint

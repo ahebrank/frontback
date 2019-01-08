@@ -13,7 +13,7 @@ stages:
 build:
   stage: build
   script:
-    - npm install --silent
+    - npm install
     - gulp buildAll --min
   artifacts:
     paths:

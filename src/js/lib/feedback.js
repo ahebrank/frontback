@@ -760,6 +760,7 @@
 
             // from https://stackoverflow.com/a/16742828/5729027
             function getdompath($e) {
+              try {
                 var el = $e[0];
                 var stack = [];
                 while ( el.parentNode != null ) {
@@ -785,6 +786,11 @@
                 }
               
                 return stack.slice(1).join('>');
+              }
+              catch(error) {
+                console.log(error);
+                return '';
+              }
             }
 
             function getqp() {

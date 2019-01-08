@@ -17,10 +17,6 @@ var gulp = require('gulp'),
 	replace = require('gulp-replace'),
 	log = require('fancy-log');
 
-// bower_path is used as a prefix in other paths
-var bower_path = 'src/bower_components';
-
-
 var paths = {
 	src: {
 		scss: 'src/scss/*.scss',
@@ -101,9 +97,9 @@ const watcher = () => {
 	//var watcherOptions = { debounce:300,watchman:true };
 	var watcherOptions = { debounce:300 };
 
-	sanewatch(paths.watch.scss, watcherOptions, () => { scss });
+	sanewatch(paths.watch.scss, watcherOptions, scss);
 
-	sanewatch(paths.watch.js, watcherOptions, () => { js });
+	sanewatch(paths.watch.js, watcherOptions, js);
 
 	// When patternlab rebuilds it modifies a text file
 	// with the latest change information -- so we can

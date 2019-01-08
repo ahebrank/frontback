@@ -1,9 +1,9 @@
 if (global.frontback.repo && global.frontback.postUrl) {
-  global.frontback.jQuery = require('../bower_components/jquery/dist/jquery.js');
-  require('../bower_components/promise-polyfill/promise.js');
+  global.frontback.jQuery = require('../../node_modules/jquery/dist/jquery.js');
+  require('../../node_modules/promise-polyfill/dist/polyfill.js');
   if (!global.html2canvas) {
     //global.fabric = require('../bower_components/fabric.js/dist/fabric.js');
-    global.html2canvas = require('../bower_components/html2canvas/dist/html2canvas.js');
+    global.html2canvas = require('../../node_modules/html2canvas/dist/html2canvas.js');
   }
 
   require('./lib/feedback.js');

@@ -23,8 +23,7 @@
                 postBrowserInfo: 		true,
                 postHTML:				false,
                 postURL:				true,
-                proxy:					undefined,
-                letterRendering:		false,
+                allowTaint:     true,
                 initButtonText: 		'Feedback',
                 strokeStyle:			'black',
                 shadowColor:			'black',
@@ -576,9 +575,9 @@
                             }
                         }
                         var html2canvas_opts = {
-                            proxy: settings.proxy,
-                            letterRendering: settings.letterRendering
+                            allowTaint: settings.allowTaint
                         };
+
                         html2canvas($('body').get(0), html2canvas_opts).then(function(canvas) {
                                 if (!settings.screenshotStroke) {
                                     redraw(ctx);

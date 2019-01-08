@@ -97,9 +97,9 @@ const watcher = () => {
 	//var watcherOptions = { debounce:300,watchman:true };
 	var watcherOptions = { debounce:300 };
 
-	sanewatch(paths.watch.scss, watcherOptions, scss);
+	sanewatch(paths.watch.scss, watcherOptions, gulp.series(scss));
 
-	sanewatch(paths.watch.js, watcherOptions, js);
+	sanewatch(paths.watch.js, watcherOptions, gulp.series(js));
 
 	// When patternlab rebuilds it modifies a text file
 	// with the latest change information -- so we can

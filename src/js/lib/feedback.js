@@ -24,6 +24,7 @@
                 postHTML:				false,
                 postURL:				true,
                 allowTaint:     true,
+                cropToViewport: true,
                 initButtonText: 		'Feedback',
                 strokeStyle:			'black',
                 shadowColor:			'black',
@@ -575,10 +576,22 @@
                             }
                         }
                         var html2canvas_opts = {
-                            allowTaint: settings.allowTaint
+                            allowTaint: settings.allowTaint,
+                            scale: 1,
                         };
 
-                        html2canvas($('body').get(0), html2canvas_opts).then(function(canvas) {
+                        if (settings.cropToViewport) {
+                          $.extend(html2canvas_opts, {
+                            width: window.innerWidth,
+                            height: window.innerHeight,
+                            x: 0,
+                            y: window.scrollY
+                          });
+                        }
+
+                        console.log(html2canvas_opts);
+
+                        html2canvas(document.body, html2canvas_opts).then(function(canvas) {
                                 if (!settings.screenshotStroke) {
                                     redraw(ctx);
                                 }

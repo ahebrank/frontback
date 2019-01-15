@@ -23,7 +23,6 @@
                 postBrowserInfo: 		true,
                 postHTML:				false,
                 postURL:				true,
-                allowTaint:     true,
                 cropToViewport: true,
                 initButtonText: 		'Feedback',
                 strokeStyle:			'black',
@@ -576,8 +575,9 @@
                             }
                         }
                         var html2canvas_opts = {
-                            allowTaint: settings.allowTaint,
+                            useCORS: true,
                             scale: 1,
+                            foreignObjectRendering: true
                         };
 
                         if (settings.cropToViewport) {
@@ -589,27 +589,18 @@
                           });
                         }
 
-                        console.log(html2canvas_opts);
-
                         html2canvas(document.body, html2canvas_opts).then(function(canvas) {
                                 if (!settings.screenshotStroke) {
                                     redraw(ctx);
                                 }
 
-                                var cw = canvas.width;
-                                var ch = canvas.height;
-
-                                _canvas = $('<canvas id="ftbk-feedback-canvas-tmp" width="'+ cw +'" height="'+ ch +'"/>').hide().appendTo('body');
-                                _ctx = _canvas.get(0).getContext('2d');
-                                _ctx.drawImage(canvas, 0, 0, cw, ch, 0, 0, cw, ch);
-                                // blank image
-                                img = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
                                 try {
-                                    img = _canvas.get(0).toDataURL();
+                                  img = canvas.toDataURL("image/png");
                                 }
                                 catch (err) {
-                                    console.log(err.message);
+                                  console.log(err.message);
                                 }
+
                                 if(settings.showDescriptionModal) {
                                     $('#ftbk-feedback-canvas-tmp').remove();
                                     $('#ftbk-feedback-overview').show();

@@ -606,7 +606,7 @@
                                     img = _canvas.get(0).toDataURL("image/png");
                                 }
                                 catch (err) {
-                                    console.log(err;
+                                    console.log(err);
                                 }
                                 if(settings.showDescriptionModal) {
                                     $('#ftbk-feedback-canvas-tmp').remove();

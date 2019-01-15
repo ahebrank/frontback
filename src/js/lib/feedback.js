@@ -614,7 +614,6 @@
                                     post.img = img;
                                     $('#ftbk-feedback-module').remove();
                                     close();
-                                    _canvas.remove();
                                 }
                             }
                         );

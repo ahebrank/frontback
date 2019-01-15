@@ -598,7 +598,7 @@
                                   img = canvas.toDataURL("image/png");
                                 }
                                 catch (err) {
-                                  console.log(err.message);
+                                  console.log(err);
                                 }
 
                                 if(settings.showDescriptionModal) {

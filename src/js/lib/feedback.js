@@ -575,9 +575,7 @@
                             }
                         }
                         var html2canvas_opts = {
-                            useCORS: true,
-                            scale: 1,
-                            foreignObjectRendering: true
+                            scale: 1
                         };
 
                         if (settings.cropToViewport) {

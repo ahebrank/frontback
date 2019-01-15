@@ -596,12 +596,13 @@
                                 var cw = canvas.width;
                                 var ch = canvas.height;
 
-                                _canvas = $('<canvas id="ftbk-feedback-canvas-tmp" width="'+ cw +'" height="'+ ch +'"/>').hide().appendTo('body');
-                                _ctx = _canvas.get(0).getContext('2d');
-                                _ctx.drawImage(canvas, 0, 0, cw, ch, 0, 0, cw, ch);
                                 // blank image
                                 img = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
+                                
                                 try {
+                                    _canvas = $('<canvas id="ftbk-feedback-canvas-tmp" width="'+ cw +'" height="'+ ch +'"/>').hide().appendTo('body');
+                                    _ctx = _canvas.get(0).getContext('2d');
+                                    _ctx.drawImage(canvas, 0, 0, cw, ch, 0, 0, cw, ch);
                                     img = _canvas.get(0).toDataURL("image/png");
                                 }
                                 catch (err) {

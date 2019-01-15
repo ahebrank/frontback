@@ -575,7 +575,8 @@
                             }
                         }
                         var html2canvas_opts = {
-                            scale: 1
+                            scale: 1,
+                            allowTaint: true
                         };
 
                         if (settings.cropToViewport) {

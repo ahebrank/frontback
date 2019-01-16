@@ -596,8 +596,7 @@
                         }
                         var html2canvas_opts = {
                             scale: 1,
-                            allowTaint: true,
-                            foreignObjectRendering: true
+                            allowTaint: true
                         };
 
                         if (settings.cropToViewport) {

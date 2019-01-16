@@ -1,6 +1,6 @@
 default:
 	gulp &
-	cd endpoint && python3 issue_proxy.py -c repos.json -p 9000 --debug 
+	cd endpoint && python3 issue_proxy.py -c repos.json -p 9010 --debug 
 
 # CI targets
 .ci_init:

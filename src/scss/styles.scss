@@ -284,17 +284,23 @@ input#ftbk-feedback-assignee {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	z-index: 9;
+  z-index: 9;
+  & + img {
+    box-sizing: border-box;
+  }
 	&.replace-image {
 		&::after {
 			content: '+';
-			color: rgba(white, .8);
-			font-size: 150px;
+			color: rgba(black, .2);
+			font-size: 200px;
 			position: absolute;
-			top: 50%;
+			top: 55%;
 			left: 50%;
 			transform: translate(-50%, -50%);
-		}
+    }
+    & + img {
+      border: 4px dashed rgba(black, .2);
+    }
 	}
 }
 #ftbk-feedback-screenshot {

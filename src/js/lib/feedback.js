@@ -560,6 +560,26 @@
                             close();
                     });
 
+                    function setImage(img) {
+                      if (!img) {
+                        img = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
+                      }
+                      if(settings.showDescriptionModal) {
+                        $('#ftbk-feedback-canvas-tmp').remove();
+                        $('#ftbk-feedback-overview').show();
+                        $('#ftbk-feedback-email').val(cookieEmail.overviewEmail());
+                        $('#ftbk-feedback-overview').find('input').filter(function() { return $(this).val() == ""; }).first().focus();
+                        $('#ftbk-feedback-overview-screenshot>img').remove();
+                        $('#ftbk-feedback-overview-screenshot').append('<img id="ftbk-feedback-screenshot" class="ftbk-feedback-screenshot" src="' + img + '" />');
+                        dropzone.handleDrop('ftbk-feedback-image-dropzone', 'ftbk-feedback-screenshot');
+                      }
+                      else {
+                          post.img = img;
+                          $('#ftbk-feedback-module').remove();
+                          close();
+                      }
+                    }
+
                     function screenshot(shading) {
                         canDraw = false;
 
@@ -576,7 +596,8 @@
                         }
                         var html2canvas_opts = {
                             scale: 1,
-                            allowTaint: true
+                            allowTaint: true,
+                            foreignObjectRendering: true
                         };
 
                         if (settings.cropToViewport) {
@@ -589,43 +610,33 @@
                         }
 
                         html2canvas(document.body, html2canvas_opts).then(function(canvas) {
-                                if (!settings.screenshotStroke) {
-                                    redraw(ctx);
-                                }
+                          if (!settings.screenshotStroke) {
+                              redraw(ctx);
+                          }
 
-                                var cw = canvas.width;
-                                var ch = canvas.height;
+                          var cw = canvas.width;
+                          var ch = canvas.height;
 
-                                // blank image
-                                img = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=';
-                                
-                                try {
-                                    _canvas = $('<canvas id="ftbk-feedback-canvas-tmp" width="'+ cw +'" height="'+ ch +'"/>').hide().appendTo('body');
-                                    _ctx = _canvas.get(0).getContext('2d');
-                                    _ctx.drawImage(canvas, 0, 0, cw, ch, 0, 0, cw, ch);
-                                    img = _canvas.get(0).toDataURL("image/png");
-                                }
-                                catch (err) {
-                                    console.log(err);
-                                }
-                                if(settings.showDescriptionModal) {
-                                    $('#ftbk-feedback-canvas-tmp').remove();
-                                    $('#ftbk-feedback-overview').show();
-                                    $('#ftbk-feedback-email').val(cookieEmail.overviewEmail());
-                                    $('#ftbk-feedback-overview').find('input').filter(function() { return $(this).val() == ""; }).first().focus();
-                                    $('#ftbk-feedback-overview-screenshot>img').remove();
-                                    $('#ftbk-feedback-overview-screenshot').append('<img id="ftbk-feedback-screenshot" class="ftbk-feedback-screenshot" src="' + img + '" />');
-                                    dropzone.handleDrop('ftbk-feedback-image-dropzone', 'ftbk-feedback-screenshot');
-                                }
-                                else {
-                                    post.img = img;
-                                    $('#ftbk-feedback-module').remove();
-                                    close();
-                                    _canvas.remove();
-                                }
-                            }
-                        );
-                    }
+                          var img = null;                          
+                          try {
+                              _canvas = $('<canvas id="ftbk-feedback-canvas-tmp" width="'+ cw +'" height="'+ ch +'"/>').hide().appendTo('body');
+                              _ctx = _canvas.get(0).getContext('2d');
+                              _ctx.drawImage(canvas, 0, 0, cw, ch, 0, 0, cw, ch);
+                              img = _canvas.get(0).toDataURL("image/png");
+                          }
+                          catch (err) {
+                              console.error('Unable to get image from canvas: ' + err);
+                          }
+
+                          setImage(img);
+                          if (!settings.showDescriptionModal) {
+                            _canvas.remove();
+                          }
+                        }).catch(function(err) {
+                          console.error('Unable to html2canvas: ' + err);
+                          setImage();
+                        });
+                      }
 
                     $(document).on('keyup', '#ftbk-feedback-note-tmp,#ftbk-feedback-overview-note', function(e) {
                         var tx;

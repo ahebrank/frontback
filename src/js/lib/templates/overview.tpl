@@ -22,8 +22,8 @@
 
 	<div id="ftbk-feedback-overview-screenshot">
 		<label for="ftbk-feedback-image-dropzone">Screenshot</label>
-		<div id="ftbk-feedback-image-dropzone"></div>
-		<p>If the image doesn't show your issue, drag and drop an image to replace with a better screenshot.</p>
+		<p>If the image below is blank or doesn't show your issue, take a better screenshot and drag-and-drop it below.</p>
+    <div id="ftbk-feedback-image-dropzone"></div>
 	</div>
 
 	<div class="ftbk-feedback-buttons">

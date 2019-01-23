@@ -11,10 +11,16 @@
 		</div>
 
 		<script>
-			var frontbackRepo = 'https://gitlab.com/newcity/test';
-			var frontbackPostURL = 'https://magicyeti.us/frontback';
+      window.frontback = {
+				//repo: 'https://trello.com/b/S1QWR14e/api-test',
+				repo: 'https://gitlab.com/newcity/frontback',
+				postUrl: 'https://magicyeti.us/frontback',
+				extra: {
+					"Test extra parameter": "Hello world!"
+        }
+      }
 			var script = document.createElement('script');
-			script.src = frontbackPostURL + '/assets/js/frontback.js?v=' + Math.floor(Math.random()*1e6);
+			script.src = window.frontback.postUrl + '/assets/js/frontback.js?v=' + Math.floor(Math.random()*1e6);
 			document.body.appendChild(script);
 		</script>
 	</body>

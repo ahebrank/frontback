@@ -329,7 +329,7 @@ input#ftbk-feedback-assignee {
 }
 
 @mixin icon-button($content) {
-	background: none;
+	background: transparent;
 	border: none;
 	font-size: 0 !important;
 	cursor: pointer;
@@ -337,13 +337,15 @@ input#ftbk-feedback-assignee {
 	width: 30px;
 	height: 30px;
 	&:hover {
-		opacity: 1;
+    opacity: 1;
+    background: transparent;
 	}
 	&::after {
 		padding-top: 5px;
 		display: inline-block;
 		font-size: 18px;
-		content: $content;
+    content: $content;
+    color: black;
 	}
 }
 

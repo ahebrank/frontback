@@ -13,7 +13,7 @@ stages:
 build:
   stage: build
   script:
-    - npm install
+    - npm install --unsafe-perm
     - gulp buildAll --min
   artifacts:
     paths:

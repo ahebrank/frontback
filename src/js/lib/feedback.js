@@ -23,7 +23,6 @@
                 postBrowserInfo: 		true,
                 postHTML:				false,
                 postURL:				true,
-                cropToViewport: true,
                 initButtonText: 		'Feedback',
                 strokeStyle:			'black',
                 shadowColor:			'black',
@@ -596,16 +595,12 @@
                         }
                         var html2canvas_opts = {
                             scale: 1,
-                            allowTaint: true
-                        };
-
-                        if (settings.cropToViewport) {
-                          $.extend(html2canvas_opts, {
+                            allowTaint: true,
+                            //proxy: settings.ajaxURL + 'proxy',
                             width: window.innerWidth,
                             height: window.innerHeight,
                             x: 0,
                             y: window.scrollY
-                          });
                         }
 
                         html2canvas(document.body, html2canvas_opts).then(function(canvas) {

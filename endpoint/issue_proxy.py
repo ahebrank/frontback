@@ -4,10 +4,11 @@ import json
 import argparse
 import time
 from urllib import parse
-from flask import Flask, request, abort, jsonify, send_from_directory
+from flask import Flask, request, abort, jsonify, send_from_directory, Response
 from flask_cors import CORS, cross_origin
 from api_helper import Api
 from concurrent.futures import ThreadPoolExecutor
+from lib.html2canvasproxy import html2canvasproxy
 
 def create_app(config, asynchronous=False, debug=False):
     app = Flask(__name__)
@@ -54,6 +55,20 @@ def create_app(config, asynchronous=False, debug=False):
             if debug:
                 print("Returning async OK (%s)" % (get_elapsed_time(start_time)))
             return set_resp({'status': 'submitted'}, 200)
+
+    # @app.route("/proxy")
+    # def proxy():
+    #     h2c = html2canvasproxy(request.args.get('callback'), request.args.get('url'))
+    #     h2c.useragent(request.headers['user_agent'])
+    #     h2c.hostname(request.url)
+    #     h2c.enable_crossdomain()
+    #     if request.referrer is not None:
+    #         h2c.referer(request.referrer)
+    #     if debug:
+    #         print(str(h2c.debug_vars()))
+
+    #     proxy_result = h2c.result()
+    #     return Response(proxy_result['data'], mimetype=proxy_result['mime'])
 
     @app.route("/users", methods=['POST'])
     def users():

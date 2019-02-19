@@ -7,12 +7,10 @@ from urllib import parse
 from flask import Flask, request, abort, jsonify, send_from_directory, Response
 from flask_cors import CORS, cross_origin
 from api_helper import Api
-from concurrent.futures import ThreadPoolExecutor
 from lib.html2canvasproxy import html2canvasproxy
 
-def create_app(config, asynchronous=False, debug=False):
+def create_app(config, debug=False):
     app = Flask(__name__)
-    executor = ThreadPoolExecutor(2)
 
     # allow from anywhere
     CORS(app)
@@ -22,9 +20,6 @@ def create_app(config, asynchronous=False, debug=False):
     except:
         print("Error opening repos file %s -- check file exists and is valid json" % config)
         raise
-    if debug:
-        if asynchronous:
-            print("Async API mode")
 
     @app.route("/", methods=['GET', 'POST'])
     def index():
@@ -35,40 +30,17 @@ def create_app(config, asynchronous=False, debug=False):
             config = setup_api(request, start_time)
 
             # run the API
-            if asynchronous:
-                executor.submit(
-                    issue_worker,
-                    config,
-                    start_time
-                )
+            response = issue_worker(config, start_time)
+            if response:
+                if debug:
+                    print("Returning sync OK (%s)" % (get_elapsed_time(start_time)))
+                return set_resp({'status': 'submitted', 'response': response}, 200)
             else:
-                response = issue_worker(config, start_time)
-                if response:
-                    if debug:
-                        print("Returning sync OK (%s)" % (get_elapsed_time(start_time)))
-                    return set_resp({'status': 'submitted', 'response': response}, 200)
-                else:
-                    if debug:
-                        print("Returning 500 error (%s)" % (get_elapsed_time(start_time)))
-                    abort(500)
+                if debug:
+                    print("Returning 500 error (%s)" % (get_elapsed_time(start_time)))
+                abort(500)
 
-            if debug:
-                print("Returning async OK (%s)" % (get_elapsed_time(start_time)))
             return set_resp({'status': 'submitted'}, 200)
-
-    # @app.route("/proxy")
-    # def proxy():
-    #     h2c = html2canvasproxy(request.args.get('callback'), request.args.get('url'))
-    #     h2c.useragent(request.headers['user_agent'])
-    #     h2c.hostname(request.url)
-    #     h2c.enable_crossdomain()
-    #     if request.referrer is not None:
-    #         h2c.referer(request.referrer)
-    #     if debug:
-    #         print(str(h2c.debug_vars()))
-
-    #     proxy_result = h2c.result()
-    #     return Response(proxy_result['data'], mimetype=proxy_result['mime'])
 
     @app.route("/users", methods=['POST'])
     def users():
@@ -267,12 +239,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="frontback gitlab proxy")
     parser.add_argument("-c", "--config", action="store", help="path to repos configuration", required=True)
     parser.add_argument("-p", "--port", action="store", help="server port", required=False, default=8080)
-    parser.add_argument("--async", action="store_true", help="enable asynchronous issue creation", required=False, default=False)
     parser.add_argument("--debug", action="store_true", help="enable debug output", required=False, default=False)
 
     args = parser.parse_args()
     port_number = int(args.port)
 
-    this_app = create_app(args.config, args.async, args.debug)
+    this_app = create_app(args.config, args.debug)
 
     this_app.run(host="0.0.0.0", port=port_number, threaded=True)

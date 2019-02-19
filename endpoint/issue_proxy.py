@@ -246,4 +246,4 @@ if __name__ == "__main__":
 
     this_app = create_app(args.config, args.debug)
 
-    this_app.run(host="0.0.0.0", port=port_number, threaded=True)
+    this_app.run(host="0.0.0.0", port=port_number)

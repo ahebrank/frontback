@@ -22,7 +22,9 @@
 
 	<div id="ftbk-feedback-overview-screenshot">
 		<label for="ftbk-feedback-image-dropzone">Screenshot</label>
-		<p>If the image below is blank or doesn't show your issue, take a better screenshot and drag-and-drop it below.</p>
+		<p>If the image below is blank or doesn't show your issue, minimize the feedback window to take a better screenshot, then drag-and-drop it below.</p>
+		<br />
+		<p>Alternatively, take a copied-screenshot (<code>Cmd+Shift+Control+4</code> on Mac and <code>PrntScrn</code> on Windows) and paste it here (<code>Cmd+v</code> on Mac and <code>Ctrl+v</code> on Windows).</p>
     <div id="ftbk-feedback-image-dropzone"></div>
 	</div>
 

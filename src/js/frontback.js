@@ -31,3 +31,21 @@ else {
   	console.log('Frontback: need frontback.postUrl set with endpoint.');
   }
 }
+
+// Paste Screenshot functionality
+document.onpaste = function(event){
+  var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+  for (index in items) {
+    var item = items[index];
+    if (item.kind === 'file') {
+      var blob = item.getAsFile();
+      var reader = new FileReader();
+      reader.onload = function(event){
+          (function($){
+            $('#ftbk-feedback-screenshot').attr('src', event.target.result);
+          }(global.frontback.jQuery));
+        }; 
+      reader.readAsDataURL(blob);
+    }
+  }
+}

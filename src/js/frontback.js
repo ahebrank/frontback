@@ -22,6 +22,24 @@ if (global.frontback.repo && global.frontback.postUrl) {
     options: frontback.options,
     extra: frontback.extra
 	});
+
+  // Paste Screenshot functionality
+  document.onpaste = function(event){
+    var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+    for (index in items) {
+      var item = items[index];
+      if (item.kind === 'file') {
+        var blob = item.getAsFile();
+        var reader = new FileReader();
+        reader.onload = function(event){
+            (function($){
+              $('#ftbk-feedback-screenshot').attr('src', event.target.result);
+            }(global.frontback.jQuery));
+          }; 
+        reader.readAsDataURL(blob);
+      }
+    }
+  }
 }
 else {
   if (!frontback.repo) {
@@ -29,23 +47,5 @@ else {
   }
   if (!frontback.postUrl) {
   	console.log('Frontback: need frontback.postUrl set with endpoint.');
-  }
-}
-
-// Paste Screenshot functionality
-document.onpaste = function(event){
-  var items = (event.clipboardData || event.originalEvent.clipboardData).items;
-  for (index in items) {
-    var item = items[index];
-    if (item.kind === 'file') {
-      var blob = item.getAsFile();
-      var reader = new FileReader();
-      reader.onload = function(event){
-          (function($){
-            $('#ftbk-feedback-screenshot').attr('src', event.target.result);
-          }(global.frontback.jQuery));
-        }; 
-      reader.readAsDataURL(blob);
-    }
   }
 }

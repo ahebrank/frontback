@@ -9,7 +9,7 @@ module.exports = {
         var height = $el.outerHeight();
         var width = $el.outerWidth();
 
-        if (height > 0) {
+        if (height > 32 || width > 32) {
           var style = [
             'position: relative',
             'height: ' + height + 'px',

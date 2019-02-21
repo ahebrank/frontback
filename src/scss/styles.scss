@@ -74,7 +74,6 @@ $fullscreen: screen and (min-width: 641px);
 }
 
 %input {
-	outline: none;
 	border: 1px solid $gray;
 	width: 100%;
 	padding: 5px;
@@ -85,12 +84,17 @@ $fullscreen: screen and (min-width: 641px);
 
 // general resets
 #ftbk-feedback-module {
-	line-height: 1.15;
+  font-size: 14px;
+	line-height: 1.2;
 	-webkit-text-size-adjust: 100%;
 
 	font-family: sans-serif;
 
-	@import "reset";
+  @import "reset";
+  
+  select {
+    padding: 5px;
+  }
 }
 
 .ftbk-fixed {
@@ -146,9 +150,7 @@ $fullscreen: screen and (min-width: 641px);
 }
 
 .ftbk-feedback-buttons {
-	float: right;
 	margin-top: 10px;
-	clear: both;
 }
 
 .ftbk-feedback-logo {
@@ -202,10 +204,11 @@ input#ftbk-feedback-assignee {
 .ftbk-feedback-close-btn {
 	width: 72px;
 	height: 29px;
-	line-height: 27px;
+	line-height: 1;
 	float: right;
-	font-size: 13px;
-	padding: 0 8px;
+  font-size: 13px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 .ftbk-feedback-back-btn {
 	margin-right: 20px;
@@ -265,15 +268,9 @@ input#ftbk-feedback-assignee {
 	> div {
 		margin-bottom: 1em;
 	}
-	@media #{$fullscreen} {
-    width: 50%;
-		float: left;
-	}
 }
 #ftbk-feedback-overview-screenshot {
 	display: none;
-	float: right;
-	max-width: 50%;
 	position: relative;
 	@media #{$fullscreen} {
 		display: block;
@@ -419,3 +416,24 @@ input#ftbk-feedback-assignee {
     display: block;
   }
 }
+
+.ftbk-feedback-overview-column-wrapper {
+  @media #{$fullscreen} {
+    display: flex;
+    margin-left: -5px;
+    margin-right: -5px;
+  }
+  .ftbk-feedback-overview-column {
+    @media #{$fullscreen} {
+      padding-left: 5px;
+      padding-right: 5px;
+      &:last-child {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+    }
+  }
+}
+

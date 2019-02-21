@@ -18,13 +18,15 @@
 			<label for="ftbk-feedback-overview-note">Description</label>
 			<textarea id="ftbk-feedback-overview-note"></textarea>
 		</div>
+    
+    <div class="ftbk-feedback-overview-screenshot-notes">
+      <p>If the automatic screenshot is blank or doesn't show your issue, minimize the Feedback window to take a better screenshot, then drag-and-drop it below.</p>
+      <p>Alternatively, take a copied-screenshot (<code>Cmd+Shift+Control+4</code> on Mac and <code>PrntScrn</code> on Windows) and paste it here (<code>Cmd+v</code> on Mac and <code>Ctrl+v</code> on Windows).</p>
+    </div>
 	</div>
 
-	<div id="ftbk-feedback-overview-screenshot">
+  <div id="ftbk-feedback-overview-screenshot">
 		<label for="ftbk-feedback-image-dropzone">Screenshot</label>
-		<p>If the image below is blank or doesn't show your issue, minimize the feedback window to take a better screenshot, then drag-and-drop it below.</p>
-		<br />
-		<p>Alternatively, take a copied-screenshot (<code>Cmd+Shift+Control+4</code> on Mac and <code>PrntScrn</code> on Windows) and paste it here (<code>Cmd+v</code> on Mac and <code>Ctrl+v</code> on Windows).</p>
     <div id="ftbk-feedback-image-dropzone"></div>
 	</div>
 

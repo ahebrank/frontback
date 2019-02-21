@@ -96,6 +96,23 @@
 
                     $('body').append(tpl);
 
+                    // Paste Screenshot functionality
+                    $('#ftbk-feedback-overview').on('paste', function(event) {
+                        var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+                        for (index in items) {
+                            var item = items[index];
+                            if (item.kind === 'file') {
+                            var blob = item.getAsFile();
+                            var reader = new FileReader();
+                            reader.onload = function(event){
+                                $('#ftbk-feedback-screenshot').attr('src', event.target.result);
+                            }; 
+                            reader.readAsDataURL(blob);
+                            }
+                        }
+                    });
+
+
                     moduleStyle = {
                         'position':	'absolute',
                         'left': 	'0px',
@@ -716,6 +733,9 @@
                 $('.ftbk-feedback-btn').show();
 
                 $('html, body').removeClass('ftbk-fixed');
+
+                // Turn off Paste Screenshot functionality 
+                $('#ftbk-feedback-overview').off('paste');
 
                 settings.onClose.call(this);
             }

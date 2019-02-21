@@ -266,6 +266,7 @@ input#ftbk-feedback-assignee {
 		margin-bottom: 1em;
 	}
 	@media #{$fullscreen} {
+    width: 50%;
 		float: left;
 	}
 }
@@ -404,4 +405,16 @@ input#ftbk-feedback-assignee {
 	@media #{$fullscreen} {
 		right: 200px;
 	}
+}
+
+.ftbk-feedback-overview-screenshot-notes {
+  display: none;
+  p {
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  @media #{$fullscreen} {
+    display: block;
+  }
 }

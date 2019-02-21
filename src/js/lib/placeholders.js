@@ -11,20 +11,25 @@ module.exports = {
 
         if (height > 0) {
           var style = [
+            'position: relative',
             'height: ' + height + 'px',
             'width: ' + width + 'px',
             'color: white',
             'background-color: black',
             'overflow: hidden',
-            'padding: 5px'
+            'padding: 5px',
+            'box-sizing: border-box',
+            'border: 3px dotted white'
           ];
           var $placeholder = $('<div data-ftbk-screenshot-placeholder style="' + style.join('; ') + '">');
           var lines = [
             $el.prop('tagName'),
-            "Source URL: " + url,
+            "Source: " + url,
             "Dimensions: (" + width + ' x ' + height + ")"
           ];
-          $placeholder.html(lines.join('<br>'));
+          var $inner = $('<div style="width: 100%; text-align: center; position: absolute; top: 50%; transform: translateY(-50%);">');
+          $inner.html(lines.join('<br>'))
+          $placeholder.append($inner);
           $el.css('display', 'none');
           $placeholder.insertAfter($el);
         }

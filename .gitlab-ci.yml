@@ -2,9 +2,10 @@
 image: newcity/builder:gulp4
 
 before_script:
+  - mv ci/Makefile .
   - eval $(ssh-agent -s)
   - ssh-add <(echo "$PIPELINES_PRIVATE_KEY")
-  - make .ci_init
+  - make init
 
 stages:
   - build
@@ -13,6 +14,7 @@ stages:
 build:
   stage: build
   script:
+    - npm install -g patch-package
     - npm install --unsafe-perm
     - gulp buildAll --min
   artifacts:
@@ -22,7 +24,7 @@ build:
 deploy:
   stage: deploy
   script:
-    - make .ci_push_production
+    - make push_production
   only:
     - master
 

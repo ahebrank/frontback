@@ -28,6 +28,6 @@
     "underscore": "^1.9.1"
   },
   "scripts": {
-    "postinstall": "cd node_modules/html2canvas/dist && patch -p1 < ../../../patches/firefox-fixes.patch"
+    "postinstall": "patch-package"
   }
 }

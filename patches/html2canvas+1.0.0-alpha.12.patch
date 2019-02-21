@@ -1,7 +1,7 @@
-diff --git a/html2canvas.js b/html2canvas.js
+diff --git a/node_modules/html2canvas/dist/html2canvas.js b/node_modules/html2canvas/dist/html2canvas.js
 index 69ecf87..0705c19 100644
---- a/html2canvas.js
-+++ b/html2canvas.js
+--- a/node_modules/html2canvas/dist/html2canvas.js
++++ b/node_modules/html2canvas/dist/html2canvas.js
 @@ -2395,7 +2395,10 @@ var addColorStops = function addColorStops(gradient, canvasGradient) {
      }));
      var f = 1 / Math.max(1, maxStop);

@@ -154,6 +154,7 @@ WSGIScriptAlias / /usr/local/frontback/endpoint/wsgi.py
 
 - python3 and pip3
 - nodejs and npm
+- patch-package: `npm i -g patch-package`
 
 ### Install
 
@@ -161,7 +162,7 @@ Use `make install` to install dependencies with npm and pip.
 
 ###
 
-Use `make test`, which does the following:
+Use `make dev`, which does the following:
 
 - `gulp` builds styles and scripts and puts up a test page at `http://localhost:3000`.  See `test/index.html` to modify the plugin configuration.
 

@@ -612,7 +612,7 @@
                         }
                         var html2canvas_opts = {
                             scale: 1,
-                            allowTaint: true,
+                            allowTaint: false,
                             //proxy: settings.ajaxURL + 'proxy',
                             width: window.innerWidth,
                             height: window.innerHeight,

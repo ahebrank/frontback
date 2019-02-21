@@ -412,6 +412,7 @@ input#ftbk-feedback-assignee {
   p {
     font-size: 12px;
     font-style: italic;
+    line-height: 1.2;
   }
 
   @media #{$fullscreen} {

@@ -30,7 +30,7 @@ module.exports = {
           var $inner = $('<div style="width: 100%; text-align: center; position: absolute; top: 50%; transform: translateY(-50%);">');
           $inner.html(lines.join('<br>'))
           $placeholder.append($inner);
-          $el.css('display', 'none');
+          $el.addClass('ftbk-hide');
           $placeholder.insertAfter($el);
         }
       }
@@ -40,7 +40,7 @@ module.exports = {
   remove: function($) {
     $('[data-ftbk-screenshot-placeholder]').each(function() {
       var $el = $(this);
-      $el.prev().css('display', 'inherit');
+      $el.prev().removeClass('ftbk-hide');
       $el.remove();
     });
   }

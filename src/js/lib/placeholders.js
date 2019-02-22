@@ -1,11 +1,15 @@
 module.exports = {
   replace: function($, url_attr) {
-    var base_url = window.location.protocol + '//' + window.location.host;
+    var base_url = '//' + window.location.host;
     $('[' + url_attr + ']').each(function() {
       var $el = $(this);
       var url = $el.attr(url_attr);
       // remote domain?
-      if (!(url.indexOf('/') === 0 || url.indexOf(base_url) === 0)) {
+      if (( url.indexOf('http://') === 0 
+            || url.indexOf('https://') === 0 
+            || url.indexOf('//') === 0 ) 
+          && url.indexOf(base_url) < 0 )
+      {
         var height = $el.outerHeight();
         var width = $el.outerWidth();
 

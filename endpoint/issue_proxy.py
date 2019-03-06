@@ -117,6 +117,7 @@ def create_app(config, debug=False):
                 dom_q = parse.urlencode({'fb_dompath[%d]' % (i): d})
                 url += ('&' if '?' in url else '?') + dom_q
 
+        # DEPRECATED: URL replacement
         dev_url_replace = repo_config.get('dev_url_replace')
         if dev_url_replace:
             dev_urls = []
@@ -126,6 +127,38 @@ def create_app(config, debug=False):
                 dev_urls.append(url.replace(f_url, r_url))
             if len(dev_urls):
                 url += ' (' + ' , '.join(dev_urls) + ')'
+
+        # URL host/path replacement
+        dev_replace = repo_config.get('dev_replace')
+        if dev_replace:
+            if not isinstance(dev_replace, list):
+                dev_replace = [dev_replace]
+            dev_urls = []
+            parsed_url = parse.urlparse(url)
+            for r in dev_replace:
+                r_host = parsed_url.scheme + '://' + parsed_url.netloc
+                if 'host' in r:
+                    r_host = r['host']
+                    # keep the origin protocol if it's not specified
+                    if not (r_host.startswith('http://') or r_host.startswith('https://') or r_host.startswith('//')):
+                        r_host = parsed_url.scheme + '://' + r_url
+                r_path = parsed_url.path
+                if 'path' in r:
+                    path_f_r = r['path'].split('|')
+                    if len(path_f_r) == 2:
+                      r_path = parsed_url.path.replace(path_f_r[0], path_f_r[1], 1)
+                dev_url = r_host + r_path
+                # add back the query and param, if they exist
+                if parsed_url.query:
+                  dev_url += '?' + parsed_url.query
+                if parsed_url.fragment:
+                  dev_url += '#' + parsed_url.fragment
+                if dev_url != url:
+                    dev_urls.append(dev_url)
+
+            if len(dev_urls):
+                url += ' (' + ' , '.join(dev_urls) + ')'
+
         meta = 'URL: ' + url
 
         if dompath:

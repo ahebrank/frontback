@@ -62,7 +62,7 @@ In a place accessible to the endpoint proxy, add configuration in a json array. 
 
 Find your Gitlab private token from https://gitlab.com/profile/personal_access_tokens (or similar for your hosted instance)
 
-Use the project homepage as a key and optionally set the assigned user (Gitlab ID) and default tag, which assigns a label and is useful for landing the issue on a particular board list.
+Use the project homepage as a key and optionally set the assigned user (Gitlab ID) and default tag(s), which assigns labels and is useful for landing the issue on a particular board list.
 
 ```json
 {
@@ -86,14 +86,48 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
         "app_key": "APPLICATION_KEY",
         "private_token": "PRIVATE_AUTH_TOKEN",
         "assignee_id": "ahebrank",
-        "tags": "Informative Label"
+        "tags": [
+          "Informative Label",
+          "Another label"
+        ]
     }
 }
 ```
 
 #### Other helpful configuration
 
-- *dev_url_replace*: perform string find/replace to append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click. Examples: `"dev_url_replace": "staging.example.com|localhost"`. For additional (e.g., staging) URLs, append more pipes.
+- *dev_url_replace*: **DEPRECATED: see `dev_replace` below**: perform string find/replace to append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click. Example: 
+
+  ```json
+  "dev_url_replace": "staging.example.com|localhost"`
+  ```
+
+  For additional (e.g., staging) URLs, append more pipes.
+
+- *dev_replace*: append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click. Path replacements are optional (to, e.g., add or remove directories; specify with `find|replace`). Only the first path match is replaced. 
+
+  For example, replace any incoming URL with a localhost dev endpoint and remove an initial URL path subdirectory: 
+
+  ```json
+  "dev_replace": {
+    "host": "http://localhost:9000",
+    "path": "/frontback/|/"
+  }
+  ```
+
+  Multiple dev URLs may be specified in array format. Specifying the protocol (HTTP scheme) is optional and only needed when it differs between the original and replacement URLs:
+
+  ```json
+  "dev_replace": [
+    {
+      "host": "http://localhost:9000",
+      "path": "/frontback/|/"
+    },
+    {
+      "host": "test-pantheon-site.io",
+    },
+  ]
+  ```
 
 - *link_dompath*: the issue reporting widget attempts to pass the path through to the DOM to any selected element in the screenshot. Setting this parameter to `true` will add a query parameter to the reporting URL so that visiting the page will re-highlight the originally highlighted element.
 

@@ -17,6 +17,6 @@ module.exports = {
   },
 
   off: function($) {
-    this.$('#ftbk-feedback-overview').off('paste');
+    $('#ftbk-feedback-overview').off('paste');
   }
 }

@@ -136,12 +136,22 @@ def create_app(config, debug=False):
             dev_urls = []
             parsed_url = parse.urlparse(url)
             for r in dev_replace:
+                # filter to matching URLs
+                if 'match' in r:
+                  if r['match'][0] == '!':
+                    match_test = r['match'][1:]
+                    if match_test in url:
+                        continue
+                  else:
+                    match_test = r['match']
+                    if match_test not in url:
+                        continue
                 r_host = parsed_url.scheme + '://' + parsed_url.netloc
                 if 'host' in r:
                     r_host = r['host']
                     # keep the origin protocol if it's not specified
                     if not (r_host.startswith('http://') or r_host.startswith('https://') or r_host.startswith('//')):
-                        r_host = parsed_url.scheme + '://' + r_url
+                        r_host = parsed_url.scheme + '://' + r_host
                 r_path = parsed_url.path
                 if 'path' in r:
                     path_f_r = r['path'].split('|')

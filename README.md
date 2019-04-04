@@ -104,27 +104,29 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
 
   For additional (e.g., staging) URLs, append more pipes.
 
-- *dev_replace*: append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click. Path replacements are optional (to, e.g., add or remove directories; specify with `find|replace`). Only the first path match is replaced. 
+- *dev_replace*: append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click.
 
-  For example, replace any incoming URL with a localhost dev endpoint and remove an initial URL path subdirectory: 
+  For example, replace any incoming URL containing "newcity.gitlab.io" with a localhost dev endpoint and remove an initial URL path subdirectory: 
 
   ```json
   "dev_replace": {
-    "host": "http://localhost:9000",
+    "host": "http://localhost:3000",
     "path": "/frontback/|/"
   }
   ```
 
-  Multiple dev URLs may be specified in array format. Specifying the protocol (HTTP scheme) is optional and only needed when it differs between the original and replacement URLs:
+  Multiple dev URLs may be specified in array format. Specifying the protocol (HTTP scheme) is optional and only needed when it differs between the original and replacement URLs. The `match` parameter is optional and can be used to control replacement behavior by filtering the origin URL if, for instance, multiple applications are deployed out of the same repository.
 
   ```json
   "dev_replace": [
     {
-      "host": "http://localhost:9000",
+      "match": "newcity.gitlab.io",
+      "host": "http://localhost:3000",
       "path": "/frontback/|/"
     },
     {
-      "host": "test-pantheon-site.io",
+      "match": "!newcity.gitlab_io",
+      "host": "http://localhost:9000"
     },
   ]
   ```

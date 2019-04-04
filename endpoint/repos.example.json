@@ -1,9 +1,8 @@
 {
     "https://gitlab.com/newcity/test": {
         "private_token": "GITLAB_PRIVATE_TOKEN",
-        "assignee_id": "@ahebrank",
+        "assignee_id": "ahebrank",
         "tags": "Incoming",
-        "dev_url_replace": "staging.com|localhost",
         "link_dompath": true
     },
     "https://trello.com/b/XXXXXX/api-test": {

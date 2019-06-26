@@ -4,10 +4,9 @@ import json
 import argparse
 import time
 from urllib import parse
-from flask import Flask, request, abort, jsonify, send_from_directory, Response
-from flask_cors import CORS, cross_origin
+from flask import Flask, request, abort, jsonify, send_from_directory
+from flask_cors import CORS
 from api_helper import Api
-from lib.html2canvasproxy import html2canvasproxy
 
 def create_app(config, debug=False):
     app = Flask(__name__)
@@ -117,6 +116,13 @@ def create_app(config, debug=False):
                 dom_q = parse.urlencode({'fb_dompath[%d]' % (i): d})
                 url += ('&' if '?' in url else '?') + dom_q
 
+        # conditional tags are based on submission path (url)
+        conditional_tags = repo_config.get('conditional_path_tags')
+        if conditional_tags:
+            for conditional_tag in conditional_tags:
+                if conditional_tags[conditional_tag] in url:
+                    tags.append(conditional_tag)
+
         # DEPRECATED: URL replacement
         dev_url_replace = repo_config.get('dev_url_replace')
         if dev_url_replace:
@@ -160,9 +166,9 @@ def create_app(config, debug=False):
                 dev_url = r_host + r_path
                 # add back the query and param, if they exist
                 if parsed_url.query:
-                  dev_url += '?' + parsed_url.query
+                    dev_url += '?' + parsed_url.query
                 if parsed_url.fragment:
-                  dev_url += '#' + parsed_url.fragment
+                    dev_url += '#' + parsed_url.fragment
                 if dev_url != url:
                     dev_urls.append(dev_url)
 
@@ -179,7 +185,7 @@ def create_app(config, debug=False):
             meta += api_helper.append_body('Useragent: ' + browser.get('userAgent'))
             meta += api_helper.append_body('Platfom: ' + browser.get('platform'))
             meta += api_helper.append_body('Window size: ' + browser.get('windowDims'))
-        
+
         extra = payload.get('extra')
         if extra:
             for k in extra:
@@ -277,16 +283,20 @@ def set_resp(msg, status = 200):
 def get_elapsed_time(start_time):
     return "%0.2f sec" % (time.time() - start_time)
 
-if __name__ == "__main__":
-
+def init():
     parser = argparse.ArgumentParser(description="frontback gitlab proxy")
-    parser.add_argument("-c", "--config", action="store", help="path to repos configuration", required=True)
-    parser.add_argument("-p", "--port", action="store", help="server port", required=False, default=8080)
-    parser.add_argument("--debug", action="store_true", help="enable debug output", required=False, default=False)
+    parser.add_argument("-c", "--config", action="store", help="path to repos configuration", 
+                        required=True)
+    parser.add_argument("-p", "--port", action="store", help="server port", 
+                        required=False, default=8080)
+    parser.add_argument("--debug", action="store_true", help="enable debug output", 
+                        required=False, default=False)
 
     args = parser.parse_args()
     port_number = int(args.port)
 
     this_app = create_app(args.config, args.debug)
-
     this_app.run(host="0.0.0.0", port=port_number)
+
+if __name__ == "__main__":
+    init()

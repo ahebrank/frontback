@@ -133,6 +133,17 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
 
 - *link_dompath*: the issue reporting widget attempts to pass the path through to the DOM to any selected element in the screenshot. Setting this parameter to `true` will add a query parameter to the reporting URL so that visiting the page will re-highlight the originally highlighted element.
 
+- *conditional_path_tags*: assign tags/labels to a report conditionally based on the submission URL. For instance, the repo config below will assign different tags for different sites:
+
+```json
+"conditional_path_tags": {
+  "OREC": "tamuorecstg.wpengine.com",
+  "Privacy": "tamuprivacystg.wpengine.com",
+  "Rules": "tamurulesstg.wpengine.com",
+  "UYP": "tamuuypstaging.wpengine.com"
+}
+```
+
 ### Start it up
 
 The python wsgi web stack configuration has a lot of pieces. The following skips over setting up a virtual environment and assumes the flask app is installed in `/usr/local/frontback/endpoint`.

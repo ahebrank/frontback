@@ -19,7 +19,7 @@
     "jstify": "^0.14.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
-    "yargs": "^4.4.0"
+    "yargs": "^15.4.1"
   },
   "dependencies": {
     "html2canvas": "^1.0.0-rc.3",

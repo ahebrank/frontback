@@ -358,7 +358,7 @@
             var highlighted = [],
             tmpHighlighted = [],
             hidx = 0;
-            const $visible_elements = $('*:visible:not(body,script,iframe,div,section,.ftbk-feedback-btn,#ftbk-feedback-module *)');
+            var $visible_elements = $('*:visible:not(body,script,iframe,div,section,.ftbk-feedback-btn,#ftbk-feedback-module *)');
 
             $(document).on('mousemove click', '#ftbk-feedback-canvas', function(e) {
               if (canDraw) {
@@ -368,7 +368,7 @@
                 $('#ftbk-feedback-canvas').css('cursor', 'crosshair');
                 
                 $visible_elements.each(function() {
-                  const $this = $(this);
+                  var $this = $(this);
                   if ($this.attr('data-highlighted') === 'true')
                   return;
                   

@@ -358,20 +358,22 @@
             var highlighted = [],
             tmpHighlighted = [],
             hidx = 0;
-            
-            $(document).on('mousemove click', '#ftbk-feedback-canvas',function(e) {
+            const $visible_elements = $('*:visible:not(body,script,iframe,div,section,.ftbk-feedback-btn,#ftbk-feedback-module *)');
+
+            $(document).on('mousemove click', '#ftbk-feedback-canvas', function(e) {
               if (canDraw) {
                 redraw(ctx);
                 tmpHighlighted = [];
                 
                 $('#ftbk-feedback-canvas').css('cursor', 'crosshair');
                 
-                $('* :not(body,script,iframe,div,section,.ftbk-feedback-btn,#ftbk-feedback-module *)').each(function(){
-                  if ($(this).attr('data-highlighted') === 'true')
+                $visible_elements.each(function() {
+                  const $this = $(this);
+                  if ($this.attr('data-highlighted') === 'true')
                   return;
                   
-                  if (e.pageX > $(this).offset().left && e.pageX < $(this).offset().left + $(this).width() && e.pageY > $(this).offset().top + parseInt($(this).css('padding-top'), 10) && e.pageY < $(this).offset().top + $(this).height() + parseInt($(this).css('padding-top'), 10)) {
-                    tmpHighlighted.push($(this));
+                  if (e.pageX > $this.offset().left && e.pageX < $this.offset().left + $this.width() && e.pageY > $this.offset().top + parseInt($this.css('padding-top'), 10) && e.pageY < $this.offset().top + $this.height() + parseInt($this.css('padding-top'), 10)) {
+                    tmpHighlighted.push($this);
                   }
                 });
                 
@@ -516,8 +518,10 @@
           });
           
           $(document).on('click', '#ftbk-feedback-highlighter-next', function() {
+            this.classList.add('ftbk-invisible');
             $('#ftbk-feedback-overview-back').text('Back');
             screenshot(true);
+            this.classList.remove('ftbk-invisible');
           });
           
           $(document).on('click', '#ftbk-feedback-overview-back', function(e) {
@@ -820,7 +824,7 @@
         return stack.slice(1).join('>');
       }
       catch(error) {
-        console.log(error);
+        console.error(error);
         return '';
       }
     }

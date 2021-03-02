@@ -6,13 +6,13 @@ module.exports = {
       var url = $el.attr(url_attr);
       // remote domain?
       if (( url.indexOf('http://') === 0 
-            || url.indexOf('https://') === 0 
-            || url.indexOf('//') === 0 ) 
-          && url.indexOf(base_url) < 0 )
+      || url.indexOf('https://') === 0 
+      || url.indexOf('//') === 0 ) 
+      && url.indexOf(base_url) < 0 )
       {
         var height = $el.outerHeight();
         var width = $el.outerWidth();
-
+        
         if (height > 32 || width > 32) {
           var style = [
             'position: relative',
@@ -40,7 +40,7 @@ module.exports = {
       }
     });
   },
-
+  
   remove: function($) {
     $('[data-ftbk-screenshot-placeholder]').each(function() {
       var $el = $(this);

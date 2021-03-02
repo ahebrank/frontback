@@ -1,0 +1,27 @@
+diff --git a/node_modules/html2canvas/dist/html2canvas.js b/node_modules/html2canvas/dist/html2canvas.js
+index 69ecf87..0705c19 100644
+--- a/node_modules/html2canvas/dist/html2canvas.js
++++ b/node_modules/html2canvas/dist/html2canvas.js
+@@ -2395,7 +2395,10 @@ var addColorStops = function addColorStops(gradient, canvasGradient) {
+     }));
+     var f = 1 / Math.max(1, maxStop);
+     gradient.colorStops.forEach(function (colorStop) {
+-        canvasGradient.addColorStop(f * colorStop.stop, colorStop.color.toString());
++      canvasGradient.addColorStop(
++        Math.floor(Math.max(0, f * colorStop.stop)),
++        colorStop.color.toString()
++      );
+     });
+ };
+ 
+@@ -2600,6 +2603,10 @@ var CanvasRenderer = function () {
+                 return image;
+             }
+ 
++            if (isNaN(size.width) || isNaN(size.height)) {
++                return image;
++            }
++
+             var canvas = this.canvas.ownerDocument.createElement('canvas');
+             canvas.width = size.width;
+             canvas.height = size.height;

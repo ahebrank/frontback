@@ -14,7 +14,7 @@ stages:
 build:
   stage: build
   script:
-    # - npm install -g patch-package
+    - npm install -g patch-package
     - npm install --unsafe-perm
     - gulp buildAll --min
   artifacts:

@@ -7,27 +7,25 @@
     "browserify": "^16.3.0",
     "colors": "^1.3.2",
     "fancy-log": "^1.3.2",
-    "gulp": "^4.0.2",
+    "gulp": "^4",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-clean-css": "^3.1.0",
     "gulp-if": "^2.0.0",
     "gulp-plumber": "^1.2.0",
     "gulp-replace": "^1.0.0",
-    "gulp-sane-watch": "^2.0.0",
-    "gulp-sass": "^4.0.2",
+    "gulp-sane-watch": "^2.0.4",
+    "gulp-sass": "^5",
     "gulp-uglify": "^3.0.2",
-    "jstify": "^0.14.0",
+    "jstify": "^0.2.0",
+    "node-sass": "^6.0.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "yargs": "^15.4.1"
   },
   "dependencies": {
-    "html2canvas": "1.0.0-alpha.12",
+    "html2canvas": "^1.3.2",
     "jquery": "^3.5.0",
     "promise-polyfill": "^8.1.3",
     "underscore": "^1.12.1"
-  },
-  "scripts": {
-    "postinstall": "patch-package"
   }
 }

@@ -10,17 +10,16 @@ before_script:
 stages:
   - build
   - deploy
-  
+
 build:
   stage: build
   script:
-    - npm install -g patch-package
-    - npm install --unsafe-perm
+    - yarn
     - gulp buildAll --min
   artifacts:
     paths:
       - endpoint
-  
+
 deploy:
   stage: deploy
   script:

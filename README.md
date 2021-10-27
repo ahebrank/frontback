@@ -96,7 +96,7 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
 
 #### Other helpful configuration
 
-- *dev_url_replace*: **DEPRECATED: see `dev_replace` below**: perform string find/replace to append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click. Example: 
+- *dev_url_replace*: **DEPRECATED: see `dev_replace` below**: perform string find/replace to append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click. Example:
 
   ```json
   "dev_url_replace": "staging.example.com|localhost"`
@@ -106,7 +106,7 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
 
 - *dev_replace*: append a development URL (or more than one) to the issue, making it easy to get to the relevant page on your development environment in one click.
 
-  For example, replace any incoming URL containing "newcity.gitlab.io" with a localhost dev endpoint and remove an initial URL path subdirectory: 
+  For example, replace any incoming URL containing "newcity.gitlab.io" with a localhost dev endpoint and remove an initial URL path subdirectory:
 
   ```json
   "dev_replace": {
@@ -200,12 +200,11 @@ WSGIScriptAlias / /usr/local/frontback/endpoint/wsgi.py
 ### Prerequisites
 
 - python3 and pip3
-- nodejs and npm
-- patch-package: `npm i -g patch-package`
+- nodejs and yarn
 
 ### Install
 
-Use `make install` to install dependencies with npm and pip.
+Use `make install` to install dependencies with yarn and pip. Create a `repos.json` file in the endpoint directory.
 
 ###
 

@@ -11,7 +11,7 @@ var gulp = require('gulp'),
 	plumber = require('gulp-plumber'),
 	sanewatch = require('gulp-sane-watch'),
 	gulpif = require('gulp-if'),
-	sass = require('gulp-sass'),
+	sass = require('gulp-sass')(require('node-sass'));
 	jstify = require('jstify'),
 	uglify = require('gulp-uglify'),
 	replace = require('gulp-replace'),
@@ -57,19 +57,19 @@ const js = () => {
 	var b = browserify({
 		entries: [paths.src.js]
 	});
-		
+
 	b.transform(jstify);
 
 	var v = process.env.CI_COMMIT_SHA;
 	if (!v) {
 		v = '0';
 	}
-	
+
 	return b.bundle()
 		.on( 'error', plumber_error )
 		.pipe( source( 'frontback.js' ) )
 		.pipe( buffer() )
-		.pipe( replace( 'DEPLOY_KEY', v ) ) 
+		.pipe( replace( 'DEPLOY_KEY', v ) )
 		.pipe( gulpif( argv.min, uglify({ mangle: false })) )
 		.pipe( gulp.dest( paths.dist.js ));
 };
@@ -79,7 +79,7 @@ const buildAll = gulp.parallel(scss, js);
 
 // all the watchy stuff
 const watcher = () => {
-	
+
 	interactive = true;
 
 	// sane is a more configurable watcher than gulp watch.

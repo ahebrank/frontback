@@ -1,5 +1,5 @@
 ---
-image: newcity/builder:gulp4
+image: newcity/builder
 
 before_script:
   - mv ci/Makefile .

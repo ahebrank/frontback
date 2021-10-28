@@ -1,0 +1,15 @@
+diff --git a/node_modules/html2canvas/dist/html2canvas.js b/node_modules/html2canvas/dist/html2canvas.js
+index d525642..865314e 100644
+--- a/node_modules/html2canvas/dist/html2canvas.js
++++ b/node_modules/html2canvas/dist/html2canvas.js
+@@ -7193,8 +7193,8 @@
+             }
+             var ownerDocument = (_a = this.canvas.ownerDocument) !== null && _a !== void 0 ? _a : document;
+             var canvas = ownerDocument.createElement('canvas');
+-            canvas.width = Math.max(1, width);
+-            canvas.height = Math.max(1, height);
++            canvas.width = isNaN(width) || width === 0 ? 1 : width;
++            canvas.height = isNaN(height) || height === 0 ? 1 : height;
+             var ctx = canvas.getContext('2d');
+             ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, width, height);
+             return canvas;

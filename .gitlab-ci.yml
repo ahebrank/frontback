@@ -15,8 +15,9 @@ build:
   stage: build
   script:
     - npm i -g patch-package
-    - make dist
+    - yarn
     - gulp buildAll --min
+    - make prep_docker
   artifacts:
     paths:
       - endpoint

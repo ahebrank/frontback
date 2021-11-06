@@ -164,7 +164,7 @@ The python wsgi web stack configuration has a lot of pieces. The following skips
 
 ```
 location ~ /frontback(/.*) {
-    uwsgi_pass unix:/tmp/frontback.sock;
+    uwsgi_pass unix:/tmp/uwsgi.sock;
     include /etc/nginx/uwsgi_params;
     # strip the subdirectory
     uwsgi_param PATH_INFO "$1";
@@ -185,7 +185,7 @@ See e.g., https://www.digitalocean.com/community/tutorials/how-to-deploy-python-
 ```
 WSGIDaemonProcess frontback user=www-data group=www-data threads=5 home=
 /usr/local/frontback/endpoint
-WSGIScriptAlias / /usr/local/frontback/endpoint/wsgi.py
+WSGIScriptAlias / /usr/local/frontback/endpoint/main.py
 
 <Directory /usr/local/frontback/endpoint>
   	WSGIProcessGroup frontback

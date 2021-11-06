@@ -7,4 +7,4 @@ setuid www-data
 setgid www-data
 
 chdir /usr/local/frontback/endpoint
-exec uwsgi --ini frontback.ini --check-static /assets
+exec uwsgi --ini uwsgi.ini --check-static /assets

@@ -5,3 +5,8 @@ dev:
 install:
 	yarn
 	cd endpoint && pip3 install -r requirements.txt
+
+dist:
+	rm -rf dist
+	cp -R endpoint dist
+	mv dist/frontback.ini dist/uwsgi.ini

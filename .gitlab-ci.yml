@@ -1,12 +1,6 @@
 ---
 image: newcity/builder
 
-before_script:
-  - mv ci/Makefile .
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "$PIPELINES_PRIVATE_KEY")
-  - make init
-
 stages:
   - build
   - deploy
@@ -24,6 +18,10 @@ build:
 deploy:
   stage: deploy
   script:
+    - mv ci/Makefile .
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$PIPELINES_PRIVATE_KEY")
+    - make init
     - make push_production
   only:
     - master

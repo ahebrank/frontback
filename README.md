@@ -146,14 +146,32 @@ Then use the trello board URL as the key and optionally set an assignee (Trello 
 
 ### Start it up
 
+#### Docker
+
+Image `newcity/frontback` is available as a (nearly) one-line installation. All you need to do is map a configuration file into the container and put a reverse proxy in front of it.
+
+`docker run -v "/home/someuser/frontback.json:/app/repos.json" -e FRONTBACK_CONFIG=/app/repos.json -p 9010:80 --restart always -d newcity/frontback`
+
+Proxy example in nginx:
+
+```
+location ~ ^/frontback(.*) {
+  proxy_pass http://127.0.0.1:9010/$1;
+}
+```
+
+(This example assumes frontback requests are coming to http://servername.com/frontback and strips off the "frontback" path before passing to the application on the port provided by docker.)
+
+#### Bare-metal wsgi
+
 The python wsgi web stack configuration has a lot of pieces. The following skips over setting up a virtual environment and assumes the flask app is installed in `/usr/local/frontback/endpoint`.
 
-#### Base requirements
+##### Base requirements
 
 1. Python 3.x is required
 2. `pip3 install -r /usr/local/frontback/endpoint/requirements.txt`
 
-#### Nginx uwsgi proxy
+##### Nginx uwsgi proxy
 
 1. Make sure `uwsgi` is installed (e.g., `pip3 install uwsgi`)
 2. Copy the upstart config to `/etc/init` (`cp /usr/local/frontback/endpoint/service-config/frontback.conf.upstart /etc/init/frontback.config`) OR copy the systemd service (`cp /usr/local/frontback/endpoint/service-config/frontback.service.systemd /lib/systemd/system/frontback.service`)
@@ -177,7 +195,7 @@ location ~ /frontback(/.*) {
 
 See e.g., https://www.digitalocean.com/community/tutorials/how-to-deploy-python-wsgi-applications-using-uwsgi-web-server-with-nginx for more detail about setting up and proxying uwsgi applications.
 
-#### Older way: Apache2 with mod_wsgi
+##### Older way: Apache2 with mod_wsgi
 
 1. Install mod_wsgi (e.g., `apt-get install libapache2-mod-wsgi`)
 2. Within an apache2 virtual host, add config like:

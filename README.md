@@ -182,7 +182,7 @@ The python wsgi web stack configuration has a lot of pieces. The following skips
 
 ```
 location ~ /frontback(/.*) {
-    uwsgi_pass unix:/tmp/uwsgi.sock;
+    uwsgi_pass unix:/tmp/frontback.sock;
     include /etc/nginx/uwsgi_params;
     # strip the subdirectory
     uwsgi_param PATH_INFO "$1";

@@ -447,8 +447,8 @@ input#ftbk-feedback-assignee {
 }
 
 // Simulate reduced motion.
-#ftbk-feedback-canvas {
-	*, ::before, ::after {
+.ftbk-fixed {
+	&, *, ::before, ::after {
 		animation-delay: -1ms !important;
 		animation-duration: 1ms !important;
 		animation-iteration-count: 1 !important;

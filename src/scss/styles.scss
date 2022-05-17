@@ -91,7 +91,7 @@ $fullscreen: screen and (min-width: 641px);
 	font-family: sans-serif;
 
   @import "reset";
-  
+
   select {
     padding: 5px;
   }
@@ -444,4 +444,17 @@ input#ftbk-feedback-assignee {
 
 .ftbk-invisible {
   visibility: hidden !important;
+}
+
+// Simulate reduced motion.
+#ftbk-feedback-canvas {
+	*, ::before, ::after {
+		animation-delay: -1ms !important;
+		animation-duration: 1ms !important;
+		animation-iteration-count: 1 !important;
+		background-attachment: initial !important;
+		scroll-behavior: auto !important;
+		transition-duration: 0s !important;
+		transition-delay: 0s !important;
+	}
 }
